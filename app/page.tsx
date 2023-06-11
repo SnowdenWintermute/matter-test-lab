@@ -1,95 +1,80 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+import { useEffect, useRef, useState } from "react";
+import styles from "./page.module.css";
+import { TestGame } from "./TestGame";
+import { MobileEntity } from "./TestGame/MobileEntity";
+import Matter from "matter-js";
+import useWindowDimensions from "./Hooks/useWindowDimensions";
+
+export type WidthAndHeight = { width: number; height: number };
 
 export default function Home() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasSizeRef = useRef<WidthAndHeight | null>(null);
+  const gameRef = useRef<TestGame>(new TestGame());
+  const windowDimensions = useWindowDimensions();
+
+  const [canvasSize, setCanvasSize] = useState<WidthAndHeight>({
+    width: 1920,
+    height: 1080,
+  });
+
+  useEffect(() => {
+    if (!windowDimensions) return;
+    // even though we don't use this value for anything, the fact that we set state forces a react refresh which actually makes the
+    // canvas resize, so its needed for now
+    setCanvasSize({
+      height: windowDimensions.height,
+      width: windowDimensions.width,
+    });
+    canvasSizeRef.current = {
+      height: windowDimensions.height,
+      width: windowDimensions.width,
+    };
+  }, [setCanvasSize, windowDimensions]);
+
+  useEffect(() => {
+    const playerEntity = (gameRef.current.entities.playerControlled[0] =
+      new MobileEntity(0, "player", 5, 10, {
+        x: canvasSize.width / 2,
+        y: canvasSize.height / 2,
+      }));
+    Matter.Composite.add(
+      gameRef.current.physicsEngine.world,
+      playerEntity.body
+    );
+    gameRef.current.intervals.physics = setTimeout(() => {
+      const context = canvasRef.current?.getContext("2d");
+      if (!context) return;
+      gameRef.current.stepGame(context);
+    });
+
+    return () => {
+      gameRef.current.clearPhysicsInterval();
+    };
+  }, [canvasRef]);
+
+  // useEffect(() => {
+  // if (!window) return;
+  // const resize = () => {
+  //   if (scene) scene.getEngine().resize();
+  // };
+  // window.addEventListener("resize", resize);
+
+  // return () => {
+  //   window.removeEventListener("resize", resize);
+  // };
+  // }, [scene]);
+
   return (
     <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+      <canvas
+        height={canvasSizeRef.current?.height}
+        width={canvasSizeRef.current?.width}
+        id="canvas"
+        className={styles.canvas}
+        ref={canvasRef}
+      />
     </main>
-  )
+  );
 }
