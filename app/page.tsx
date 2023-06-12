@@ -5,6 +5,11 @@ import { TestGame } from "./TestGame";
 import { MobileEntity } from "./TestGame/MobileEntity";
 import Matter from "matter-js";
 import useWindowDimensions from "./Hooks/useWindowDimensions";
+import {
+  addCanvasInputListeners,
+  removeCanvasInputListeners,
+  setInputs,
+} from "./TestGame/canvasInputListeners";
 
 export type WidthAndHeight = { width: number; height: number };
 
@@ -45,26 +50,22 @@ export default function Home() {
     );
     gameRef.current.intervals.physics = setTimeout(() => {
       const context = canvasRef.current?.getContext("2d");
-      if (!context) return;
-      gameRef.current.stepGame(context);
+      if (!context || !canvasSizeRef.current) return;
+      gameRef.current.stepGame(context, canvasSizeRef.current);
     });
 
     return () => {
       gameRef.current.clearPhysicsInterval();
     };
+  }, [canvasRef, canvasSize.height, canvasSize.width]);
+
+  useEffect(() => {
+    if (canvasRef.current) addCanvasInputListeners(document, gameRef.current);
+    return () => {
+      if (canvasRef.current)
+        removeCanvasInputListeners(document, gameRef.current);
+    };
   }, [canvasRef]);
-
-  // useEffect(() => {
-  // if (!window) return;
-  // const resize = () => {
-  //   if (scene) scene.getEngine().resize();
-  // };
-  // window.addEventListener("resize", resize);
-
-  // return () => {
-  //   window.removeEventListener("resize", resize);
-  // };
-  // }, [scene]);
 
   return (
     <main className={styles.main}>
@@ -74,6 +75,8 @@ export default function Home() {
         id="canvas"
         className={styles.canvas}
         ref={canvasRef}
+        // onKeyDown={(e) => setInputs(e, gameRef.current.inputState, true)}
+        // onKeyUp={(e) => setInputs(e, gameRef.current.inputState, false)}
       />
     </main>
   );
