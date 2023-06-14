@@ -7,7 +7,7 @@ export default function render(
 ) {
   context.clearRect(0, 0, canvasSize.width, canvasSize.height);
   Object.values(game.entities.playerControlled).forEach((entity) => {
-    context.fillStyle = "#234890";
+    context.fillStyle = "#9ba8b8";
     context.beginPath();
     entity.body.vertices.forEach((vertex, i) => {
       if (i === 0) context.moveTo(vertex.x, vertex.y);
@@ -25,5 +25,22 @@ export default function render(
       y + 40 * Math.sin(entity.body.angle)
     );
     context.stroke();
+    context.fillStyle = "pink";
+    context.textAlign = "center";
+    context.fillText(
+      `Target angle: ${game.inputState.targetAngle?.toFixed(2)}`,
+      x,
+      y + 55
+    );
+    const bodyAngleMod = entity.body.angle % (Math.PI * 2);
+    context.fillText(`Angle mod 2PI: ${bodyAngleMod.toFixed(2)}`, x, y + 75);
+    if (game.inputState.targetAngle) {
+      const angleDifference =
+        game.inputState.targetAngle - Math.abs(bodyAngleMod);
+      const angleDifference2 = bodyAngleMod - game.inputState.targetAngle;
+
+      context.fillText(`Diff: ${angleDifference.toFixed(2)}`, x, y + 95);
+      context.fillText(`Diff2: ${angleDifference2.toFixed(2)}`, x, y + 115);
+    }
   });
 }

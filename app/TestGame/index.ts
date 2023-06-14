@@ -4,6 +4,7 @@ import { Entity } from "./Entity";
 import { CSPlayerInputState } from "./CSInputState";
 import handlePlayerInputs from "./handlePlayerInputs";
 import render from "./render";
+import { MouseState } from "./MouseState";
 
 export class CSEntities {
   playerControlled: { [id: number]: MobileEntity } = {};
@@ -19,6 +20,7 @@ export class TestGame {
   } = { physics: undefined, render: undefined };
   entities = new CSEntities();
   inputState = new CSPlayerInputState();
+  mouseState = new MouseState();
   renderRate = 33;
   constructor() {
     this.physicsEngine.gravity.y = 0;

@@ -8,7 +8,6 @@ import useWindowDimensions from "./Hooks/useWindowDimensions";
 import {
   addCanvasInputListeners,
   removeCanvasInputListeners,
-  setInputs,
 } from "./TestGame/canvasInputListeners";
 
 export type WidthAndHeight = { width: number; height: number };
@@ -60,10 +59,15 @@ export default function Home() {
   }, [canvasRef, canvasSize.height, canvasSize.width]);
 
   useEffect(() => {
-    if (canvasRef.current) addCanvasInputListeners(document, gameRef.current);
+    if (canvasRef.current)
+      addCanvasInputListeners(document, canvasRef.current, gameRef.current);
     return () => {
       if (canvasRef.current)
-        removeCanvasInputListeners(document, gameRef.current);
+        removeCanvasInputListeners(
+          document,
+          canvasRef.current,
+          gameRef.current
+        );
     };
   }, [canvasRef]);
 
