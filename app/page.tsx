@@ -38,15 +38,25 @@ export default function Home() {
   }, [setCanvasSize, windowDimensions]);
 
   useEffect(() => {
-    const playerEntity = (gameRef.current.entities.playerControlled[0] =
-      new MobileEntity(0, "player", 5, 10, {
+    gameRef.current.entities.playerControlled[0] = new MobileEntity(
+      gameRef.current.physicsEngine,
+      0,
+      "player",
+      5,
+      10,
+      {
         x: canvasSize.width / 2,
         y: canvasSize.height / 2,
-      }));
-    Matter.Composite.add(
-      gameRef.current.physicsEngine.world,
-      playerEntity.body
+      }
     );
+    // Matter.Composite.add(
+    //   gameRef.current.physicsEngine.world,
+    //   playerEntity.rightHandPosition
+    // );
+    // Matter.Composite.add(
+    //   gameRef.current.physicsEngine.world,
+    //   playerEntity.leftHandPosition
+    // );
     gameRef.current.intervals.physics = setTimeout(() => {
       const context = canvasRef.current?.getContext("2d");
       if (!context || !canvasSizeRef.current) return;

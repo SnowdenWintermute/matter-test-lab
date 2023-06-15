@@ -48,7 +48,7 @@ export default function handleWASD(game: TestGame) {
       calculateDirectionalForce(
         angle,
         DIRECTION.DOWN,
-        acceleration * sidewaysAccelerationModifier
+        acceleration * reverseAccelerationModifier
       )
     );
   if (inputState.left)
@@ -68,7 +68,7 @@ export default function handleWASD(game: TestGame) {
       calculateDirectionalForce(
         angle,
         DIRECTION.RIGHT,
-        acceleration * reverseAccelerationModifier
+        acceleration * sidewaysAccelerationModifier
       )
     );
 }
