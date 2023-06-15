@@ -5,10 +5,10 @@ import { warn } from "console";
 export class MobileEntity extends Entity {
   targetAngle = 0;
   acceleration = 1;
-  reverseAccelerationModifier = 0.5;
+  reverseAccelerationModifier = 0.2;
   sidewaysAccelerationModifier = 0.7;
   topSpeed: number = 10;
-  turningSpeed = Math.PI / 10;
+  turningSpeed = Math.PI / 20;
   jumpHeight = 20;
   jumpStrength = 1;
   jumping = false;

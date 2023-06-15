@@ -1,4 +1,5 @@
 import { TestGame } from "../TestGame";
+import { normalizeRadians } from "./handlePlayerInputs";
 
 export default function render(
   context: CanvasRenderingContext2D,
@@ -25,22 +26,35 @@ export default function render(
       y + 40 * Math.sin(entity.body.angle)
     );
     context.stroke();
+
+    context.beginPath();
+    context.strokeStyle = "#028a7e";
+    context.lineWidth = 4;
+    context.moveTo(x, y);
+    context.lineTo(
+      x + 40 * Math.cos(entity.targetAngle),
+      y + 40 * Math.sin(entity.targetAngle)
+    );
+    context.stroke();
+
     context.fillStyle = "pink";
     context.textAlign = "center";
-    context.fillText(
-      `Target angle: ${game.inputState.targetAngle?.toFixed(2)}`,
-      x,
-      y + 55
-    );
-    const bodyAngleMod = entity.body.angle % (Math.PI * 2);
-    context.fillText(`Angle mod 2PI: ${bodyAngleMod.toFixed(2)}`, x, y + 75);
-    if (game.inputState.targetAngle) {
-      const angleDifference =
-        game.inputState.targetAngle - Math.abs(bodyAngleMod);
-      const angleDifference2 = bodyAngleMod - game.inputState.targetAngle;
-
-      context.fillText(`Diff: ${angleDifference.toFixed(2)}`, x, y + 95);
-      context.fillText(`Diff2: ${angleDifference2.toFixed(2)}`, x, y + 115);
+    const normalizedTarget = normalizeRadians(game.inputState.targetAngle!);
+    if (normalizedTarget) {
+      context.fillText(
+        `Normalized target angle : ${normalizedTarget.toFixed(2)}`,
+        x,
+        y + 55
+      );
     }
+    const normalizedAngle = normalizeRadians(entity.body.angle);
+    context.fillText(
+      `normalized angle: ${normalizedAngle.toFixed(2)}`,
+      x,
+      y + 75
+    );
+
+    const difference = normalizedAngle - normalizedTarget;
+    context.fillText(`difference: ${difference.toFixed(2)}`, x, y + 95);
   });
 }

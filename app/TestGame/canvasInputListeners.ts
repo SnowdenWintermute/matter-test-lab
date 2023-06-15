@@ -14,14 +14,13 @@ export function setInputs(
   active: boolean
 ) {
   const { code } = e;
-  console.log(e.code, active);
   if (code === "KeyW") inputs.up = active;
   if (code === "KeyS") inputs.down = active;
   if (code === "KeyA") inputs.left = active;
   if (code === "KeyD") inputs.right = active;
-  if (code === "Space") inputs.space = active;
   if (code === "KeyJ") inputs.turnLeft = active;
   if (code === "KeyK") inputs.turnRight = active;
+  if (code === "Space") inputs.space = active;
 }
 
 export function addCanvasInputListeners(
