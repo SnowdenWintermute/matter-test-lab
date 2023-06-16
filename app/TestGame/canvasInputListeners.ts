@@ -21,6 +21,10 @@ export function setInputs(
   if (code === "KeyJ") inputs.turnLeft = active;
   if (code === "KeyK") inputs.turnRight = active;
   if (code === "Space") inputs.space = active;
+  if (code === "ArrowUp") inputs.arrowUp = active;
+  if (code === "ArrowDown") inputs.arrowDown = active;
+  if (code === "ArrowLeft") inputs.arrowLeft = active;
+  if (code === "ArrowRight") inputs.arrowRight = active;
 }
 
 export function addCanvasInputListeners(

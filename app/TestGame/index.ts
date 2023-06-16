@@ -26,6 +26,17 @@ export class TestGame {
     this.physicsEngine.gravity.y = 0;
     this.physicsEngine.gravity.x = 0;
     this.physicsEngine.gravity.scale = 0;
+    for (let i = 0; i < 20; i += 1) {
+      const x = Math.random() * 500;
+      const y = Math.random() * 500;
+      const r = Math.random() * 30;
+      const body = Matter.Bodies.circle(x, y, r);
+      this.entities.static[i] = new Entity(i, body, 0, 0, "game", {
+        max: 1,
+        current: 1,
+      });
+      Matter.Composite.add(this.physicsEngine.world, body);
+    }
   }
 
   clearPhysicsInterval() {

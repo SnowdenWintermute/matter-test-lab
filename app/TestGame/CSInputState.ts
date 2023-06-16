@@ -9,4 +9,8 @@ export class CSPlayerInputState {
   public mouseRight?: boolean;
   public space?: boolean;
   public targetAngle?: number;
+  public arrowUp?: boolean;
+  public arrowDown?: boolean;
+  public arrowLeft?: boolean;
+  public arrowRight?: boolean;
 }
