@@ -1,7 +1,11 @@
 import { Vector } from "matter-js";
 import { TestGame } from ".";
 import { CombatMoveExecutionState, MobileEntity } from "./MobileEntity";
-import { normalizeRadians } from "../utils";
+import {
+  distBetweenTwoPoints,
+  movePointTowards,
+  normalizeRadians,
+} from "../utils";
 
 function movePointInArc(center: Vector, angle: number, radius: number): Vector {
   const x = center.x + Math.cos(angle) * radius;
@@ -20,9 +24,9 @@ export default function handleCombatMoveExecution(
   if (inputState.arrowLeft) desiredLeftHandPosition.pointA.x -= 1;
   if (inputState.arrowRight) desiredLeftHandPosition.pointA.x += 1;
 
-  if (entity.combatMoveExecutionState === CombatMoveExecutionState.AT_REST) {
+  if (entity.combatMoveExecutionState === CombatMoveExecutionState.AT_REST)
     entity.combatMoveExecutionState = CombatMoveExecutionState.READYING;
-  }
+
   if (entity.combatMoveExecutionState === CombatMoveExecutionState.READYING) {
     const handPositionLineAngle = normalizeRadians(
       Math.atan2(
@@ -31,7 +35,7 @@ export default function handleCombatMoveExecution(
       )
     );
     const normalizedEntityAngle = normalizeRadians(body.angle);
-    const angleDiffTolerance = 0.1;
+    const angleDiffTolerance = Math.PI / 40;
     if (
       handPositionLineAngle !== normalizedEntityAngle &&
       Math.abs(
@@ -40,12 +44,29 @@ export default function handleCombatMoveExecution(
     ) {
       const { x, y } = movePointInArc(
         desiredRightHandPosition.pointA,
-        (Math.PI / 80) * numRotations,
-        40
+        angleDiffTolerance + handPositionLineAngle,
+        20
       );
-      numRotations += 1;
+      // numRotations += 1;
       desiredLeftHandPosition.pointA.x = x;
       desiredLeftHandPosition.pointA.y = y;
+      // adjust offhand position
+      const handDistance = distBetweenTwoPoints(
+        desiredRightHandPosition.pointA,
+        desiredLeftHandPosition.pointA
+      );
+      const gripDistance = distBetweenTwoPoints(
+        desiredRightHandPosition.pointB,
+        desiredLeftHandPosition.pointB
+      );
+      if (gripDistance > handDistance) {
+        const { x, y } = movePointTowards(
+          desiredLeftHandPosition.pointB,
+          desiredRightHandPosition.pointB,
+          1
+        );
+        desiredLeftHandPosition.pointB = Vector.create(x, y);
+      }
     }
   }
 }

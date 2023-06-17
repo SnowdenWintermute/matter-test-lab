@@ -40,12 +40,12 @@ export default function render(
       spear.body.position,
       desiredRightHandPosition.pointB
     );
-    drawCircle(context, pointToDraw, 5, "black", false);
+    drawCircle(context, pointToDraw, 5, "rgba(0,0,0,.5)", true);
     pointToDraw = Vector.add(
       spear.body.position,
       desiredLeftHandPosition.pointB
     );
-    drawCircle(context, pointToDraw, 5, "red", false);
+    drawCircle(context, pointToDraw, 5, "rgba(255,0,0,.5)", true);
     drawDebugText(context, entity);
   });
 }
