@@ -5,10 +5,7 @@ import { TestGame } from "./TestGame";
 import { MobileEntity } from "./TestGame/MobileEntity";
 import Matter from "matter-js";
 import useWindowDimensions from "./Hooks/useWindowDimensions";
-import {
-  addCanvasInputListeners,
-  removeCanvasInputListeners,
-} from "./TestGame/canvasInputListeners";
+import { addCanvasInputListeners, removeCanvasInputListeners } from "./TestGame/canvasInputListeners";
 
 export type WidthAndHeight = { width: number; height: number };
 
@@ -38,25 +35,10 @@ export default function Home() {
   }, [setCanvasSize, windowDimensions]);
 
   useEffect(() => {
-    gameRef.current.entities.playerControlled[0] = new MobileEntity(
-      gameRef.current.physicsEngine,
-      0,
-      "player",
-      5,
-      10,
-      {
-        x: canvasSize.width / 2,
-        y: canvasSize.height / 2,
-      }
-    );
-    // Matter.Composite.add(
-    //   gameRef.current.physicsEngine.world,
-    //   playerEntity.rightHandPosition
-    // );
-    // Matter.Composite.add(
-    //   gameRef.current.physicsEngine.world,
-    //   playerEntity.leftHandPosition
-    // );
+    gameRef.current.entities.playerControlled[0] = new MobileEntity(gameRef.current.physicsEngine, 0, "player", 2, 10, {
+      x: canvasSize.width / 2,
+      y: canvasSize.height / 2,
+    });
     gameRef.current.intervals.physics = setTimeout(() => {
       const context = canvasRef.current?.getContext("2d");
       if (!context || !canvasSizeRef.current) return;
@@ -69,15 +51,9 @@ export default function Home() {
   }, [canvasRef, canvasSize.height, canvasSize.width]);
 
   useEffect(() => {
-    if (canvasRef.current)
-      addCanvasInputListeners(document, canvasRef.current, gameRef.current);
+    if (canvasRef.current) addCanvasInputListeners(document, canvasRef.current, gameRef.current);
     return () => {
-      if (canvasRef.current)
-        removeCanvasInputListeners(
-          document,
-          canvasRef.current,
-          gameRef.current
-        );
+      if (canvasRef.current) removeCanvasInputListeners(document, canvasRef.current, gameRef.current);
     };
   }, [canvasRef]);
 

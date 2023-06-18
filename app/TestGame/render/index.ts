@@ -5,21 +5,13 @@ import drawAngleLine from "./drawLine";
 import drawPoly from "./drawPoly";
 import drawDebugText from "./drawDebugText";
 import { MobileEntity } from "../MobileEntity";
+import { angleBetweenPoints, distBetweenTwoPoints, getPointInArc, normalizeRadians } from "@/app/utils";
+import cloneDeep from "lodash.clonedeep";
 
-export default function render(
-  context: CanvasRenderingContext2D,
-  game: TestGame,
-  canvasSize: { width: number; height: number }
-) {
+export default function render(context: CanvasRenderingContext2D, game: TestGame, canvasSize: { width: number; height: number }) {
   context.clearRect(0, 0, canvasSize.width, canvasSize.height);
   Object.values(game.entities.static).forEach((entity) => {
-    drawCircle(
-      context,
-      entity.body.position,
-      entity.body.circleRadius!,
-      "grey",
-      true
-    );
+    drawCircle(context, entity.body.position, entity.body.circleRadius!, "grey", true);
   });
   Object.values(game.entities.playerControlled).forEach((entity) => {
     const { position, angle } = entity.body;
@@ -36,16 +28,15 @@ export default function render(
     drawCircle(context, pointToDraw, 5, "black", false);
     pointToDraw = Vector.add(position, desiredLeftHandPosition.pointA);
     drawCircle(context, pointToDraw, 5, "red", false);
-    pointToDraw = Vector.add(
-      spear.body.position,
-      desiredRightHandPosition.pointB
-    );
+    pointToDraw = Vector.add(spear.body.position, desiredRightHandPosition.pointB);
     drawCircle(context, pointToDraw, 5, "rgba(0,0,0,.5)", true);
-    pointToDraw = Vector.add(
-      spear.body.position,
-      desiredLeftHandPosition.pointB
-    );
+    pointToDraw = Vector.add(spear.body.position, desiredLeftHandPosition.pointB);
+
     drawCircle(context, pointToDraw, 5, "rgba(255,0,0,.5)", true);
+    const lhrp = getPointInArc(position, angle + spear.leftHand.restPositionAngle, spear.leftHand.distanceFromBody);
+    const rhrp = getPointInArc(position, angle + spear.rightHand.restPositionAngle, spear.rightHand.distanceFromBody);
+    drawCircle(context, lhrp, 3, "blue", true);
+    drawCircle(context, rhrp, 3, "orange", true);
     drawDebugText(context, entity);
   });
 }

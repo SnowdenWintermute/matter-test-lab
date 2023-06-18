@@ -1,32 +1,29 @@
-import { distBetweenTwoPoints, normalizeRadians } from "@/app/utils";
+import { angleBetweenPoints, distBetweenTwoPoints, getPointInArc, normalizeRadians } from "@/app/utils";
 import { MobileEntity } from "../MobileEntity";
 import { Vector } from "matter-js";
 
-export default function drawDebugText(
-  context: CanvasRenderingContext2D,
-  entity: MobileEntity
-) {
+export default function drawDebugText(context: CanvasRenderingContext2D, entity: MobileEntity) {
   const { position, angle } = entity.body;
-  const { desiredLeftHandPosition, desiredRightHandPosition } = entity;
+  const { spear } = entity;
   context.fillStyle = "pink";
   context.textAlign = "center";
-  const handPositionLineAngle = normalizeRadians(
-    Math.atan2(
-      desiredLeftHandPosition.pointA.y - desiredRightHandPosition.pointA.y,
-      desiredLeftHandPosition.pointA.x - desiredRightHandPosition.pointA.x
-    )
-  );
   const normalizedAngle = normalizeRadians(angle);
+
+  // const lhrPositionOffset = Vector.add(spear.leftHandRestingPosition, position);
+  // const lhrOffsetDist = distBetweenTwoPoints(lhrPositionOffset, position);
+  // const lhrAngleBaseOffset = angleBetweenPoints(lhrPositionOffset, position);
+  // const normalizedAngleDiff = normalizeRadians(angle) - normalizeRadians(lhrAngleBaseOffset);
+  const lhrp = getPointInArc(position, angle + spear.leftHand.restPositionAngle, spear.leftHand.distanceFromBody);
+  const lhDistToRest = distBetweenTwoPoints(Vector.add(position, entity.desiredLeftHandPosition.pointA), lhrp);
+
   const text = [
-    `Left grip: ${desiredLeftHandPosition.pointB.y}`,
-    `Hand position diff: ${distBetweenTwoPoints(
-      desiredRightHandPosition.pointA,
-      desiredLeftHandPosition.pointA
-    ).toFixed(2)}`,
-    `Grip position diff: ${distBetweenTwoPoints(
-      desiredRightHandPosition.pointB,
-      desiredLeftHandPosition.pointB
-    ).toFixed(2)}`,
+    `lhrp: ${lhrp.x.toFixed(1)}, ${lhrp.y.toFixed(1)}`,
+    `lhDistToRest: ${lhDistToRest.toFixed(1)}`,
+    // `BaseOffset: ${lhrAngleBaseOffset.toFixed(2)}`,
+    // `Normalized baseOffset: ${normalizeRadians(lhrAngleBaseOffset).toFixed(2)}`,
+    // `Normalized diff to offset: ${normalizedAngleDiff.toFixed(2)}`,
+    `Entity angle: ${angle.toFixed(2)}`,
+    `Normalized angle: ${normalizedAngle.toFixed(2)}`,
   ];
   const margin = 18;
   text.forEach((string, i) => {
@@ -35,7 +32,9 @@ export default function drawDebugText(
 }
 
 // `Hand pos angle: ${handPositionLineAngle.toFixed(2)}`,
-// `Entity angle: ${normalizedAngle.toFixed(2)}`,
 // `Diff: ${normalizeRadians(normalizedAngle - handPositionLineAngle).toFixed(
 //   2
 // )}`,
+// `Left grip: ${desiredLeftHandPosition.pointB.y.toFixed(2)}`,
+// `Hand position diff: ${distBetweenTwoPoints(desiredRightHandPosition.pointA, desiredLeftHandPosition.pointA).toFixed(2)}`,
+// `Grip position diff: ${distBetweenTwoPoints(desiredRightHandPosition.pointB, desiredLeftHandPosition.pointB).toFixed(2)}`,
