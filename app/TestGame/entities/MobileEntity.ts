@@ -1,7 +1,8 @@
 import Matter, { Vector } from "matter-js";
-import { Entity } from "./Entity";
 import cloneDeep from "lodash.clonedeep";
-import { distBetweenTwoPoints, getPointInArc } from "../utils";
+import { distBetweenTwoPoints, getPointInArc } from "../../utils";
+import { Entity } from "./Entity";
+import { HandPosition } from "./HandPosition";
 
 export enum CombatMoveExecutionState {
   AT_REST,
@@ -23,18 +24,8 @@ export class MobileEntity extends Entity {
   jumping = false;
   spear: {
     body: Matter.Body;
-    leftHand: {
-      restPosition: Vector;
-      restPositionOffsetFromBody: Vector;
-      restPositionAngle: number;
-      distanceFromBody: number;
-    };
-    rightHand: {
-      restPosition: Vector;
-      restPositionOffsetFromBody: Vector;
-      restPositionAngle: number;
-      distanceFromBody: number;
-    };
+    leftHandRestPosition: HandPosition;
+    rightHandRestPosition: HandPosition;
     leftHandReadyPosition: Vector;
     rightHandReadyPosition: Vector;
   };
@@ -53,8 +44,7 @@ export class MobileEntity extends Entity {
   ) {
     const body = Matter.Bodies.polygon(position.x, position.y, 8, 40);
     body.frictionAir = 0.3;
-    body.mass = 700;
-    // body.angle = -Math.PI / 2;
+    body.mass = 500;
     Matter.Body.setAngle(body, -Math.PI / 2);
     super(id, body, 1, 1, owner, { max: 10, current: 10 });
 
@@ -84,26 +74,27 @@ export class MobileEntity extends Entity {
       body: Matter.Bodies.rectangle(position.x + 25, position.y - 15, 3, 110, {
         isSensor: true,
       }),
-      leftHand: {
-        restPosition: leftHandRestingPosition,
-        restPositionOffsetFromBody: Vector.sub(this.body.position, leftHandRestingPosition),
-        restPositionAngle: leftHandRestingPositionAngle,
-        distanceFromBody: leftHandRestingPositionDistanceFromBody,
-      },
-      rightHand: {
-        restPosition: rightHandRestingPosition,
-        restPositionOffsetFromBody: Vector.sub(this.body.position, rightHandRestingPosition),
-        restPositionAngle: rightHandRestingPositionAngle,
-        distanceFromBody: rightHandRestingPositionDistanceFromBody,
-      },
+      leftHandRestPosition: new HandPosition(
+        leftHandRestingPosition,
+        Vector.sub(this.body.position, leftHandRestingPosition),
+        leftHandRestingPositionAngle,
+        leftHandRestingPositionDistanceFromBody
+      ),
+      rightHandRestPosition: new HandPosition(
+        rightHandRestingPosition,
+        Vector.sub(this.body.position, rightHandRestingPosition),
+        rightHandRestingPositionAngle,
+        rightHandRestingPositionDistanceFromBody
+      ),
       rightHandReadyPosition: Vector.create(-12, 5),
       leftHandReadyPosition: Vector.create(-12, -10),
     };
+    // this.spear.body.mass = 1;
     Matter.Composite.add(engine.world, this.spear.body);
     this.desiredLeftHandPosition = Matter.Constraint.create({
       bodyA: body,
       bodyB: this.spear.body,
-      pointA: cloneDeep(this.spear.leftHand.restPositionOffsetFromBody),
+      pointA: cloneDeep(this.spear.leftHandRestPosition.offset),
       pointB: Vector.create(0, gripDistance / 2 - gripOffset),
       stiffness: 1,
       length: 0,
@@ -111,7 +102,7 @@ export class MobileEntity extends Entity {
     this.desiredRightHandPosition = Matter.Constraint.create({
       bodyA: body,
       bodyB: this.spear.body,
-      pointA: cloneDeep(this.spear.rightHand.restPositionOffsetFromBody),
+      pointA: cloneDeep(this.spear.rightHandRestPosition.offset),
       pointB: Vector.create(0, -gripDistance / 2 - gripOffset),
       stiffness: 1,
       length: 0,

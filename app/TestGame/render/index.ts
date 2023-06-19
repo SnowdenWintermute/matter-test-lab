@@ -4,9 +4,7 @@ import drawCircle from "./drawCircle";
 import drawAngleLine from "./drawLine";
 import drawPoly from "./drawPoly";
 import drawDebugText from "./drawDebugText";
-import { MobileEntity } from "../MobileEntity";
-import { angleBetweenPoints, distBetweenTwoPoints, getPointInArc, normalizeRadians } from "@/app/utils";
-import cloneDeep from "lodash.clonedeep";
+import { getPointInArc } from "@/app/utils";
 
 export default function render(context: CanvasRenderingContext2D, game: TestGame, canvasSize: { width: number; height: number }) {
   context.clearRect(0, 0, canvasSize.width, canvasSize.height);
@@ -33,8 +31,8 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
     pointToDraw = Vector.add(spear.body.position, desiredLeftHandPosition.pointB);
 
     drawCircle(context, pointToDraw, 5, "rgba(255,0,0,.5)", true);
-    const lhrp = getPointInArc(position, angle + spear.leftHand.restPositionAngle, spear.leftHand.distanceFromBody);
-    const rhrp = getPointInArc(position, angle + spear.rightHand.restPositionAngle, spear.rightHand.distanceFromBody);
+    const lhrp = getPointInArc(position, angle + spear.leftHandRestPosition.angle, spear.leftHandRestPosition.distance);
+    const rhrp = getPointInArc(position, angle + spear.rightHandRestPosition.angle, spear.rightHandRestPosition.distance);
     drawCircle(context, lhrp, 3, "blue", true);
     drawCircle(context, rhrp, 3, "orange", true);
     drawDebugText(context, entity);

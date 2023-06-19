@@ -2,8 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
 import { TestGame } from "./TestGame";
-import { MobileEntity } from "./TestGame/MobileEntity";
-import Matter from "matter-js";
+import { MobileEntity } from "./TestGame/entities/MobileEntity";
 import useWindowDimensions from "./Hooks/useWindowDimensions";
 import { addCanvasInputListeners, removeCanvasInputListeners } from "./TestGame/canvasInputListeners";
 

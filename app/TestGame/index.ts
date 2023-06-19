@@ -1,6 +1,6 @@
 import Matter from "matter-js";
-import { MobileEntity } from "./MobileEntity";
-import { Entity } from "./Entity";
+import { MobileEntity } from "./entities/MobileEntity";
+import { Entity } from "./entities/Entity";
 import { CSPlayerInputState } from "./CSInputState";
 import handlePlayerInputs from "./handlePlayerInputs";
 import render from "./render";

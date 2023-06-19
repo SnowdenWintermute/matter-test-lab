@@ -1,5 +1,5 @@
 import { angleBetweenPoints, distBetweenTwoPoints, getPointInArc, normalizeRadians } from "@/app/utils";
-import { MobileEntity } from "../MobileEntity";
+import { MobileEntity } from "../entities/MobileEntity";
 import { Vector } from "matter-js";
 
 export default function drawDebugText(context: CanvasRenderingContext2D, entity: MobileEntity) {
@@ -13,7 +13,7 @@ export default function drawDebugText(context: CanvasRenderingContext2D, entity:
   // const lhrOffsetDist = distBetweenTwoPoints(lhrPositionOffset, position);
   // const lhrAngleBaseOffset = angleBetweenPoints(lhrPositionOffset, position);
   // const normalizedAngleDiff = normalizeRadians(angle) - normalizeRadians(lhrAngleBaseOffset);
-  const lhrp = getPointInArc(position, angle + spear.leftHand.restPositionAngle, spear.leftHand.distanceFromBody);
+  const lhrp = getPointInArc(position, angle + spear.leftHandRestPosition.angle, spear.leftHandRestPosition.distance);
   const lhDistToRest = distBetweenTwoPoints(Vector.add(position, entity.desiredLeftHandPosition.pointA), lhrp);
 
   const text = [

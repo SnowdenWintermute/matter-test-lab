@@ -1,8 +1,9 @@
 import { Vector } from "matter-js";
 import { TestGame } from ".";
-import { CombatMoveExecutionState, MobileEntity } from "./MobileEntity";
+import { CombatMoveExecutionState, MobileEntity } from "./entities/MobileEntity";
 import { distBetweenTwoPoints, getDirectionOfClosestPathToTargetAngle, getPointInArc, movePointTowards, normalizeRadians } from "../utils";
 import adjustGripPosition from "./adjustGripPosition";
+import moveHandTowardRestingPosition from "./moveHandTowardRestingPosition";
 
 export default function handleCombatMoveExecution(game: TestGame, entity: MobileEntity) {
   const { inputState } = game;
@@ -12,15 +13,8 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
   if (!inputState.arrowUp) entity.combatMoveExecutionState = CombatMoveExecutionState.RETURNING_TO_REST;
 
   if (entity.combatMoveExecutionState === CombatMoveExecutionState.RETURNING_TO_REST) {
-    const lhrp = getPointInArc(position, angle + spear.leftHand.restPositionAngle, spear.leftHand.distanceFromBody);
-    const leftHandOffsetFromBody = Vector.add(position, desiredLeftHandPosition.pointA);
-    if (distBetweenTwoPoints(leftHandOffsetFromBody, lhrp) < 1) return;
-    const { x, y } = movePointTowards(leftHandOffsetFromBody, lhrp, 1);
-    entity.desiredLeftHandPosition.pointA.x = x - position.x;
-    entity.desiredLeftHandPosition.pointA.y = y - position.y;
-
-    const rhTargetY = spear.rightHand.restPositionOffsetFromBody.y;
-    if (desiredRightHandPosition.pointA.y > rhTargetY) desiredRightHandPosition.pointA.y -= 1;
+    moveHandTowardRestingPosition(entity, entity.desiredLeftHandPosition, entity.spear.leftHandRestPosition);
+    moveHandTowardRestingPosition(entity, entity.desiredRightHandPosition, entity.spear.rightHandRestPosition);
     adjustGripPosition(desiredRightHandPosition, desiredLeftHandPosition);
   }
 
@@ -37,7 +31,7 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
     desiredLeftHandPosition.pointA.x = x;
     desiredLeftHandPosition.pointA.y = y;
 
-    const rhTargetY = spear.rightHand.restPositionOffsetFromBody.y + 10;
+    const rhTargetY = spear.rightHandRestPosition.offset.y + 10;
     if (desiredRightHandPosition.pointA.y < rhTargetY) desiredRightHandPosition.pointA.y += 1;
 
     // adjust offhand positionnewLeftHandPointB
