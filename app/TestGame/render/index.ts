@@ -26,15 +26,19 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
     drawCircle(context, pointToDraw, 5, "black", false);
     pointToDraw = Vector.add(position, desiredLeftHandPosition.pointA);
     drawCircle(context, pointToDraw, 5, "red", false);
-    pointToDraw = Vector.add(spear.body.position, desiredRightHandPosition.pointB);
-    drawCircle(context, pointToDraw, 5, "rgba(0,0,0,.5)", true);
-    pointToDraw = Vector.add(spear.body.position, desiredLeftHandPosition.pointB);
+    // pointToDraw = Vector.add(spear.body.position, desiredRightHandPosition.pointB);
+    // drawCircle(context, pointToDraw, 5, "rgba(0,0,0,.5)", true);
+    // pointToDraw = Vector.add(spear.body.position, desiredLeftHandPosition.pointB);
 
-    drawCircle(context, pointToDraw, 5, "rgba(255,0,0,.5)", true);
-    const lhrp = getPointInArc(position, angle + spear.leftHandRestPosition.angle, spear.leftHandRestPosition.distance);
-    const rhrp = getPointInArc(position, angle + spear.rightHandRestPosition.angle, spear.rightHandRestPosition.distance);
-    drawCircle(context, lhrp, 3, "blue", true);
-    drawCircle(context, rhrp, 3, "orange", true);
-    drawDebugText(context, entity);
+    // drawCircle(context, pointToDraw, 5, "rgba(255,0,0,.5)", true);
+    // const lhrp = getPointInArc(position, angle + spear.leftHandRestPosition.angle, spear.leftHandRestPosition.distance);
+    // const rhrp = getPointInArc(position, angle + spear.rightHandRestPosition.angle, spear.rightHandRestPosition.distance);
+    // drawCircle(context, lhrp, 3, "blue", true);
+    // drawCircle(context, rhrp, 3, "orange", true);
+    // const lhrdp = getPointInArc(position, angle + spear.leftHandReadyPosition.angle, spear.leftHandReadyPosition.distance);
+    // const rhrdp = getPointInArc(position, angle + spear.rightHandReadyPosition.angle, spear.rightHandReadyPosition.distance);
+    // drawCircle(context, lhrdp, 3, "cyan", true);
+    // drawCircle(context, rhrdp, 3, "yellow", true);
+    // drawDebugText(context, entity);
   });
 }
