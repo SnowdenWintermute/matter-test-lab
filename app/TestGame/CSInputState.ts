@@ -13,4 +13,5 @@ export class CSPlayerInputState {
   public arrowDown?: boolean;
   public arrowLeft?: boolean;
   public arrowRight?: boolean;
+  public shift?: boolean;
 }

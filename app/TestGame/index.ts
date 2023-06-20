@@ -20,6 +20,7 @@ export class TestGame {
   } = { physics: undefined, render: undefined };
   entities = new CSEntities();
   inputState = new CSPlayerInputState();
+  prevInputState = new CSPlayerInputState();
   mouseState = new MouseState();
   renderRate = 33;
   constructor() {

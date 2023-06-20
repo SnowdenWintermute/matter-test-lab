@@ -8,11 +8,7 @@ function handleMouseMove(e: MouseEvent, game: TestGame) {
   game.mouseState.position.y = e.clientY;
 }
 
-export function setInputs(
-  e: KeyboardEvent,
-  inputs: CSPlayerInputState,
-  active: boolean
-) {
+export function setInputs(e: KeyboardEvent, inputs: CSPlayerInputState, active: boolean) {
   const { code } = e;
   if (code === "KeyW") inputs.up = active;
   if (code === "KeyS") inputs.down = active;
@@ -25,32 +21,17 @@ export function setInputs(
   if (code === "ArrowDown") inputs.arrowDown = active;
   if (code === "ArrowLeft") inputs.arrowLeft = active;
   if (code === "ArrowRight") inputs.arrowRight = active;
+  if (code === "ShiftLeft") inputs.shift = active;
 }
 
-export function addCanvasInputListeners(
-  document: Document,
-  canvas: HTMLCanvasElement,
-  game: TestGame
-) {
-  document.addEventListener("keydown", (e) =>
-    setInputs(e, game.inputState, true)
-  );
-  document.addEventListener("keyup", (e) =>
-    setInputs(e, game.inputState, false)
-  );
+export function addCanvasInputListeners(document: Document, canvas: HTMLCanvasElement, game: TestGame) {
+  document.addEventListener("keydown", (e) => setInputs(e, game.inputState, true));
+  document.addEventListener("keyup", (e) => setInputs(e, game.inputState, false));
   canvas.addEventListener("mousemove", (e) => handleMouseMove(e, game));
 }
 
-export function removeCanvasInputListeners(
-  document: Document,
-  canvas: HTMLCanvasElement,
-  game: TestGame
-) {
-  document.removeEventListener("keydown", (e) =>
-    setInputs(e, game.inputState, true)
-  );
-  document.removeEventListener("keyup", (e) =>
-    setInputs(e, game.inputState, false)
-  );
+export function removeCanvasInputListeners(document: Document, canvas: HTMLCanvasElement, game: TestGame) {
+  document.removeEventListener("keydown", (e) => setInputs(e, game.inputState, true));
+  document.removeEventListener("keyup", (e) => setInputs(e, game.inputState, false));
   canvas.removeEventListener("mousemove", (e) => handleMouseMove(e, game));
 }

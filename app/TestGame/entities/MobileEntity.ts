@@ -4,6 +4,11 @@ import { angleBetweenPoints, distBetweenTwoPoints, getPointInArc } from "../../u
 import { Entity } from "./Entity";
 import { HandPosition } from "./HandPosition";
 
+export enum EntityStance {
+  AT_EASE,
+  COMBAT_READY,
+}
+
 export enum CombatMoveExecutionState {
   AT_REST,
   READYING,
@@ -18,7 +23,7 @@ export class MobileEntity extends Entity {
   reverseAccelerationModifier = 0.4;
   sidewaysAccelerationModifier = 0.6;
   topSpeed: number = 10;
-  turningSpeed = Math.PI / 12;
+  turningSpeed = 0.12;
   jumpHeight = 20;
   jumpStrength = 1;
   handSpeed = 2;
@@ -32,6 +37,7 @@ export class MobileEntity extends Entity {
   };
   desiredRightHandPosition: Matter.Constraint;
   desiredLeftHandPosition: Matter.Constraint;
+  stance = EntityStance.AT_EASE;
   combatMoveExecutionState = CombatMoveExecutionState.AT_REST;
   constructor(
     engine: Matter.Engine,

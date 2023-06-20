@@ -34,6 +34,7 @@ export default function Home() {
   }, [setCanvasSize, windowDimensions]);
 
   useEffect(() => {
+    const gameRefCurrent = gameRef.current;
     gameRef.current.entities.playerControlled[0] = new MobileEntity(gameRef.current.physicsEngine, 0, "player", 2, 10, {
       x: canvasSize.width / 2,
       y: canvasSize.height / 2,
@@ -45,14 +46,16 @@ export default function Home() {
     });
 
     return () => {
-      gameRef.current.clearPhysicsInterval();
+      gameRefCurrent.clearPhysicsInterval();
     };
   }, [canvasRef, canvasSize.height, canvasSize.width]);
 
   useEffect(() => {
+    const canvasRefCurrent = canvasRef.current;
+    const gameRefCurrent = gameRef.current;
     if (canvasRef.current) addCanvasInputListeners(document, canvasRef.current, gameRef.current);
     return () => {
-      if (canvasRef.current) removeCanvasInputListeners(document, canvasRef.current, gameRef.current);
+      if (canvasRefCurrent) removeCanvasInputListeners(document, canvasRefCurrent, gameRefCurrent);
     };
   }, [canvasRef]);
 
