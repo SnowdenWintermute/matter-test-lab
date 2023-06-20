@@ -14,4 +14,13 @@ export default function adjustGripPosition(rightHand: Constraint, leftHand: Cons
     leftHand.pointB.x = x;
     leftHand.pointB.y = y;
   }
+  if (gripDistance > handDistance) {
+    const { x, y } = movePointTowards(rightHand.pointB, leftHand.pointB, 1);
+    rightHand.pointB.x = x;
+    rightHand.pointB.y = y;
+  } else if (gripDistance < handDistance) {
+    const { x, y } = movePointAway(rightHand.pointB, leftHand.pointB, 1);
+    rightHand.pointB.x = x;
+    rightHand.pointB.y = y;
+  }
 }

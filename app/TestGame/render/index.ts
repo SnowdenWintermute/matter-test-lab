@@ -26,6 +26,9 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
     drawCircle(context, pointToDraw, 5, "black", false);
     pointToDraw = Vector.add(position, desiredLeftHandPosition.pointA);
     drawCircle(context, pointToDraw, 5, "red", false);
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+    context.fillText("L", desiredLeftHandPosition.pointA.x + position.x, desiredLeftHandPosition.pointA.y + position.y);
     // pointToDraw = Vector.add(spear.body.position, desiredRightHandPosition.pointB);
     // drawCircle(context, pointToDraw, 5, "rgba(0,0,0,.5)", true);
     // pointToDraw = Vector.add(spear.body.position, desiredLeftHandPosition.pointB);
