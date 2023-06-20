@@ -1,19 +1,12 @@
-import { Body } from "matter-js";
-import { PointRelativeToBody } from "./PointRelativeToBody";
+import { Body, Vector } from "matter-js";
+import { DistanceAndAngle } from "../common-classes";
 
 export enum HoldableType {
   SPEAR,
 }
 
 export class HoldablePosition {
-  leftHand?: {
-    upperGripPoint: PointRelativeToBody;
-    lowerGripPoint: PointRelativeToBody;
-  };
-  rightHand?: {
-    upperGripPoint: PointRelativeToBody;
-    lowerGripPoint: PointRelativeToBody;
-  };
+  constructor(public mainHand?: Vector | DistanceAndAngle, public offHand?: Vector | DistanceAndAngle) {}
 }
 
 export type HoldablePositionOptions = {

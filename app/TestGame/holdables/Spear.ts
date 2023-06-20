@@ -1,25 +1,28 @@
 import Matter, { Vector } from "matter-js";
-import { Holdable, HoldableType } from "./Holdable";
+import { Holdable, HoldablePosition, HoldableType } from "./Holdable";
 import { getPointInArc } from "@/app/utils";
 import { MobileEntity } from "../entities/MobileEntity";
 import { PointRelativeToBody } from "./PointRelativeToBody";
+import { DistanceAndAngle } from "../common-classes";
 
 export class Spear extends Holdable {
+  positionOptions: {
+    rest: HoldablePosition;
+    ready: HoldablePosition;
+  };
   constructor(position: Vector) {
     const body = Matter.Bodies.rectangle(position.x + 25, position.y - 15, 3, 110, {
       isSensor: true,
     });
-
-    const leftHandRestingPositionAngle = (Math.PI / 4) * -1;
-    const leftHandRestingPositionDistanceFromBody = 20;
-    const leftHandRestingPosition = (entity: MobileEntity) =>
-      getPointInArc(entity.body.position, entity.body.angle + Math.PI + leftHandRestingPositionAngle, leftHandRestingPositionDistanceFromBody);
-    // const leftHandConstraintLocation = new PointRelativeToBody()
-    const rightHandRestingPositionAngle = Math.PI / 2;
-    const rightHandRestingPositionDistanceFromBody = 18;
-    const rightHandRestingPosition = (entity: MobileEntity) =>
-      getPointInArc(entity.body.position, entity.body.angle + Math.PI + rightHandRestingPositionAngle, rightHandRestingPositionDistanceFromBody);
+    const restMainHandGripPointCreationData = new DistanceAndAngle(18, Math.PI / 2);
+    const restOffHandGripPointCreationData = new DistanceAndAngle(20, (Math.PI / 4) * -1);
+    const readyMainHandGripPointCreationData = Vector.create(-12, 10);
+    const readyOffHandGripPointCreationData = Vector.create(12, 10);
     super(1, HoldableType.SPEAR, body, {});
+    this.positionOptions = {
+      rest: new HoldablePosition(restMainHandGripPointCreationData, restOffHandGripPointCreationData),
+      ready: new HoldablePosition(readyMainHandGripPointCreationData, readyOffHandGripPointCreationData),
+    };
   }
   // Rest
   // Ready

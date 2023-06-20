@@ -1,9 +1,6 @@
 import { angleBetweenPoints, distBetweenTwoPoints, getPointInArc } from "@/app/utils";
 import { Body, Vector } from "matter-js";
-
-class DistanceAndAngle {
-  constructor(public distance: number, public angle: number) {}
-}
+import { DistanceAndAngle } from "../common-classes";
 
 export class PointRelativeToBody {
   worldPosition: Vector;
