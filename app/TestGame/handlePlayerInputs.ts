@@ -8,6 +8,7 @@ import { EntityStance } from "./entities/MobileEntity";
 export default function handlePlayerInputs(game: TestGame) {
   const { entities } = game;
   const playerEntity = entities.playerControlled[0];
+  if (!playerEntity) return console.log("no player entity");
   if (game.inputState.shift && !game.prevInputState.shift) {
     if (playerEntity.stance === EntityStance.AT_EASE) playerEntity.stance = EntityStance.COMBAT_READY;
     else if (playerEntity.stance === EntityStance.COMBAT_READY) playerEntity.stance = EntityStance.AT_EASE;

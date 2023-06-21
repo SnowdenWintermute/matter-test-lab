@@ -18,17 +18,17 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
     drawAngleLine(context, position, angle, 4, 40, "#a52026");
     drawAngleLine(context, position, targetAngle, 4, 40, "#028a7e");
 
-    const { spear } = entity;
-    drawPoly(context, spear.body.vertices, "white");
-    const { desiredRightHandPosition, desiredLeftHandPosition } = entity;
-    context.lineWidth = 2;
-    let pointToDraw = Vector.add(position, desiredRightHandPosition.pointA);
-    drawCircle(context, pointToDraw, 5, "black", false);
-    pointToDraw = Vector.add(position, desiredLeftHandPosition.pointA);
-    drawCircle(context, pointToDraw, 5, "red", false);
-    context.textAlign = "center";
-    context.textBaseline = "middle";
-    context.fillText("L", desiredLeftHandPosition.pointA.x + position.x, desiredLeftHandPosition.pointA.y + position.y);
+    // const { spear } = entity;
+    // drawPoly(context, spear.body.vertices, "white");
+    // const { desiredRightHandPosition, desiredLeftHandPosition } = entity;
+    // context.lineWidth = 2;
+    // let pointToDraw = Vector.add(position, desiredRightHandPosition.pointA);
+    // drawCircle(context, pointToDraw, 5, "black", false);
+    // pointToDraw = Vector.add(position, desiredLeftHandPosition.pointA);
+    // drawCircle(context, pointToDraw, 5, "red", false);
+    // context.textAlign = "center";
+    // context.textBaseline = "middle";
+    // context.fillText("L", desiredLeftHandPosition.pointA.x + position.x, desiredLeftHandPosition.pointA.y + position.y);
     // pointToDraw = Vector.add(spear.body.position, desiredRightHandPosition.pointB);
     // drawCircle(context, pointToDraw, 5, "rgba(0,0,0,.5)", true);
     // pointToDraw = Vector.add(spear.body.position, desiredLeftHandPosition.pointB);

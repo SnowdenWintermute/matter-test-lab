@@ -1,8 +1,5 @@
 import Matter, { Vector } from "matter-js";
 import { Holdable, HoldablePosition, HoldableType } from "./Holdable";
-import { getPointInArc } from "@/app/utils";
-import { MobileEntity } from "../entities/MobileEntity";
-import { PointRelativeToBody } from "./PointRelativeToBody";
 import { DistanceAndAngle } from "../common-classes";
 
 export class Spear extends Holdable {
@@ -10,18 +7,21 @@ export class Spear extends Holdable {
     rest: HoldablePosition;
     ready: HoldablePosition;
   };
+
   constructor(position: Vector) {
     const body = Matter.Bodies.rectangle(position.x + 25, position.y - 15, 3, 110, {
       isSensor: true,
     });
-    const restMainHandGripPointCreationData = new DistanceAndAngle(18, Math.PI / 2);
-    const restOffHandGripPointCreationData = new DistanceAndAngle(20, (Math.PI / 4) * -1);
-    const readyMainHandGripPointCreationData = Vector.create(-12, 10);
-    const readyOffHandGripPointCreationData = Vector.create(12, 10);
-    super(1, HoldableType.SPEAR, body, {});
+    const restGripACreationData = new DistanceAndAngle(18, Math.PI / 2);
+    const restGripBCreationData = new DistanceAndAngle(20, (Math.PI / 4) * -1);
+    const restGripOffset = 25;
+    const readyGripACreationData = Vector.create(-12, 10);
+    const readyGripBCreationData = Vector.create(12, 10);
+
+    super(1, body, HoldableType.SPEAR, true, {});
     this.positionOptions = {
-      rest: new HoldablePosition(restMainHandGripPointCreationData, restOffHandGripPointCreationData),
-      ready: new HoldablePosition(readyMainHandGripPointCreationData, readyOffHandGripPointCreationData),
+      rest: new HoldablePosition(restGripACreationData, restGripBCreationData, restGripOffset),
+      ready: new HoldablePosition(readyGripACreationData, readyGripBCreationData),
     };
   }
   // Rest

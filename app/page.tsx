@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
 import { TestGame } from "./TestGame";
-import { MobileEntity } from "./TestGame/entities/MobileEntity";
 import useWindowDimensions from "./Hooks/useWindowDimensions";
 import { addCanvasInputListeners, removeCanvasInputListeners } from "./TestGame/canvasInputListeners";
 
@@ -35,10 +34,7 @@ export default function Home() {
 
   useEffect(() => {
     const gameRefCurrent = gameRef.current;
-    gameRef.current.entities.playerControlled[0] = new MobileEntity(gameRef.current.physicsEngine, 0, "player", 2, 10, {
-      x: canvasSize.width / 2,
-      y: canvasSize.height / 2,
-    });
+    gameRef.current.canvasSize = { width: canvasSize.width, height: canvasSize.height };
     gameRef.current.intervals.physics = setTimeout(() => {
       const context = canvasRef.current?.getContext("2d");
       if (!context || !canvasSizeRef.current) return;

@@ -5,12 +5,12 @@ export class Entity {
   body: Matter.Body;
   height: number;
   z: number;
-  owner: string;
+  owner: string | undefined;
   hp: {
     max: number;
     current: number;
   };
-  constructor(id: number, body: Matter.Body, height: number, z: number, owner: string, hp: { max: number; current: number }) {
+  constructor(id: number, body: Matter.Body, height: number, z: number, hp: { max: number; current: number }, owner?: string) {
     this.id = id;
     this.body = body;
     this.height = height;

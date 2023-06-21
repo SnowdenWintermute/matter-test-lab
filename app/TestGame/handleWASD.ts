@@ -21,6 +21,7 @@ function calculateDirectionalForce(angle: number, direction: DIRECTION, magnitud
 export default function handleWASD(game: TestGame) {
   const { inputState, entities, mouseState } = game;
   const playerEntity = entities.playerControlled[0];
+  if (!playerEntity) return console.log("no player entity found");
   if (mouseState.position && distBetweenTwoPoints(mouseState.position, playerEntity.body.position) < 10) return;
   const { body, acceleration, sidewaysAccelerationModifier, reverseAccelerationModifier } = playerEntity;
   const { angle } = body;

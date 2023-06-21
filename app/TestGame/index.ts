@@ -1,15 +1,18 @@
-import Matter from "matter-js";
+import Matter, { Vector } from "matter-js";
 import { MobileEntity } from "./entities/MobileEntity";
 import { Entity } from "./entities/Entity";
 import { CSPlayerInputState } from "./CSInputState";
 import handlePlayerInputs from "./handlePlayerInputs";
 import render from "./render";
 import { MouseState } from "./MouseState";
+import { Holdable } from "./holdables/Holdable";
 
 export class CSEntities {
+  lastIdAssigned = -1;
   playerControlled: { [id: number]: MobileEntity } = {};
   mobile: { [id: number]: MobileEntity } = {};
   static: { [id: number]: Entity } = {};
+  holdable: { [id: number]: Holdable } = {};
 }
 
 export class TestGame {
@@ -18,6 +21,7 @@ export class TestGame {
     physics: NodeJS.Timeout | undefined;
     render: NodeJS.Timeout | undefined;
   } = { physics: undefined, render: undefined };
+  canvasSize = { height: 1920, width: 1080 };
   entities = new CSEntities();
   inputState = new CSPlayerInputState();
   prevInputState = new CSPlayerInputState();
@@ -38,6 +42,23 @@ export class TestGame {
     //   });
     //   Matter.Composite.add(this.physicsEngine.world, body);
     // }
+    this.createRegisteredPlayerEntity({
+      x: 100,
+      y: 100,
+    });
+  }
+
+  createRegisteredPlayerEntity(position: Vector) {
+    this.entities.lastIdAssigned += 1;
+    const id = this.entities.lastIdAssigned;
+    const body = Matter.Bodies.polygon(position.x, position.y, 8, 40);
+    body.frictionAir = 0.3;
+    body.mass = 500;
+    const startingAngle = -Math.PI / 2;
+    Matter.Body.setAngle(body, startingAngle);
+    Matter.Composite.add(this.physicsEngine.world, body);
+    this.entities.playerControlled[id] = new MobileEntity(id, body, "player", 2, 10);
+    return this.entities.playerControlled[id];
   }
 
   clearPhysicsInterval() {
