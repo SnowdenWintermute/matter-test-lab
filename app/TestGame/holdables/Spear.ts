@@ -14,7 +14,7 @@ export class Spear extends Holdable {
     });
     const restGripACreationData = new DistanceAndAngle(18, Math.PI / 2);
     const restGripBCreationData = new DistanceAndAngle(20, (Math.PI / 4) * -1);
-    const restGripOffset = 25;
+    const restGripOffset = -25;
     const readyGripACreationData = Vector.create(-12, 10);
     const readyGripBCreationData = Vector.create(12, 10);
 

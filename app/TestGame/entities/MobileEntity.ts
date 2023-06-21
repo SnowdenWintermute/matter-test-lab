@@ -73,12 +73,14 @@ export class MobileEntity extends Entity {
       const bodyGripPositionA = new PointRelativeToBody(holdable.positionOptions.rest.gripA, this.body);
       const bodyGripPositionB = new PointRelativeToBody(holdable.positionOptions.rest.gripB, this.body);
       const gripDistance = distBetweenTwoPoints(bodyGripPositionA.offsetFromBody, bodyGripPositionB.offsetFromBody);
+      console.log(gripDistance, gripDistance / 2, -gripDistance / 2, holdable.positionOptions.rest.gripOffset);
+      console.log(gripDistance / 2 + (holdable.positionOptions.rest.gripOffset || 0), -gripDistance / 2 - (holdable.positionOptions.rest.gripOffset || 0));
       holdable.grips.a = createGripPosition(
         this.engine,
         this.body,
         holdable,
         bodyGripPositionA.offsetFromBody,
-        gripDistance / 2 - (holdable.positionOptions.rest.gripOffset || 0)
+        -gripDistance / 2 + (holdable.positionOptions.rest.gripOffset || 0)
       );
       holdable.grips.b = createGripPosition(
         this.engine,
