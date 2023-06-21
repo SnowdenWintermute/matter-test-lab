@@ -1,11 +1,8 @@
 import Matter, { Body, Vector } from "matter-js";
-import cloneDeep from "lodash.clonedeep";
-import { angleBetweenPoints, distBetweenTwoPoints, getPointInArc } from "../../utils";
+import { distBetweenTwoPoints } from "../../utils";
 import { Entity } from "./Entity";
 import { Holdable } from "../holdables/Holdable";
-import { DistanceAndAngle } from "../common-classes";
 import { PointRelativeToBody } from "../holdables/PointRelativeToBody";
-import { Spear } from "../holdables/Spear";
 
 export enum EntityStance {
   AT_EASE,
@@ -20,8 +17,8 @@ export enum CombatMoveExecutionState {
   RETURNING_TO_REST,
 }
 
-function createGripPosition(body: Body, holdable: Holdable, gripPositionBodyOffset: Vector, holdableOffset?: number) {
-  return Matter.Constraint.create({
+function createGripPosition(engine: Matter.Engine, body: Body, holdable: Holdable, gripPositionBodyOffset: Vector, holdableOffset?: number) {
+  const gripPosition = Matter.Constraint.create({
     bodyA: body,
     bodyB: holdable.body,
     pointA: gripPositionBodyOffset,
@@ -29,6 +26,8 @@ function createGripPosition(body: Body, holdable: Holdable, gripPositionBodyOffs
     stiffness: 1,
     length: 0,
   });
+  Matter.Composite.add(engine.world, gripPosition);
+  return gripPosition;
 }
 
 export class MobileEntity extends Entity {
@@ -46,14 +45,21 @@ export class MobileEntity extends Entity {
   equippedHoldables: { rightHand: Holdable | null; leftHand: Holdable | null } = { rightHand: null, leftHand: null };
   stance = EntityStance.AT_EASE;
   combatMoveExecutionState = CombatMoveExecutionState.AT_REST;
-  constructor(id: number, body: Body, owner: string, acceleration: number, topSpeed: number, turningSpeed?: number, jumpHeight?: number) {
+  constructor(
+    id: number,
+    public engine: Matter.Engine,
+    body: Body,
+    owner: string,
+    acceleration: number,
+    topSpeed: number,
+    turningSpeed?: number,
+    jumpHeight?: number
+  ) {
     super(id, body, 1, 1, { max: 10, current: 10 }, owner);
     this.acceleration = acceleration;
     this.topSpeed = topSpeed;
     if (turningSpeed) this.turningSpeed = turningSpeed;
     if (jumpHeight) this.jumpHeight = jumpHeight;
-    const spear = new Spear(this.body.position);
-    this.equipHoldable(spear);
   }
 
   equipHoldable(holdable: Holdable) {
@@ -63,20 +69,22 @@ export class MobileEntity extends Entity {
     } else if (this.mainHand === "Left") this.equippedHoldables.leftHand = holdable;
     else this.equippedHoldables.rightHand = holdable;
 
-    if (holdable.positionOptions.rest?.gripACreationData) {
-      const bodyGripPointPositionA = new PointRelativeToBody(holdable.positionOptions.rest.gripACreationData, this.body);
-      const bodyGripPointPositionB = new PointRelativeToBody(holdable.positionOptions.rest.gripBCreationData, this.body);
-      const gripDistance = distBetweenTwoPoints(bodyGripPointPositionA.offsetFromBody, bodyGripPointPositionB.offsetFromBody);
-      holdable.gripPositionA = createGripPosition(
+    if (holdable.positionOptions.rest) {
+      const bodyGripPositionA = new PointRelativeToBody(holdable.positionOptions.rest.gripA, this.body);
+      const bodyGripPositionB = new PointRelativeToBody(holdable.positionOptions.rest.gripB, this.body);
+      const gripDistance = distBetweenTwoPoints(bodyGripPositionA.offsetFromBody, bodyGripPositionB.offsetFromBody);
+      holdable.grips.a = createGripPosition(
+        this.engine,
         this.body,
         holdable,
-        bodyGripPointPositionA.offsetFromBody,
+        bodyGripPositionA.offsetFromBody,
         gripDistance / 2 - (holdable.positionOptions.rest.gripOffset || 0)
       );
-      holdable.gripPositionB = createGripPosition(
+      holdable.grips.b = createGripPosition(
+        this.engine,
         this.body,
         holdable,
-        bodyGripPointPositionB.offsetFromBody,
+        bodyGripPositionB.offsetFromBody,
         gripDistance / 2 + (holdable.positionOptions.rest.gripOffset || 0)
       );
     }

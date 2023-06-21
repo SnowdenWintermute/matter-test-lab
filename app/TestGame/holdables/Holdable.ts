@@ -6,19 +6,19 @@ export enum HoldableType {
   SPEAR,
 }
 
-export class HoldablePosition {
-  constructor(public gripACreationData: Vector | DistanceAndAngle, public gripBCreationData: Vector | DistanceAndAngle, public gripOffset?: number) {}
+export class HoldableGripCreationData {
+  constructor(public gripA: Vector | DistanceAndAngle, public gripB: Vector | DistanceAndAngle, public gripOffset?: number) {}
 }
 
 export type HoldablePositionOptions = {
-  rest?: HoldablePosition;
-  ready?: HoldablePosition;
-  forwardStrike?: HoldablePosition;
-  leftStrike?: HoldablePosition;
-  rightStrike?: HoldablePosition;
-  leftGuard?: HoldablePosition;
-  rightGuard?: HoldablePosition;
-  centerGuard?: HoldablePosition;
+  rest?: HoldableGripCreationData;
+  ready?: HoldableGripCreationData;
+  forwardStrike?: HoldableGripCreationData;
+  leftStrike?: HoldableGripCreationData;
+  rightStrike?: HoldableGripCreationData;
+  leftGuard?: HoldableGripCreationData;
+  rightGuard?: HoldableGripCreationData;
+  centerGuard?: HoldableGripCreationData;
 };
 
 export abstract class Holdable extends Entity {
@@ -28,8 +28,10 @@ export abstract class Holdable extends Entity {
     public type: HoldableType,
     public requiresTwoHands: boolean,
     public positionOptions: HoldablePositionOptions,
-    public gripPositionA: Matter.Constraint | null = null,
-    public gripPositionB: Matter.Constraint | null = null
+    public grips: {
+      a: Matter.Constraint | null;
+      b: Matter.Constraint | null;
+    } = { a: null, b: null }
   ) {
     super(id, body, 1, 0, { max: 10, current: 10 });
   }

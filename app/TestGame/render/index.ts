@@ -18,8 +18,9 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
     drawAngleLine(context, position, angle, 4, 40, "#a52026");
     drawAngleLine(context, position, targetAngle, 4, 40, "#028a7e");
 
-    // const { spear } = entity;
-    // drawPoly(context, spear.body.vertices, "white");
+    const spear = entity.equippedHoldables.rightHand;
+    if (!spear) return;
+    drawPoly(context, spear.body.vertices, "white");
     // const { desiredRightHandPosition, desiredLeftHandPosition } = entity;
     // context.lineWidth = 2;
     // let pointToDraw = Vector.add(position, desiredRightHandPosition.pointA);

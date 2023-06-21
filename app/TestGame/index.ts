@@ -5,7 +5,8 @@ import { CSPlayerInputState } from "./CSInputState";
 import handlePlayerInputs from "./handlePlayerInputs";
 import render from "./render";
 import { MouseState } from "./MouseState";
-import { Holdable } from "./holdables/Holdable";
+import { Holdable, HoldableType } from "./holdables/Holdable";
+import { Spear } from "./holdables/Spear";
 
 export class CSEntities {
   lastIdAssigned = -1;
@@ -42,10 +43,12 @@ export class TestGame {
     //   });
     //   Matter.Composite.add(this.physicsEngine.world, body);
     // }
-    this.createRegisteredPlayerEntity({
-      x: 100,
-      y: 100,
+    const playerEntity = this.createRegisteredPlayerEntity({
+      x: 250,
+      y: 250,
     });
+    const spear = this.createRegisteredHoldable(HoldableType.SPEAR, playerEntity.body.position);
+    playerEntity.equipHoldable(spear);
   }
 
   createRegisteredPlayerEntity(position: Vector) {
@@ -57,8 +60,17 @@ export class TestGame {
     const startingAngle = -Math.PI / 2;
     Matter.Body.setAngle(body, startingAngle);
     Matter.Composite.add(this.physicsEngine.world, body);
-    this.entities.playerControlled[id] = new MobileEntity(id, body, "player", 2, 10);
+    this.entities.playerControlled[id] = new MobileEntity(id, this.physicsEngine, body, "player", 2, 10);
     return this.entities.playerControlled[id];
+  }
+
+  createRegisteredHoldable(type: HoldableType, position: Vector) {
+    this.entities.lastIdAssigned += 1;
+    const id = this.entities.lastIdAssigned;
+    const holdable = new Spear(position);
+    this.entities.holdable[id] = holdable;
+    Matter.Composite.add(this.physicsEngine.world, holdable.body);
+    return holdable;
   }
 
   clearPhysicsInterval() {

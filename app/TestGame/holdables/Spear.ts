@@ -1,11 +1,11 @@
 import Matter, { Vector } from "matter-js";
-import { Holdable, HoldablePosition, HoldableType } from "./Holdable";
+import { Holdable, HoldableGripCreationData, HoldableType } from "./Holdable";
 import { DistanceAndAngle } from "../common-classes";
 
 export class Spear extends Holdable {
   positionOptions: {
-    rest: HoldablePosition;
-    ready: HoldablePosition;
+    rest: HoldableGripCreationData;
+    ready: HoldableGripCreationData;
   };
 
   constructor(position: Vector) {
@@ -20,8 +20,8 @@ export class Spear extends Holdable {
 
     super(1, body, HoldableType.SPEAR, true, {});
     this.positionOptions = {
-      rest: new HoldablePosition(restGripACreationData, restGripBCreationData, restGripOffset),
-      ready: new HoldablePosition(readyGripACreationData, readyGripBCreationData),
+      rest: new HoldableGripCreationData(restGripACreationData, restGripBCreationData, restGripOffset),
+      ready: new HoldableGripCreationData(readyGripACreationData, readyGripBCreationData),
     };
   }
   // Rest
