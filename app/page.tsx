@@ -63,8 +63,7 @@ export default function Home() {
         id="canvas"
         className={styles.canvas}
         ref={canvasRef}
-        // onKeyDown={(e) => setInputs(e, gameRef.current.inputState, true)}
-        // onKeyUp={(e) => setInputs(e, gameRef.current.inputState, false)}
+        onContextMenu={(e) => e.preventDefault()}
       />
     </main>
   );

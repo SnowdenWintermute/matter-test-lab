@@ -7,7 +7,7 @@ import { MobileEntity } from "../entities/MobileEntity";
 export default function drawGrips(context: CanvasRenderingContext2D, holdable: Holdable, entity: MobileEntity) {
   const { position } = entity.body;
   drawPoly(context, holdable.body.vertices, "white");
-  drawCircle(context, holdable.body.position, 3, "black", true);
+  drawCircle(context, holdable.body.position, 1, "black", true);
   const { grips } = holdable;
   context.lineWidth = 2;
   let pointToDraw;

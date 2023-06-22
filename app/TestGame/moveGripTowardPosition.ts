@@ -18,6 +18,7 @@ export default function moveGripTowardPosition(
   if (distanceToDestination < speed) {
     currentPosition.pointA.x = targetPosition.worldPosition.x - position.x;
     currentPosition.pointA.y = targetPosition.worldPosition.y - position.y;
+    return true;
   } else {
     const { x, y } = movePointTowards(currentWorldPosition, targetPosition.worldPosition, speed);
     currentPosition.pointA.x = x - position.x;

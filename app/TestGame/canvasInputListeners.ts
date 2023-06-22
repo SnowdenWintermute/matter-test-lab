@@ -8,6 +8,18 @@ function handleMouseMove(e: MouseEvent, game: TestGame) {
   game.mouseState.position.y = e.clientY;
 }
 
+function handleMouseDown(e: MouseEvent, game: TestGame) {
+  e.preventDefault();
+  console.log(e.button);
+  if (e.button === 0) game.inputState.mouseLeft = true;
+}
+
+function handleMouseUp(e: MouseEvent, game: TestGame) {
+  e.preventDefault();
+  console.log(e.button);
+  if (e.button === 0) game.inputState.mouseLeft = false;
+}
+
 export function setInputs(e: KeyboardEvent, inputs: CSPlayerInputState, active: boolean) {
   const { code } = e;
   if (code === "KeyW") inputs.up = active;
@@ -28,10 +40,14 @@ export function addCanvasInputListeners(document: Document, canvas: HTMLCanvasEl
   document.addEventListener("keydown", (e) => setInputs(e, game.inputState, true));
   document.addEventListener("keyup", (e) => setInputs(e, game.inputState, false));
   canvas.addEventListener("mousemove", (e) => handleMouseMove(e, game));
+  canvas.addEventListener("mousedown", (e) => handleMouseDown(e, game));
+  canvas.addEventListener("mouseup", (e) => handleMouseUp(e, game));
 }
 
 export function removeCanvasInputListeners(document: Document, canvas: HTMLCanvasElement, game: TestGame) {
   document.removeEventListener("keydown", (e) => setInputs(e, game.inputState, true));
   document.removeEventListener("keyup", (e) => setInputs(e, game.inputState, false));
   canvas.removeEventListener("mousemove", (e) => handleMouseMove(e, game));
+  canvas.removeEventListener("mousedown", (e) => handleMouseDown(e, game));
+  canvas.removeEventListener("mouseup", (e) => handleMouseUp(e, game));
 }

@@ -13,7 +13,7 @@ export enum EntityStance {
 export enum CombatMoveExecutionState {
   AT_REST,
   READYING,
-  EXECUTING,
+  STRIKING_FORWARD,
   RETURNING_TO_READY,
   RETURNING_TO_REST,
 }
@@ -88,6 +88,7 @@ export class MobileEntity extends Entity {
         bodyGripPositionA.offsetFromBody,
         -gripDistance / 2 + (holdable.positionOptions.rest.gripOffset || 0)
       );
+      // holdable.grips.a.damping = 1.1;
       holdable.grips.b = createGripPosition(
         this.engine,
         this.body,
@@ -96,6 +97,7 @@ export class MobileEntity extends Entity {
         gripDistance / 2 + (holdable.positionOptions.rest.gripOffset || 0),
         { stiffness: 0.9, length: 0 }
       );
+      // holdable.grips.b.damping = 1.1;
     }
   }
 }
