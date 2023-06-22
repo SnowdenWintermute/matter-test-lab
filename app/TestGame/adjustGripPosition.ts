@@ -1,26 +1,15 @@
-import { Constraint } from "matter-js";
-import { distBetweenTwoPoints, movePointAway, movePointTowards } from "../utils";
+import { distBetweenTwoPoints, movePointTowards } from "../utils";
+import { Holdable } from "./holdables/Holdable";
 
-export default function adjustGripPosition(rightHand: Constraint, leftHand: Constraint) {
-  const handDistance = distBetweenTwoPoints(rightHand.pointA, leftHand.pointA);
-  const gripDistance = distBetweenTwoPoints(rightHand.pointB, leftHand.pointB);
-  if (Math.abs(gripDistance - handDistance) < 1) return;
-  if (gripDistance > handDistance) {
-    const { x, y } = movePointTowards(leftHand.pointB, rightHand.pointB, 1);
-    leftHand.pointB.x = x;
-    leftHand.pointB.y = y;
-  } else if (gripDistance < handDistance) {
-    const { x, y } = movePointAway(leftHand.pointB, rightHand.pointB, 1);
-    leftHand.pointB.x = x;
-    leftHand.pointB.y = y;
-  }
-  if (gripDistance > handDistance) {
-    const { x, y } = movePointTowards(rightHand.pointB, leftHand.pointB, 1);
-    rightHand.pointB.x = x;
-    rightHand.pointB.y = y;
-  } else if (gripDistance < handDistance) {
-    const { x, y } = movePointAway(rightHand.pointB, leftHand.pointB, 1);
-    rightHand.pointB.x = x;
-    rightHand.pointB.y = y;
-  }
+export default function adjustGripPosition(holdable: Holdable) {
+  const { grips } = holdable;
+  if (!grips.a || !grips.b) return;
+  const bodyGripLocationDistance = distBetweenTwoPoints(grips.a.pointA, grips.b.pointA);
+  const gripHoldableDistance = distBetweenTwoPoints(grips.a.pointB, grips.b.pointB);
+  const distanceDiff = bodyGripLocationDistance - gripHoldableDistance;
+  const newGripBHoldableLocation = movePointTowards(grips.b.pointB, grips.a.pointB, distanceDiff);
+  const xDiff = grips.b.pointB.x - newGripBHoldableLocation.x;
+  const yDiff = grips.b.pointB.y - newGripBHoldableLocation.y;
+  grips.b.pointB.x += xDiff;
+  grips.b.pointB.y += yDiff;
 }

@@ -15,8 +15,6 @@ export default function drawHoldablePositions(context: CanvasRenderingContext2D,
     context.fillText("A", gripARestPosition.x, gripARestPosition.y);
     context.fillStyle = "blue";
     context.fillText("B", gripBRestPosition.x, gripBRestPosition.y);
-    // drawCircle(context, gripARestPosition, 3, "orange", true);
-    // drawCircle(context, gripBRestPosition, 3, "blue", true);
   }
   if (positionOptions.ready) {
     const relativeReadyPositionA = new PointRelativeToBody(positionOptions.ready.gripA, body);
@@ -27,7 +25,5 @@ export default function drawHoldablePositions(context: CanvasRenderingContext2D,
     context.fillText("A", gripAReadyPosition.x, gripAReadyPosition.y);
     context.fillStyle = "cyan";
     context.fillText("B", gripBReadyPosition.x, gripBReadyPosition.y);
-    // drawCircle(context, gripAReadyPosition, 3, "yellow", true);
-    // drawCircle(context, gripBReadyPosition, 3, "cyan", true);
   }
 }

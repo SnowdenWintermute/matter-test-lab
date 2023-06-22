@@ -25,6 +25,6 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
       drawGrips(context, spear, entity);
       drawHoldablePositions(context, spear, entity.body);
     }
-    // drawDebugText(context, entity);
+    drawDebugText(context, entity);
   });
 }
