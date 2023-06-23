@@ -15,6 +15,13 @@ export default function handleCollision(event: Matter.IEventCollision<Matter.Eng
     const { heldBy } = holdable;
     if (!heldBy) return;
     if (heldBy.id === otherBodyEntityId) return;
+    // this should simulate the holdable being hard to hold in the desired location after a collision
+    if (holdable.grips.a) holdable.grips.a.stiffness = 0.1;
+    if (holdable.grips.b) holdable.grips.b.stiffness = 0.1;
+    setTimeout(() => {
+      if (holdable.grips.a) holdable.grips.a.stiffness = 1;
+      if (holdable.grips.b) holdable.grips.b.stiffness = 1;
+    }, 500);
     pair.isSensor = false;
   }
 }

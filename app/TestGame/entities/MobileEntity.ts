@@ -52,7 +52,6 @@ export class MobileEntity extends Entity {
     jumpHeight?: number
   ) {
     super(id, body, 1, 1, { max: 10, current: 10 }, owner);
-    body.isStatic = true;
     this.acceleration = acceleration;
     this.topSpeed = topSpeed;
     if (turningSpeed) this.turningSpeed = turningSpeed;

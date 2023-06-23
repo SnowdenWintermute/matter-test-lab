@@ -42,10 +42,13 @@ export class TestGame {
       x: 250,
       y: 250,
     });
-    const playerEntity2 = this.createRegisteredPlayerEntity({
-      x: 250,
-      y: 350,
-    });
+    const playerEntity2 = this.createRegisteredPlayerEntity(
+      {
+        x: 250,
+        y: 350,
+      }
+      // { static: true }
+    );
     const spear = this.createRegisteredHoldable(HoldableType.SPEAR, playerEntity.body.position);
     playerEntity.equipHoldable(spear);
     const spear2 = this.createRegisteredHoldable(HoldableType.SPEAR, playerEntity2.body.position);
@@ -78,7 +81,7 @@ export class TestGame {
     return this.entities.mobile[id];
   }
 
-  createRegisteredPlayerEntity(position: Vector) {
+  createRegisteredPlayerEntity(position: Vector, options?: { static?: boolean }) {
     this.entities.lastIdAssigned += 1;
     const id = this.entities.lastIdAssigned;
     const body = Matter.Bodies.polygon(position.x, position.y, 8, 40);
@@ -86,6 +89,7 @@ export class TestGame {
     const startingAngle = -Math.PI / 2;
     Matter.Body.setAngle(body, startingAngle);
     body.label = `${EntityCategory.PLAYER_CONTROLLED}-${id}`;
+    if (options?.static) body.isStatic = true;
     Matter.Composite.add(this.physicsEngine.world, body);
     this.entities.playerControlled[id] = new MobileEntity(id, this.physicsEngine, body, "player");
     return this.entities.playerControlled[id];
