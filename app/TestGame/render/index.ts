@@ -13,6 +13,9 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
   Object.values(game.entities.static).forEach((entity) => {
     drawCircle(context, entity.body.position, entity.body.circleRadius!, "grey", true);
   });
+  Object.values(game.entities.mobile).forEach((entity) => {
+    drawPoly(context, entity.body.vertices, "grey");
+  });
   Object.values(game.entities.playerControlled).forEach((entity) => {
     const { position, angle } = entity.body;
     const { targetAngle } = entity;

@@ -1,4 +1,4 @@
-import Matter, { Vector } from "matter-js";
+import Matter, { Body, Resolver, Vector } from "matter-js";
 import { MobileEntity } from "./entities/MobileEntity";
 import { Entity } from "./entities/Entity";
 import { CSPlayerInputState } from "./CSInputState";
@@ -7,6 +7,7 @@ import render from "./render";
 import { MouseState } from "./MouseState";
 import { Holdable, HoldableType } from "./holdables/Holdable";
 import { Spear } from "./holdables/Spear";
+import createRandomlyPlacedCircleEntities from "./createRandomlyPlacedCircleEntities";
 
 export class CSEntities {
   lastIdAssigned = -1;
@@ -32,23 +33,29 @@ export class TestGame {
     this.physicsEngine.gravity.y = 0;
     this.physicsEngine.gravity.x = 0;
     this.physicsEngine.gravity.scale = 0;
-    // for (let i = 0; i < 20; i += 1) {
-    //   const x = Math.random() * 500;
-    //   const y = Math.random() * 500;
-    //   const r = Math.random() * 30;
-    //   const body = Matter.Bodies.circle(x, y, r);
-    //   this.entities.static[i] = new Entity(i, body, 0, 0, "game", {
-    //     max: 1,
-    //     current: 1,
-    //   });
-    //   Matter.Composite.add(this.physicsEngine.world, body);
-    // }
+    Matter.Events.on(this.physicsEngine, "collisionStart", (e) => this.handleCollision(e, this));
+    // Matter.Events.on(this.physicsEngine, "collisionStart", ())
+    // createRandomlyPlacedCircleEntities(this);
     const playerEntity = this.createRegisteredPlayerEntity({
       x: 250,
       y: 250,
     });
     const spear = this.createRegisteredHoldable(HoldableType.SPEAR, playerEntity.body.position);
     playerEntity.equipHoldable(spear);
+
+    for (let i = 0; i < 4; i += 1) {
+      this.createRegisteredTargetDummy({ y: 100, x: 50 + 100 * i }, { x: 25 + 25 * i, y: 25 + 40 * i });
+    }
+  }
+
+  createRegisteredTargetDummy(position: Vector, size: Vector, mass?: number) {
+    this.entities.lastIdAssigned += 1;
+    const id = this.entities.lastIdAssigned;
+    const body = Matter.Bodies.rectangle(position.x, position.y, size.x, size.y);
+    if (mass) body.mass = mass;
+    Matter.Composite.add(this.physicsEngine.world, body);
+    this.entities.mobile[id] = new MobileEntity(id, this.physicsEngine, body, "game", 2, 10);
+    return this.entities.mobile[id];
   }
 
   createRegisteredPlayerEntity(position: Vector) {
@@ -76,6 +83,27 @@ export class TestGame {
   clearPhysicsInterval() {
     clearTimeout(this.intervals.physics);
     this.intervals.physics = undefined;
+  }
+
+  handleCollision(event: Matter.IEventCollision<Matter.Engine>, game: TestGame) {
+    var pairs = event.pairs;
+    // console.log(event.pairs[0], game.entities);
+    if (!game.entities?.playerControlled) return;
+    const playerEntity = Object.values(this.entities.playerControlled)[0];
+    if (!playerEntity) return;
+    const playerHoldable = playerEntity.equippedHoldables.rightHand;
+    for (var i = 0, j = pairs.length; i != j; ++i) {
+      var pair = pairs[i];
+      if (pair.bodyA.id === playerHoldable?.body.id || pair.bodyB.id === playerHoldable?.body.id) {
+        const otherBody = pair.bodyA.id === playerHoldable.body.id ? pair.bodyB : pair.bodyA;
+        const playerHoldableBody = pair.bodyA.id === playerHoldable.body.id ? pair.bodyA : pair.bodyB;
+        console.log(playerHoldableBody.isSensor);
+        if (otherBody.id !== playerEntity.body.id) {
+          pair.isSensor = false;
+          // console.log(pair.isActive, playerHoldableBody.isSensor, otherBody.isStatic, pair);
+        }
+      }
+    }
   }
 
   stepGame(context: CanvasRenderingContext2D, canvasSize: { width: number; height: number }) {

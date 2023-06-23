@@ -10,13 +10,11 @@ function handleMouseMove(e: MouseEvent, game: TestGame) {
 
 function handleMouseDown(e: MouseEvent, game: TestGame) {
   e.preventDefault();
-  console.log(e.button);
   if (e.button === 0) game.inputState.mouseLeft = true;
 }
 
 function handleMouseUp(e: MouseEvent, game: TestGame) {
   e.preventDefault();
-  console.log(e.button);
   if (e.button === 0) game.inputState.mouseLeft = false;
 }
 

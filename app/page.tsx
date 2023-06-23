@@ -4,6 +4,7 @@ import styles from "./page.module.css";
 import { TestGame } from "./TestGame";
 import useWindowDimensions from "./Hooks/useWindowDimensions";
 import { addCanvasInputListeners, removeCanvasInputListeners } from "./TestGame/canvasInputListeners";
+import Matter from "matter-js";
 
 export type WidthAndHeight = { width: number; height: number };
 
