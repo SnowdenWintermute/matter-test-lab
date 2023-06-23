@@ -3,7 +3,7 @@ import handleWASD from "./handleWASD";
 import handleCombatMoveExecution from "./handleCombatMoveExecution";
 import rotatePlayerTowardMouse from "./rotatePlayerTowardMouse";
 import cloneDeep from "lodash.clonedeep";
-import { CombatMoveExecutionState, EntityStance } from "./entities/MobileEntity";
+import { CombatMoveExecutionState, EntityStance } from "./enums";
 
 export default function handlePlayerInputs(game: TestGame) {
   const { entities } = game;

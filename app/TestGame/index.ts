@@ -8,6 +8,8 @@ import { MouseState } from "./MouseState";
 import { Holdable, HoldableType } from "./holdables/Holdable";
 import { Spear } from "./holdables/Spear";
 import createRandomlyPlacedCircleEntities from "./createRandomlyPlacedCircleEntities";
+import handleCollision from "./handleCollision";
+import { EntityCategory } from "./enums";
 
 export class CSEntities {
   lastIdAssigned = -1;
@@ -40,12 +42,30 @@ export class TestGame {
       x: 250,
       y: 250,
     });
+    const playerEntity2 = this.createRegisteredPlayerEntity({
+      x: 250,
+      y: 350,
+    });
     const spear = this.createRegisteredHoldable(HoldableType.SPEAR, playerEntity.body.position);
     playerEntity.equipHoldable(spear);
+    const spear2 = this.createRegisteredHoldable(HoldableType.SPEAR, playerEntity2.body.position);
+    playerEntity2.equipHoldable(spear2);
 
-    for (let i = 0; i < 4; i += 1) {
-      this.createRegisteredTargetDummy({ y: 100, x: 50 + 100 * i }, { x: 25 + 25 * i, y: 25 + 40 * i });
-    }
+    for (let i = 0; i < 4; i += 1) this.createRegisteredTargetDummy({ y: 100, x: 50 + 100 * i }, { x: 25 + 25 * i, y: 25 + 40 * i }, 10 + 10000 * i);
+
+    this.createRegisteredStaticEntity({ x: 0, y: 0 }, { x: 5, y: 1000 });
+    this.createRegisteredStaticEntity({ x: 0, y: 0 }, { x: 1000, y: 5 });
+    this.createRegisteredStaticEntity({ x: 500, y: 0 }, { x: 5, y: 1000 });
+    this.createRegisteredStaticEntity({ x: 0, y: 500 }, { x: 1000, y: 5 });
+  }
+
+  createRegisteredStaticEntity(position: Vector, size: Vector) {
+    this.entities.lastIdAssigned += 1;
+    const id = this.entities.lastIdAssigned;
+    const body = Matter.Bodies.rectangle(position.x, position.y, size.x, size.y, { isStatic: true });
+    Matter.Composite.add(this.physicsEngine.world, body);
+    this.entities.static[id] = new Entity(id, body, 1, 0, { max: 1, current: 1 });
+    return this.entities.mobile[id];
   }
 
   createRegisteredTargetDummy(position: Vector, size: Vector, mass?: number) {
@@ -63,11 +83,11 @@ export class TestGame {
     const id = this.entities.lastIdAssigned;
     const body = Matter.Bodies.polygon(position.x, position.y, 8, 40);
     body.frictionAir = 0.3;
-    body.mass = 500;
     const startingAngle = -Math.PI / 2;
     Matter.Body.setAngle(body, startingAngle);
+    body.label = `${EntityCategory.PLAYER_CONTROLLED}-${id}`;
     Matter.Composite.add(this.physicsEngine.world, body);
-    this.entities.playerControlled[id] = new MobileEntity(id, this.physicsEngine, body, "player", 2, 10);
+    this.entities.playerControlled[id] = new MobileEntity(id, this.physicsEngine, body, "player");
     return this.entities.playerControlled[id];
   }
 
@@ -75,6 +95,7 @@ export class TestGame {
     this.entities.lastIdAssigned += 1;
     const id = this.entities.lastIdAssigned;
     const holdable = new Spear(position);
+    holdable.body.label = `${EntityCategory.HOLDABLE}-${id}`;
     this.entities.holdable[id] = holdable;
     Matter.Composite.add(this.physicsEngine.world, holdable.body);
     return holdable;
@@ -85,30 +106,17 @@ export class TestGame {
     this.intervals.physics = undefined;
   }
 
-  handleCollision(event: Matter.IEventCollision<Matter.Engine>, game: TestGame) {
-    var pairs = event.pairs;
-    // console.log(event.pairs[0], game.entities);
-    if (!game.entities?.playerControlled) return;
-    const playerEntity = Object.values(this.entities.playerControlled)[0];
-    if (!playerEntity) return;
-    const playerHoldable = playerEntity.equippedHoldables.rightHand;
-    for (var i = 0, j = pairs.length; i != j; ++i) {
-      var pair = pairs[i];
-      if (pair.bodyA.id === playerHoldable?.body.id || pair.bodyB.id === playerHoldable?.body.id) {
-        const otherBody = pair.bodyA.id === playerHoldable.body.id ? pair.bodyB : pair.bodyA;
-        const playerHoldableBody = pair.bodyA.id === playerHoldable.body.id ? pair.bodyA : pair.bodyB;
-        console.log(playerHoldableBody.isSensor);
-        if (otherBody.id !== playerEntity.body.id) {
-          pair.isSensor = false;
-          // console.log(pair.isActive, playerHoldableBody.isSensor, otherBody.isStatic, pair);
-        }
-      }
-    }
-  }
+  handleCollision = handleCollision;
 
   stepGame(context: CanvasRenderingContext2D, canvasSize: { width: number; height: number }) {
     this.intervals.physics = setTimeout(() => {
       handlePlayerInputs(this);
+      // Object.values(this.entities.playerControlled).forEach((playerEntity) => {
+      //   if (!playerEntity.isRunning) {
+      //     const { body } = playerEntity;
+      //     // Body.update(playerEntity.body, 33, 1, 1);
+      //   }
+      // });
       Matter.Engine.update(this.physicsEngine, this.renderRate);
       render(context, this, canvasSize);
       this.stepGame(context, canvasSize);

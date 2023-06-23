@@ -4,19 +4,7 @@ import { Entity } from "./Entity";
 import { Holdable } from "../holdables/Holdable";
 import { PointRelativeToBody } from "../holdables/PointRelativeToBody";
 import moveGripTowardPosition from "../moveGripTowardPosition";
-
-export enum EntityStance {
-  AT_EASE,
-  COMBAT_READY,
-}
-
-export enum CombatMoveExecutionState {
-  AT_REST,
-  READYING,
-  STRIKING_FORWARD,
-  RETURNING_TO_READY,
-  RETURNING_TO_REST,
-}
+import { CombatMoveExecutionState, EntityStance } from "../enums";
 
 function createGripPosition(
   engine: Matter.Engine,
@@ -40,7 +28,7 @@ function createGripPosition(
 
 export class MobileEntity extends Entity {
   targetAngle = 0;
-  acceleration = 1;
+  acceleration = 0.001;
   reverseAccelerationModifier = 0.4;
   sidewaysAccelerationModifier = 0.6;
   topSpeed: number = 10;
@@ -58,12 +46,13 @@ export class MobileEntity extends Entity {
     public engine: Matter.Engine,
     body: Body,
     owner: string,
-    acceleration: number,
-    topSpeed: number,
+    acceleration: number = 0.01,
+    topSpeed: number = 10,
     turningSpeed?: number,
     jumpHeight?: number
   ) {
     super(id, body, 1, 1, { max: 10, current: 10 }, owner);
+    body.isStatic = true;
     this.acceleration = acceleration;
     this.topSpeed = topSpeed;
     if (turningSpeed) this.turningSpeed = turningSpeed;
@@ -76,6 +65,7 @@ export class MobileEntity extends Entity {
       this.equippedHoldables.leftHand = holdable;
     } else if (this.mainHand === "Left") this.equippedHoldables.leftHand = holdable;
     else this.equippedHoldables.rightHand = holdable;
+    holdable.heldBy = this;
 
     if (holdable.positionOptions.rest) {
       const bodyGripPositionA = new PointRelativeToBody(holdable.positionOptions.rest.gripA, this.body, { flipped: true });
@@ -86,7 +76,8 @@ export class MobileEntity extends Entity {
         this.body,
         holdable,
         bodyGripPositionA.offsetFromBody,
-        -gripDistance / 2 + (holdable.positionOptions.rest.gripOffset || 0)
+        -gripDistance / 2 + (holdable.positionOptions.rest.gripOffset || 0),
+        { stiffness: 0.9, length: 0 }
       );
       // holdable.grips.a.damping = 1.1;
       holdable.grips.b = createGripPosition(

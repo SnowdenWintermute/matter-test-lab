@@ -1,4 +1,4 @@
-import Matter, { Body, Vector } from "matter-js";
+import { Body, Vector } from "matter-js";
 import { TestGame } from ".";
 import { getDirectionOfClosestPathToTargetAngle } from "../utils";
 import { MobileEntity } from "./entities/MobileEntity";
@@ -11,8 +11,7 @@ export default function rotatePlayerTowardMouse(game: TestGame, entity: MobileEn
     const targetAngle = Math.atan2(mouseState.position.y - body.position.y, mouseState.position.x - body.position.x);
     game.inputState.targetAngle = entity.targetAngle = targetAngle;
     const dir = getDirectionOfClosestPathToTargetAngle(angle, targetAngle, entity.turningSpeed * 2);
-    // if (dir === -1) Matter.Body.setAngle(body, angle - entity.turningSpeed);
-    // if (dir === 1) Matter.Body.setAngle(body, angle + entity.turningSpeed);
+    if (dir !== 0) body.isStatic = false;
     if (dir === -1) {
       Body.applyForce(body, Vector.add(body.position, Vector.create(-20, 0)), Vector.create(0, entity.turningSpeed / 2));
       Body.applyForce(body, Vector.add(body.position, Vector.create(20, 0)), Vector.create(0, -entity.turningSpeed / 2));

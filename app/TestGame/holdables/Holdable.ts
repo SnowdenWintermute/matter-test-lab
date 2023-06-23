@@ -1,6 +1,7 @@
 import { Body, Vector } from "matter-js";
 import { DistanceAndAngle } from "../common-classes";
 import { Entity } from "../entities/Entity";
+import { MobileEntity } from "../entities/MobileEntity";
 
 export enum HoldableType {
   SPEAR,
@@ -22,6 +23,7 @@ export type HoldablePositionOptions = {
 };
 
 export abstract class Holdable extends Entity {
+  heldBy: MobileEntity | null = null;
   constructor(
     id: number,
     body: Body,

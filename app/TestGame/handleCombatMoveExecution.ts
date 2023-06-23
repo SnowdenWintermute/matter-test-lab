@@ -1,7 +1,8 @@
 import { TestGame } from ".";
-import { CombatMoveExecutionState, EntityStance, MobileEntity } from "./entities/MobileEntity";
+import { MobileEntity } from "./entities/MobileEntity";
 import adjustGripPosition from "./adjustGripPosition";
 import moveGripTowardPosition from "./moveGripTowardPosition";
+import { CombatMoveExecutionState, EntityStance } from "./enums";
 
 export default function handleCombatMoveExecution(game: TestGame, entity: MobileEntity) {
   const { inputState } = game;
@@ -38,7 +39,6 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
     equippedHoldable.positionOptions.forwardStrike?.gripA &&
     equippedHoldable.positionOptions.forwardStrike?.gripB
   ) {
-    console.log("striking forward");
     const reachedPointA = moveGripTowardPosition(entity, equippedHoldable.grips.a, equippedHoldable.positionOptions.forwardStrike.gripA, entity.handSpeed * 2);
     const reachedPointB = moveGripTowardPosition(entity, equippedHoldable.grips.b, equippedHoldable.positionOptions.forwardStrike.gripB, entity.handSpeed * 2);
     adjustGripPosition(equippedHoldable);

@@ -1,6 +1,5 @@
 import { angleBetweenPoints, distBetweenTwoPoints, getPointInArc, movePointTowards, normalizeRadians } from "@/app/utils";
 import { MobileEntity } from "../entities/MobileEntity";
-import { Vector } from "matter-js";
 
 export default function drawDebugText(context: CanvasRenderingContext2D, entity: MobileEntity) {
   const { position, angle } = entity.body;
@@ -18,11 +17,13 @@ export default function drawDebugText(context: CanvasRenderingContext2D, entity:
   const newGripBHoldableLocation = movePointTowards(grips.b.pointB, grips.a.pointB, distanceDiff);
 
   const text = [
-    `bodyGripLocationDistance: ${bodyGripLocationDistance.toFixed(1)}`,
-    `gripHoldableDistance: ${gripHoldableDistance.toFixed(1)}`,
-    `distanceDiff: ${distanceDiff.toFixed(1)}`,
-    `current grip B: ${grips.b.pointB.x.toFixed(1)}, ${grips.b.pointB.y.toFixed(1)}`,
-    `newGripBLocation: ${newGripBHoldableLocation.x.toFixed(1)}, ${newGripBHoldableLocation.y.toFixed(1)}`,
+    `STATIC: ${entity.body.isStatic}`,
+    // `MASS: ${entity.body.mass}`,
+    // `bodyGripLocationDistance: ${bodyGripLocationDistance.toFixed(1)}`,
+    // `gripHoldableDistance: ${gripHoldableDistance.toFixed(1)}`,
+    // `distanceDiff: ${distanceDiff.toFixed(1)}`,
+    // `current grip B: ${grips.b.pointB.x.toFixed(1)}, ${grips.b.pointB.y.toFixed(1)}`,
+    // `newGripBLocation: ${newGripBHoldableLocation.x.toFixed(1)}, ${newGripBHoldableLocation.y.toFixed(1)}`,
   ];
   const margin = 18;
   text.forEach((string, i) => {
