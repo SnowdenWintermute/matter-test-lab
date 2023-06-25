@@ -115,12 +115,6 @@ export class TestGame {
   stepGame(context: CanvasRenderingContext2D, canvasSize: { width: number; height: number }) {
     this.intervals.physics = setTimeout(() => {
       handlePlayerInputs(this);
-      // Object.values(this.entities.playerControlled).forEach((playerEntity) => {
-      //   if (!playerEntity.isRunning) {
-      //     const { body } = playerEntity;
-      //     // Body.update(playerEntity.body, 33, 1, 1);
-      //   }
-      // });
       Matter.Engine.update(this.physicsEngine, this.renderRate);
       render(context, this, canvasSize);
       this.stepGame(context, canvasSize);

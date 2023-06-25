@@ -4,14 +4,15 @@ import drawCircle from "./drawCircle";
 import drawAngleLine from "./drawLine";
 import drawPoly from "./drawPoly";
 import drawDebugText from "./drawDebugText";
-import { getPointInArc } from "@/app/utils";
+import { angleBetweenPoints, getPointInArc } from "@/app/utils";
 import drawGrips from "./drawGrips";
 import drawHoldablePositions from "./drawHoldablePositions";
 import drawGrid from "./drawGrid";
+import { PointRelativeToBody } from "../holdables/PointRelativeToBody";
 
 export default function render(context: CanvasRenderingContext2D, game: TestGame, canvasSize: { width: number; height: number }) {
   context.clearRect(0, 0, canvasSize.width, canvasSize.height);
-  drawGrid(context, canvasSize, 25);
+  // drawGrid(context, canvasSize, 25);
   Object.values(game.entities.static).forEach((entity) => {
     drawPoly(context, entity.body.vertices, "grey");
   });
@@ -30,7 +31,7 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
     drawPoly(context, holdable.body.vertices, "white");
     drawCircle(context, holdable.body.position, 1, "black", true);
     if (!holdable.heldBy) return;
-    drawGrips(context, holdable, holdable.heldBy);
-    drawHoldablePositions(context, holdable, holdable.heldBy.body);
+    // drawGrips(context, holdable, holdable.heldBy);
+    // drawHoldablePositions(context, holdable, holdable.heldBy.body);
   });
 }

@@ -35,7 +35,7 @@ export class MobileEntity extends Entity {
   turningSpeed = 0.12;
   jumpHeight = 20;
   jumpStrength = 1;
-  handSpeed = 2;
+  handSpeed = 8;
   jumping = false;
   mainHand: "Left" | "Right" = "Right";
   equippedHoldables: { rightHand: Holdable | null; leftHand: Holdable | null } = { rightHand: null, leftHand: null };
@@ -76,7 +76,7 @@ export class MobileEntity extends Entity {
         holdable,
         bodyGripPositionA.offsetFromBody,
         -gripDistance / 2 + (holdable.positionOptions.rest.gripOffset || 0),
-        { stiffness: 0.9, length: 0 }
+        { stiffness: 1, length: 0 }
       );
       // holdable.grips.a.damping = 1.1;
       holdable.grips.b = createGripPosition(
@@ -85,7 +85,7 @@ export class MobileEntity extends Entity {
         holdable,
         bodyGripPositionB.offsetFromBody,
         gripDistance / 2 + (holdable.positionOptions.rest.gripOffset || 0),
-        { stiffness: 0.9, length: 0 }
+        { stiffness: 0.8, length: 0 }
       );
       // holdable.grips.b.damping = 1.1;
     }

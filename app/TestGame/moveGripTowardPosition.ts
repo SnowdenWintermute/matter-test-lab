@@ -3,6 +3,7 @@ import { distBetweenTwoPoints, movePointTowards } from "../utils";
 import { MobileEntity } from "./entities/MobileEntity";
 import { PointRelativeToBody } from "./holdables/PointRelativeToBody";
 import { DistanceAndAngle } from "./common-classes";
+import { Holdable } from "./holdables/Holdable";
 
 export default function moveGripTowardPosition(
   entity: MobileEntity,

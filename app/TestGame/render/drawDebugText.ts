@@ -1,5 +1,7 @@
-import { angleBetweenPoints, distBetweenTwoPoints, getPointInArc, movePointTowards, normalizeRadians } from "@/app/utils";
+import { angleBetweenPoints, distBetweenTwoPoints, getPointInArc, movePointTowards, normalizeRadians, roundedStringifiedVector } from "@/app/utils";
 import { MobileEntity } from "../entities/MobileEntity";
+import { Vector } from "matter-js";
+import { PointRelativeToBody } from "../holdables/PointRelativeToBody";
 
 export default function drawDebugText(context: CanvasRenderingContext2D, entity: MobileEntity) {
   const { position, angle } = entity.body;
@@ -11,19 +13,19 @@ export default function drawDebugText(context: CanvasRenderingContext2D, entity:
   const { grips } = spear;
   if (!grips.b || !grips.a) return;
 
-  const bodyGripLocationDistance = distBetweenTwoPoints(grips.a.pointA, grips.b.pointA);
-  const gripHoldableDistance = distBetweenTwoPoints(grips.a.pointB, grips.b.pointB);
-  const distanceDiff = bodyGripLocationDistance - gripHoldableDistance;
-  const newGripBHoldableLocation = movePointTowards(grips.b.pointB, grips.a.pointB, distanceDiff);
+  const currentHoldableAngle = spear.body.angle;
+  // get the distance between the gripAs
+  const distanceBetweenBodyGrips = distBetweenTwoPoints(grips.a.pointA, grips.b.pointA);
+  const newGripB = getPointInArc(grips.a.pointB, currentHoldableAngle + Math.PI / 2, distanceBetweenBodyGrips);
 
   const text = [
-    `STATIC: ${entity.body.isStatic}`,
-    // `MASS: ${entity.body.mass}`,
-    // `bodyGripLocationDistance: ${bodyGripLocationDistance.toFixed(1)}`,
-    // `gripHoldableDistance: ${gripHoldableDistance.toFixed(1)}`,
-    // `distanceDiff: ${distanceDiff.toFixed(1)}`,
-    // `current grip B: ${grips.b.pointB.x.toFixed(1)}, ${grips.b.pointB.y.toFixed(1)}`,
-    // `newGripBLocation: ${newGripBHoldableLocation.x.toFixed(1)}, ${newGripBHoldableLocation.y.toFixed(1)}`,
+    `SPEAR ANGLE: ${currentHoldableAngle.toFixed(1)}`,
+    `DIST BODY GRIPS: ${distanceBetweenBodyGrips.toFixed(1)}`,
+    `NEW GRIP B: ${roundedStringifiedVector(newGripB)}`,
+    // `GRIP A A: ${roundedStringifiedVector(grips.a.pointA)}`,
+    // `GRIP A B: ${roundedStringifiedVector(grips.a.pointB)}`,
+    // `GRIP B A: ${roundedStringifiedVector(grips.b.pointA)}`,
+    `GRIP B B: ${roundedStringifiedVector(grips.b.pointB)}`,
   ];
   const margin = 18;
   text.forEach((string, i) => {

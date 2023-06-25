@@ -1,5 +1,9 @@
 import { Vector } from "matter-js";
 
+export function roundedStringifiedVector(vec: Vector, precision = 1) {
+  return `${vec.x.toFixed(precision)} ${vec.y.toFixed(precision)}`;
+}
+
 export function normalizeRadians(radians: number): number {
   while (radians <= -Math.PI) radians += 2 * Math.PI;
   while (radians > Math.PI) radians -= 2 * Math.PI;
