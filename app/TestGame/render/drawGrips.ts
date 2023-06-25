@@ -24,4 +24,13 @@ export default function drawGrips(context: CanvasRenderingContext2D, holdable: H
     drawCircle(context, pointToDraw, 5, "rgba(0,255,0,.5)", true);
     context.fillText("B", grips.b.pointA.x + position.x, grips.b.pointA.y + position.y);
   }
+  if (grips.c) {
+    pointToDraw = Vector.add(position, grips.c.pointA);
+    drawCircle(context, pointToDraw, 5, "blue", false);
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+    pointToDraw = Vector.add(holdable.body.position, grips.c.pointB);
+    drawCircle(context, pointToDraw, 5, "rgba(0,255,0,.5)", true);
+    context.fillText("C", grips.c.pointA.x + position.x, grips.c.pointA.y + position.y);
+  }
 }
