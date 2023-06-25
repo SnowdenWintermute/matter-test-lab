@@ -10,6 +10,7 @@ import { Spear } from "./holdables/Spear";
 import createRandomlyPlacedCircleEntities from "./createRandomlyPlacedCircleEntities";
 import handleCollision from "./handleCollision";
 import { EntityCategory } from "./enums";
+import equipHoldableToEntity from "./equipHoldableToEntity";
 
 export class CSEntities {
   lastIdAssigned = -1;
@@ -50,9 +51,9 @@ export class TestGame {
       // { static: true }
     );
     const spear = this.createRegisteredHoldable(HoldableType.SPEAR, playerEntity.body.position);
-    playerEntity.equipHoldable(spear);
+    this.equipHoldableToEntity(this, playerEntity, spear);
     const spear2 = this.createRegisteredHoldable(HoldableType.SPEAR, playerEntity2.body.position);
-    playerEntity2.equipHoldable(spear2);
+    this.equipHoldableToEntity(this, playerEntity2, spear2);
 
     for (let i = 0; i < 4; i += 1) this.createRegisteredTargetDummy({ y: 100, x: 50 + 100 * i }, { x: 25 + 25 * i, y: 25 + 40 * i }, 10 + 10000 * i);
 
@@ -77,7 +78,7 @@ export class TestGame {
     const body = Matter.Bodies.rectangle(position.x, position.y, size.x, size.y);
     if (mass) body.mass = mass;
     Matter.Composite.add(this.physicsEngine.world, body);
-    this.entities.mobile[id] = new MobileEntity(id, this.physicsEngine, body, "game", 2, 10);
+    this.entities.mobile[id] = new MobileEntity(id, body, "game", 2, 10);
     return this.entities.mobile[id];
   }
 
@@ -91,7 +92,7 @@ export class TestGame {
     body.label = `${EntityCategory.PLAYER_CONTROLLED}-${id}`;
     if (options?.static) body.isStatic = true;
     Matter.Composite.add(this.physicsEngine.world, body);
-    this.entities.playerControlled[id] = new MobileEntity(id, this.physicsEngine, body, "player");
+    this.entities.playerControlled[id] = new MobileEntity(id, body, "player");
     return this.entities.playerControlled[id];
   }
 
@@ -104,6 +105,27 @@ export class TestGame {
     Matter.Composite.add(this.physicsEngine.world, holdable.body);
     return holdable;
   }
+
+  createGripPosition(
+    body: Body,
+    holdable: Holdable,
+    gripPositionBodyOffset: Vector,
+    holdableOffset = 0,
+    options: { stiffness: number; length: number } = { stiffness: 1, length: 0 }
+  ) {
+    const gripPosition = Matter.Constraint.create({
+      bodyA: body,
+      bodyB: holdable.body,
+      pointA: gripPositionBodyOffset,
+      pointB: { x: 0, y: holdableOffset },
+      stiffness: options.stiffness,
+      length: options.length,
+    });
+    Matter.Composite.add(this.physicsEngine.world, gripPosition);
+    return gripPosition;
+  }
+
+  equipHoldableToEntity = equipHoldableToEntity;
 
   clearPhysicsInterval() {
     clearTimeout(this.intervals.physics);

@@ -2,22 +2,19 @@ import { Body, Vector } from "matter-js";
 import { DistanceAndAngle } from "../common-classes";
 import { Entity } from "../entities/Entity";
 import { MobileEntity } from "../entities/MobileEntity";
-import { PointRelativeToBody } from "./PointRelativeToBody";
 import Matter from "matter-js";
-import { distBetweenTwoPoints } from "@/app/utils";
 
 export enum HoldableType {
   SPEAR,
 }
 
 export class HoldableGripCreationData {
-  gripDistance: number;
-  constructor(public gripA: Vector | DistanceAndAngle, public gripB: Vector | DistanceAndAngle, public gripOffset?: number) {
-    const dummyBody = Matter.Bodies.rectangle(0, 0, 3, 3);
-    const gripPointA = new PointRelativeToBody(gripA, dummyBody);
-    const gripPointB = new PointRelativeToBody(gripA, dummyBody);
-    this.gripDistance = distBetweenTwoPoints(gripPointA.offsetFromBody, gripPointB.offsetFromBody);
-  }
+  constructor(
+    public gripA: Vector | DistanceAndAngle,
+    public gripB: Vector | DistanceAndAngle,
+    public gripC: Vector | DistanceAndAngle,
+    public gripOffset?: number
+  ) {}
 }
 
 export type HoldablePositionOptions = {
@@ -42,7 +39,8 @@ export abstract class Holdable extends Entity {
     public grips: {
       a: Matter.Constraint | null;
       b: Matter.Constraint | null;
-    } = { a: null, b: null }
+      c: Matter.Constraint | null;
+    } = { a: null, b: null, c: null }
   ) {
     super(id, body, 1, 0, { max: 10, current: 10 });
   }

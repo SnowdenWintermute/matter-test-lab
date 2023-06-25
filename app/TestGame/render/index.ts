@@ -31,7 +31,7 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
     drawPoly(context, holdable.body.vertices, "white");
     drawCircle(context, holdable.body.position, 1, "black", true);
     if (!holdable.heldBy) return;
-    // drawGrips(context, holdable, holdable.heldBy);
-    // drawHoldablePositions(context, holdable, holdable.heldBy.body);
+    drawGrips(context, holdable, holdable.heldBy);
+    drawHoldablePositions(context, holdable, holdable.heldBy.body);
   });
 }

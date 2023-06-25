@@ -14,33 +14,26 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
   const equippedHoldable = entity.equippedHoldables.rightHand;
   if (!equippedHoldable || !equippedHoldable.grips.a || !equippedHoldable.grips.b) return;
   const { positionOptions, grips } = equippedHoldable;
-  if (!grips.a || !grips.b) return;
+  if (!grips.a || !grips.b || !grips.c) return;
 
   if (combatMoveExecutionState === CombatMoveExecutionState.RETURNING_TO_REST && positionOptions.rest?.gripA && positionOptions.rest?.gripB) {
     moveGripTowardPosition(entity, grips.a, positionOptions.rest.gripA, handSpeed);
     moveGripTowardPosition(entity, grips.b, positionOptions.rest.gripB, handSpeed);
-
-    // A: -gripDistance / 2 + (holdable.positionOptions.rest.gripOffset || 0),
-    // B: gripDistance / 2 + (holdable.positionOptions.rest.gripOffset || 0),
-    // pointB: { x: 0, y: holdableOffset },
-
-    adjustGripPosition(equippedHoldable, entity, handSpeed);
+    moveGripTowardPosition(entity, grips.c, positionOptions.rest.gripC, handSpeed);
+    adjustGripPosition(equippedHoldable);
   }
 
   if (combatMoveExecutionState === CombatMoveExecutionState.READYING && positionOptions.ready?.gripA && positionOptions.ready?.gripB) {
     moveGripTowardPosition(entity, grips.a, positionOptions.ready.gripA, handSpeed);
     moveGripTowardPosition(entity, grips.b, positionOptions.ready.gripB, handSpeed);
-    const { gripDistance } = positionOptions.ready;
-
-    // const targetGripOnHoldable = { x: , }
-    // const targetHoldableGripB = new PointRelativeToBody()
-    adjustGripPosition(equippedHoldable, entity, handSpeed);
+    moveGripTowardPosition(entity, grips.c, positionOptions.ready.gripC, handSpeed);
+    adjustGripPosition(equippedHoldable);
   }
 
-  if (combatMoveExecutionState === CombatMoveExecutionState.STRIKING_FORWARD && positionOptions.forwardStrike?.gripA && positionOptions.forwardStrike?.gripB) {
-    const reachedPointA = moveGripTowardPosition(entity, grips.a, positionOptions.forwardStrike.gripA, handSpeed * 2);
-    const reachedPointB = moveGripTowardPosition(entity, grips.b, positionOptions.forwardStrike.gripB, handSpeed * 2);
-    adjustGripPosition(equippedHoldable, entity, handSpeed);
-    if (reachedPointA && reachedPointB) entity.combatMoveExecutionState = CombatMoveExecutionState.READYING;
-  }
+  // if (combatMoveExecutionState === CombatMoveExecutionState.STRIKING_FORWARD && positionOptions.forwardStrike?.gripA && positionOptions.forwardStrike?.gripB) {
+  //   const reachedPointA = moveGripTowardPosition(entity, grips.a, positionOptions.forwardStrike.gripA, handSpeed * 2);
+  //   const reachedPointB = moveGripTowardPosition(entity, grips.b, positionOptions.forwardStrike.gripB, handSpeed * 2);
+  //   adjustGripPosition(equippedHoldable);
+  //   if (reachedPointA && reachedPointB) entity.combatMoveExecutionState = CombatMoveExecutionState.READYING;
+  // }
 }

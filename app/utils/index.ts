@@ -20,7 +20,7 @@ export function angleBetweenPoints(pointA: Vector, pointB: Vector): number {
   const dx = pointB.x - pointA.x;
   const dy = pointB.y - pointA.y;
 
-  return Math.atan2(dy, dx);
+  return Math.atan2(dx, dy);
 }
 
 export function movePointTowards(point: Vector, targetPoint: Vector, distance: number): Vector {
