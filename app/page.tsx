@@ -43,7 +43,7 @@ export default function Home() {
     });
 
     return () => {
-      gameRefCurrent.clearPhysicsInterval();
+      gameRefCurrent.cleanup();
     };
   }, [canvasRef, canvasSize.height, canvasSize.width]);
 

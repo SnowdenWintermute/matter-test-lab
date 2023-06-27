@@ -26,8 +26,6 @@ export default function handleWASD(game: TestGame) {
   const { body, acceleration, sidewaysAccelerationModifier, reverseAccelerationModifier } = playerEntity;
   const { angle } = body;
   const { up, down, left, right } = inputState;
-  // if (up || down || left || right) playerEntity.body.isStatic = false;
-  // else playerEntity.body.isStatic = true;
   if (up) Matter.Body.applyForce(body, body.position, calculateDirectionalForce(angle, DIRECTION.UP, acceleration));
   if (down) Matter.Body.applyForce(body, body.position, calculateDirectionalForce(angle, DIRECTION.DOWN, acceleration * reverseAccelerationModifier));
   if (left) Matter.Body.applyForce(body, body.position, calculateDirectionalForce(angle, DIRECTION.LEFT, acceleration * sidewaysAccelerationModifier));

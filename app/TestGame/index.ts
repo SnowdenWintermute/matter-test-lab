@@ -1,4 +1,4 @@
-import Matter, { Body, Resolver, Vector } from "matter-js";
+import Matter, { Body, Vector } from "matter-js";
 import { MobileEntity } from "./entities/MobileEntity";
 import { Entity } from "./entities/Entity";
 import { CSPlayerInputState } from "./CSInputState";
@@ -7,10 +7,10 @@ import render from "./render";
 import { MouseState } from "./MouseState";
 import { Holdable, HoldableType } from "./holdables/Holdable";
 import { Spear } from "./holdables/Spear";
-import createRandomlyPlacedCircleEntities from "./createRandomlyPlacedCircleEntities";
 import handleCollision from "./handleCollision";
 import { EntityCategory } from "./enums";
 import equipHoldableToEntity from "./equipHoldableToEntity";
+import cloneDeep from "lodash.clonedeep";
 
 export class CSEntities {
   lastIdAssigned = -1;
@@ -50,10 +50,10 @@ export class TestGame {
       }
       // { static: true }
     );
-    const spear = this.createRegisteredHoldable(HoldableType.SPEAR, playerEntity.body.position);
+    const spear = this.createRegisteredHoldable(HoldableType.SPEAR, { x: playerEntity.body.position.x, y: playerEntity.body.position.y });
     this.equipHoldableToEntity(this, playerEntity, spear);
-    const spear2 = this.createRegisteredHoldable(HoldableType.SPEAR, playerEntity2.body.position);
-    this.equipHoldableToEntity(this, playerEntity2, spear2);
+    // const spear2 = this.createRegisteredHoldable(HoldableType.SPEAR, playerEntity2.body.position);
+    // this.equipHoldableToEntity(this, playerEntity2, spear2);
 
     for (let i = 0; i < 4; i += 1) this.createRegisteredTargetDummy({ y: 100, x: 50 + 100 * i }, { x: 25 + 25 * i, y: 25 + 40 * i }, 10 + 10000 * i);
 
@@ -110,14 +110,14 @@ export class TestGame {
     body: Body,
     holdable: Holdable,
     gripPositionBodyOffset: Vector,
-    holdableOffset = 0,
+    holdableOffsetY = 0,
     options: { stiffness: number; length: number } = { stiffness: 1, length: 0 }
   ) {
     const gripPosition = Matter.Constraint.create({
       bodyA: body,
       bodyB: holdable.body,
-      pointA: gripPositionBodyOffset,
-      pointB: { x: 0, y: holdableOffset },
+      pointA: cloneDeep(gripPositionBodyOffset),
+      pointB: { x: 0, y: holdableOffsetY },
       stiffness: options.stiffness,
       length: options.length,
     });
@@ -127,8 +127,9 @@ export class TestGame {
 
   equipHoldableToEntity = equipHoldableToEntity;
 
-  clearPhysicsInterval() {
+  cleanup() {
     clearTimeout(this.intervals.physics);
+    // Matter.Composite.clear(this.physicsEngine.world, false, true);
     this.intervals.physics = undefined;
   }
 
