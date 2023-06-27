@@ -2,15 +2,18 @@ import Matter, { Vector } from "matter-js";
 import { Holdable, HoldableGripConstraintBodyOffsets, HoldableType } from "./Holdable";
 
 export class Spear extends Holdable {
+  length = 110;
+  width = 3;
   positionOptions = {
-    rest: new HoldableGripConstraintBodyOffsets({ x: -15, y: -5 }, Math.PI / 5, 10, 30, 10),
+    rest: new HoldableGripConstraintBodyOffsets({ x: 15, y: 5 }, Math.PI / 5, 10, 30, 10),
     // ready: HoldableGripConstraintBodyOffsets;
     // forwardStrike: HoldableGripCreationData;
   };
 
   constructor(position: Vector) {
     const length = 110;
-    const body = Matter.Bodies.rectangle(position.x, position.y, 3, length, {
+    const width = 3;
+    const body = Matter.Bodies.rectangle(position.x, position.y, width, length, {
       isSensor: true,
     });
     super(1, body, HoldableType.SPEAR, true, length);

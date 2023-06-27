@@ -25,12 +25,12 @@ export class HoldableGripConstraintBodyOffsets {
   ) {
     this.main = {
       lower: lowestGripPoint,
-      upper: getPointInArc(lowestGripPoint, angle, distBetweenPairMembers),
+      upper: getPointInArc(lowestGripPoint, angle, -distBetweenPairMembers),
     };
     if (distBetweenGripPairs)
       this.support = {
-        lower: getPointInArc(lowestGripPoint, angle, distBetweenPairMembers + distBetweenGripPairs),
-        upper: getPointInArc(lowestGripPoint, angle, distBetweenPairMembers * 2 + distBetweenGripPairs),
+        lower: getPointInArc(lowestGripPoint, angle, -distBetweenGripPairs - distBetweenPairMembers),
+        upper: getPointInArc(lowestGripPoint, angle, -distBetweenGripPairs - distBetweenPairMembers * 2),
       };
   }
 }

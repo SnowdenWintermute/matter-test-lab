@@ -29,6 +29,7 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
   });
   Object.values(game.entities.holdable).forEach((holdable) => {
     drawPoly(context, holdable.body.vertices, "white");
+    drawCircle(context, holdable.body.vertices[0], 2, "red", true);
     drawCircle(context, holdable.body.position, 1, "black", true);
     if (!holdable.heldBy) return;
     drawGrips(context, holdable, holdable.heldBy);
