@@ -9,7 +9,7 @@ export class MobileEntity extends Entity {
   reverseAccelerationModifier = 0.4;
   sidewaysAccelerationModifier = 0.6;
   topSpeed: number = 10;
-  turningSpeed = 0.12;
+  turningSpeed = 0.08;
   jumpHeight = 20;
   jumpStrength = 1;
   handSpeed = 8;
