@@ -13,7 +13,7 @@ export type HoldableGripPairOffsets = {
   lower: Vector;
 };
 
-export class HoldableGripConstraintBodyOffsets {
+export class HoldableGripConstraintCreationData {
   main: HoldableGripPairOffsets;
   support?: HoldableGripPairOffsets;
   constructor(
@@ -21,7 +21,8 @@ export class HoldableGripConstraintBodyOffsets {
     public angle: number,
     public distBetweenPairMembers: number,
     public distBetweenGripPairs?: number,
-    public lowestPointYOffsetFromHoldableBottom?: number
+    public lowestPointYOffsetFromHoldableBottom?: number,
+    public stiffnesses = { main: { lower: 1, upper: 0.8 }, support: { lower: 0.7, upper: 0.5 } }
   ) {
     this.main = {
       lower: lowestGripPoint,
@@ -36,14 +37,14 @@ export class HoldableGripConstraintBodyOffsets {
 }
 
 export type HoldablePositionOptions = {
-  rest?: HoldableGripConstraintBodyOffsets;
-  ready?: HoldableGripConstraintBodyOffsets;
-  forwardStrike?: HoldableGripConstraintBodyOffsets;
-  leftStrike?: HoldableGripConstraintBodyOffsets;
-  rightStrike?: HoldableGripConstraintBodyOffsets;
-  leftGuard?: HoldableGripConstraintBodyOffsets;
-  rightGuard?: HoldableGripConstraintBodyOffsets;
-  centerGuard?: HoldableGripConstraintBodyOffsets;
+  rest?: HoldableGripConstraintCreationData;
+  ready?: HoldableGripConstraintCreationData;
+  forwardStrike?: HoldableGripConstraintCreationData;
+  leftStrike?: HoldableGripConstraintCreationData;
+  rightStrike?: HoldableGripConstraintCreationData;
+  leftGuard?: HoldableGripConstraintCreationData;
+  rightGuard?: HoldableGripConstraintCreationData;
+  centerGuard?: HoldableGripConstraintCreationData;
 };
 
 export abstract class Holdable extends Entity {

@@ -7,8 +7,8 @@ export class PointRelativeToBody {
   offsetFromBody: Vector;
   angleFromBody: number;
   distanceFromBody: number;
-  constructor(creationData: DistanceAndAngle | Vector, body: Body, options?: { flipped?: boolean }) {
-    const angleAdditive = options?.flipped ? Math.PI : 0;
+  constructor(creationData: DistanceAndAngle | Vector, body: Body, options?: { angleAdditive?: number }) {
+    const angleAdditive = options?.angleAdditive || 0;
     if (creationData instanceof DistanceAndAngle) {
       this.angleFromBody = creationData.angle;
       this.distanceFromBody = creationData.distance;

@@ -52,8 +52,8 @@ export class TestGame {
     );
     const spear = this.createRegisteredHoldable(HoldableType.SPEAR, { x: playerEntity.body.position.x, y: playerEntity.body.position.y });
     this.equipHoldableToEntity(this, playerEntity, spear);
-    // const spear2 = this.createRegisteredHoldable(HoldableType.SPEAR, playerEntity2.body.position);
-    // this.equipHoldableToEntity(this, playerEntity2, spear2);
+    const spear2 = this.createRegisteredHoldable(HoldableType.SPEAR, playerEntity2.body.position);
+    this.equipHoldableToEntity(this, playerEntity2, spear2);
 
     for (let i = 0; i < 4; i += 1) this.createRegisteredTargetDummy({ y: 100, x: 50 + 100 * i }, { x: 25 + 25 * i, y: 25 + 40 * i }, 10 + 10000 * i);
 

@@ -15,7 +15,7 @@ export default function drawDebugText(context: CanvasRenderingContext2D, entity:
   const currentHoldableAngle = spear.body.angle;
   // get the distance between the gripAs
 
-  const text = [`SPEAR ANGLE: ${currentHoldableAngle.toFixed(1)}`];
+  const text = [`STANCE: ${entity.stance}`];
   const margin = 18;
   text.forEach((string, i) => {
     context.fillText(string, position.x, position.y + 55 + i * margin);
