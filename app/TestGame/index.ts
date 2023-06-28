@@ -7,10 +7,11 @@ import render from "./render";
 import { MouseState } from "./MouseState";
 import { Holdable, HoldableType } from "./holdables/Holdable";
 import { Spear } from "./holdables/Spear";
-import handleCollision from "./handleCollision";
+import handleCollisionStart from "./handleCollisions/handleCollisionStart";
 import { EntityCategory } from "./enums";
 import equipHoldableToEntity from "./equipHoldableToEntity";
 import cloneDeep from "lodash.clonedeep";
+import handleCollisionEnd from "./handleCollisions/handleCollisionEnd";
 
 export class CSEntities {
   lastIdAssigned = -1;
@@ -36,8 +37,9 @@ export class TestGame {
     this.physicsEngine.gravity.y = 0;
     this.physicsEngine.gravity.x = 0;
     this.physicsEngine.gravity.scale = 0;
-    Matter.Events.on(this.physicsEngine, "collisionStart", (e) => this.handleCollision(e, this));
-    // Matter.Events.on(this.physicsEngine, "collisionStart", ())
+    Matter.Events.on(this.physicsEngine, "collisionStart", (e) => this.handleCollisionStart(e, this));
+    Matter.Events.on(this.physicsEngine, "collisionEnd", (e) => this.handleCollisionEnd(e, this));
+
     // createRandomlyPlacedCircleEntities(this);
     const playerEntity = this.createRegisteredPlayerEntity({
       x: 250,
@@ -61,6 +63,8 @@ export class TestGame {
     this.createRegisteredStaticEntity({ x: 0, y: 0 }, { x: 1000, y: 5 });
     this.createRegisteredStaticEntity({ x: 500, y: 0 }, { x: 5, y: 1000 });
     this.createRegisteredStaticEntity({ x: 0, y: 500 }, { x: 1000, y: 5 });
+
+    this.createRegisteredStaticEntity({ x: 200, y: 400 }, { x: 100, y: 100 });
   }
 
   createRegisteredStaticEntity(position: Vector, size: Vector) {
@@ -133,7 +137,8 @@ export class TestGame {
     this.intervals.physics = undefined;
   }
 
-  handleCollision = handleCollision;
+  handleCollisionStart = handleCollisionStart;
+  handleCollisionEnd = handleCollisionEnd;
 
   stepGame(context: CanvasRenderingContext2D, canvasSize: { width: number; height: number }) {
     this.intervals.physics = setTimeout(() => {

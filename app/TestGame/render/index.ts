@@ -9,6 +9,8 @@ import drawGrips from "./drawGrips";
 import drawHoldablePositions from "./drawHoldablePositions";
 import drawGrid from "./drawGrid";
 import { PointRelativeToBody } from "../holdables/PointRelativeToBody";
+import drawHP from "./drawHP";
+import { MobileEntity } from "../entities/MobileEntity";
 
 export default function render(context: CanvasRenderingContext2D, game: TestGame, canvasSize: { width: number; height: number }) {
   context.clearRect(0, 0, canvasSize.width, canvasSize.height);
@@ -26,6 +28,7 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
     drawAngleLine(context, position, angle, 4, 40, "#a52026");
     drawAngleLine(context, position, targetAngle, 4, 40, "#028a7e");
     drawDebugText(context, entity);
+    drawHP(context, entity);
   });
   Object.values(game.entities.holdable).forEach((holdable) => {
     drawPoly(context, holdable.body.vertices, "white");

@@ -9,7 +9,7 @@ export class MobileEntity extends Entity {
   reverseAccelerationModifier = 0.4;
   sidewaysAccelerationModifier = 0.6;
   topSpeed: number = 10;
-  turningSpeed = 0.08;
+  turningSpeed = { current: 0.08, base: 0.08 };
   jumpHeight = 20;
   jumpStrength = 1;
   handSpeed = 8;
@@ -22,7 +22,7 @@ export class MobileEntity extends Entity {
     super(id, body, 1, 1, { max: 10, current: 10 }, owner);
     this.acceleration = acceleration;
     this.topSpeed = topSpeed;
-    if (turningSpeed) this.turningSpeed = turningSpeed;
+    if (turningSpeed) this.turningSpeed.current = this.turningSpeed.base = turningSpeed;
     if (jumpHeight) this.jumpHeight = jumpHeight;
   }
 }
