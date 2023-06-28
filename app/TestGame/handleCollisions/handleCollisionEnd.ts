@@ -1,6 +1,7 @@
 import { TestGame } from "..";
 import { EntityCategory } from "../enums";
 import determineHoldableCollisionPairEntities from "./determineHoldableCollisionPairEntities";
+import tightenGripsAfterDelay from "./tightenGripsAfterDelay";
 
 export default function handleCollisionEnd(event: Matter.IEventCollision<Matter.Engine>, game: TestGame) {
   var pairs = event.pairs;
@@ -9,6 +10,11 @@ export default function handleCollisionEnd(event: Matter.IEventCollision<Matter.
     const collisionEntities = determineHoldableCollisionPairEntities(pair, game);
     if (!collisionEntities) return;
     const { holdable, heldBy, otherEntityId, otherEntityCategory } = collisionEntities;
+    holdable.isColliding = false;
+    if (otherEntityCategory !== EntityCategory.PLAYER_CONTROLLED) {
+      tightenGripsAfterDelay(holdable);
+      return;
+    }
     if (otherEntityCategory === EntityCategory.PLAYER_CONTROLLED) {
       heldBy.turningSpeed.current = heldBy.turningSpeed.base;
     }

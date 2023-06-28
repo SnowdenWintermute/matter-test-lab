@@ -60,6 +60,7 @@ export abstract class Holdable extends Entity {
     };
   } | null = null;
   positionOptions: HoldablePositionOptions = {};
+  isColliding = false;
   constructor(id: number, body: Body, public type: HoldableType, public requiresTwoHands: boolean, public length: number) {
     super(id, body, 1, 0, { max: 10, current: 10 });
   }

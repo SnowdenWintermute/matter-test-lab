@@ -1,7 +1,7 @@
 import { TestGame } from "../";
 import { EntityCategory } from "../enums";
 import determineHoldableCollisionPairEntities from "./determineHoldableCollisionPairEntities";
-import temorarilyLoosenGrips from "./temporarilyLoosenGrips";
+import loosenGrips from "./loosenGrips";
 
 export default function handleCollisionStart(event: Matter.IEventCollision<Matter.Engine>, game: TestGame) {
   var pairs = event.pairs;
@@ -10,10 +10,11 @@ export default function handleCollisionStart(event: Matter.IEventCollision<Matte
     const collisionEntities = determineHoldableCollisionPairEntities(pair, game);
     if (!collisionEntities) return;
     const { holdable, heldBy, otherEntityId, otherEntityCategory } = collisionEntities;
+    holdable.isColliding = true;
     if (otherEntityCategory !== EntityCategory.PLAYER_CONTROLLED) {
       // later calc durability loss, weapon breaks
       pair.isSensor = false;
-      temorarilyLoosenGrips(holdable);
+      loosenGrips(holdable);
       return;
     }
     if (otherEntityCategory === EntityCategory.PLAYER_CONTROLLED) {

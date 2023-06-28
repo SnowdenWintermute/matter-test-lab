@@ -31,7 +31,7 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
     drawHP(context, entity);
   });
   Object.values(game.entities.holdable).forEach((holdable) => {
-    drawPoly(context, holdable.body.vertices, "white");
+    drawPoly(context, holdable.body.vertices, holdable.isColliding ? "black" : "white");
     // drawCircle(context, holdable.body.vertices[0], 2, "red", true);
     // drawCircle(context, holdable.body.position, 1, "black", true);
     // if (!holdable.heldBy) return;
