@@ -1,7 +1,7 @@
 import { TestGame } from "..";
 import { EntityCategory } from "../enums";
 
-export default function determineHoldableCollisionPairEntities(pair: Matter.Pair, game: TestGame) {
+export default function determineHoldableCollisionPairEntities(pair: Matter.Pair, game: TestGame, collisionState?: string) {
   const { bodyA, bodyB } = pair;
   const [bodyACategory, bodyAEntityId] = bodyA.label.split("-").map((value) => Number(value));
   const [bodyBCategory, bodyBEntityId] = bodyB.label.split("-").map((value) => Number(value));
@@ -21,6 +21,7 @@ export default function determineHoldableCollisionPairEntities(pair: Matter.Pair
     otherEntityMeta.id = bodyAEntityId;
     otherEntityMeta.category = bodyACategory;
   }
+  if (collisionState === "active") console.log(otherEntityMeta.id);
   const holdable = game.entities.holdable[holdableEntityMeta.id];
   const { heldBy } = holdable;
 

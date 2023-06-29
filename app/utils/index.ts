@@ -53,3 +53,14 @@ export function getDirectionOfClosestPathToTargetAngle(angle: number, targetAngl
   else dir = -Math.sign(difference);
   return dir;
 }
+
+export function getSpeedOfApproach(approachingBody: Matter.Body, targetBody: Matter.Body) {
+  const relativeVelocity = Vector.sub(targetBody.velocity, approachingBody.velocity);
+  const displacement = Vector.sub(targetBody.position, approachingBody.position);
+  const displacementNormalized = Vector.normalise(displacement);
+  const linearSpeedOfApproach = Vector.dot(relativeVelocity, displacementNormalized);
+  const perpendicularDistance = Vector.cross(displacement, displacementNormalized);
+  const rotationalSpeedOfApproach = approachingBody.angularVelocity * perpendicularDistance;
+  const totalSpeedOfApproach = linearSpeedOfApproach + rotationalSpeedOfApproach;
+  return totalSpeedOfApproach;
+}

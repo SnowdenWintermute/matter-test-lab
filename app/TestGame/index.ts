@@ -12,6 +12,8 @@ import { EntityCategory } from "./enums";
 import equipHoldableToEntity from "./equipHoldableToEntity";
 import cloneDeep from "lodash.clonedeep";
 import handleCollisionEnd from "./handleCollisions/handleCollisionEnd";
+import handleCollisionActive from "./handleCollisions/handleCollisionActive";
+import updateTraumas from "./updateTraumas";
 
 export class CSEntities {
   lastIdAssigned = -1;
@@ -19,6 +21,7 @@ export class CSEntities {
   mobile: { [id: number]: MobileEntity } = {};
   static: { [id: number]: Entity } = {};
   holdable: { [id: number]: Holdable } = {};
+  experiencingTrauma: { [entityId: number]: { id: number; category: EntityCategory } } = {};
 }
 
 export class TestGame {
@@ -38,6 +41,7 @@ export class TestGame {
     this.physicsEngine.gravity.x = 0;
     this.physicsEngine.gravity.scale = 0;
     Matter.Events.on(this.physicsEngine, "collisionStart", (e) => this.handleCollisionStart(e, this));
+    Matter.Events.on(this.physicsEngine, "collisionActive", (e) => this.handleCollisionActive(e, this));
     Matter.Events.on(this.physicsEngine, "collisionEnd", (e) => this.handleCollisionEnd(e, this));
 
     // createRandomlyPlacedCircleEntities(this);
@@ -47,8 +51,8 @@ export class TestGame {
     });
     const playerEntity2 = this.createRegisteredPlayerEntity(
       {
-        x: 250,
-        y: 350,
+        x: 70,
+        y: 250,
       }
       // { static: true }
     );
@@ -103,7 +107,7 @@ export class TestGame {
   createRegisteredHoldable(type: HoldableType, position: Vector) {
     this.entities.lastIdAssigned += 1;
     const id = this.entities.lastIdAssigned;
-    const holdable = new Spear(position);
+    const holdable = new Spear(id, position);
     holdable.body.label = `${EntityCategory.HOLDABLE}-${id}`;
     this.entities.holdable[id] = holdable;
     Matter.Composite.add(this.physicsEngine.world, holdable.body);
@@ -139,11 +143,13 @@ export class TestGame {
 
   handleCollisionStart = handleCollisionStart;
   handleCollisionEnd = handleCollisionEnd;
+  handleCollisionActive = handleCollisionActive;
 
   stepGame(context: CanvasRenderingContext2D, canvasSize: { width: number; height: number }) {
     this.intervals.physics = setTimeout(() => {
       handlePlayerInputs(this);
       Matter.Engine.update(this.physicsEngine, this.renderRate);
+      updateTraumas(this);
       render(context, this, canvasSize);
       this.stepGame(context, canvasSize);
     }, this.renderRate);

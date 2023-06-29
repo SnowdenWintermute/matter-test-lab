@@ -3,6 +3,7 @@ import { Entity } from "../entities/Entity";
 import { MobileEntity } from "../entities/MobileEntity";
 import Matter from "matter-js";
 import { getPointInArc } from "@/app/utils";
+import slideGrip from "./slideGrip";
 
 export enum HoldableType {
   SPEAR,
@@ -64,4 +65,8 @@ export abstract class Holdable extends Entity {
   constructor(id: number, body: Body, public type: HoldableType, public requiresTwoHands: boolean, public length: number) {
     super(id, body, 1, 0, { max: 10, current: 10 });
   }
+  slideGrip = () => slideGrip(this);
+  //getFarthestTopVertex() {
+  //  //
+  //}
 }

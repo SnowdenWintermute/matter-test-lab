@@ -19,7 +19,7 @@ export class MobileEntity extends Entity {
   stance = EntityStance.AT_EASE;
   combatMoveExecutionState = CombatMoveExecutionState.AT_REST;
   constructor(id: number, body: Body, owner: string, acceleration: number = 0.01, topSpeed: number = 10, turningSpeed?: number, jumpHeight?: number) {
-    super(id, body, 1, 1, { max: 10, current: 10 }, owner);
+    super(id, body, 1, 1, { max: 100, current: 100 }, owner);
     this.acceleration = acceleration;
     this.topSpeed = topSpeed;
     if (turningSpeed) this.turningSpeed.current = this.turningSpeed.base = turningSpeed;

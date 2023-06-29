@@ -1,7 +1,7 @@
-import { distBetweenTwoPoints, getPointInArc } from "../utils";
-import { Holdable } from "./holdables/Holdable";
+import { distBetweenTwoPoints, getPointInArc } from "../../utils";
+import { Holdable } from "./Holdable";
 
-export default function slideGripOnHoldable(holdable: Holdable) {
+export default function slideGrip(holdable: Holdable) {
   const { grips } = holdable;
   if (!grips) return;
   const { main, support } = grips;
@@ -15,6 +15,4 @@ export default function slideGripOnHoldable(holdable: Holdable) {
   support.lower.pointB.y = newSupportLowerGripB.y;
   support.upper.pointB.x = newSupportUpperGripB.x;
   support.upper.pointB.y = newSupportUpperGripB.y;
-  // grips.b.pointB.x = newGripB.x;
-  // grips.b.pointB.y = newGripB.y;
 }

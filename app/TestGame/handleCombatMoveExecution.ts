@@ -1,6 +1,5 @@
 import { TestGame } from ".";
 import { MobileEntity } from "./entities/MobileEntity";
-import slideGripOnHoldable from "./slideGripOnHoldable";
 import moveGripTowardPosition from "./moveGripTowardPosition";
 import { CombatMoveExecutionState, EntityStance } from "./enums";
 import { PointRelativeToBody } from "./holdables/PointRelativeToBody";
@@ -22,7 +21,7 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
         moveGripTowardPosition(entity, grip, positionOptions.rest[pairKey][gripKey], handSpeed);
       });
     });
-    slideGripOnHoldable(equippedHoldable);
+    equippedHoldable.slideGrip();
   }
 
   if (combatMoveExecutionState === CombatMoveExecutionState.READYING && positionOptions.ready) {
@@ -32,7 +31,7 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
         moveGripTowardPosition(entity, grip, positionOptions.ready[pairKey][gripKey], handSpeed);
       });
     });
-    slideGripOnHoldable(equippedHoldable);
+    equippedHoldable.slideGrip();
   }
 
   if (combatMoveExecutionState === CombatMoveExecutionState.STRIKING_FORWARD && positionOptions.forwardStrike) {
@@ -43,7 +42,7 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
         reachedTargetDestination = moveGripTowardPosition(entity, grip, positionOptions.forwardStrike[pairKey][gripKey], handSpeed);
       });
     });
-    slideGripOnHoldable(equippedHoldable);
+    equippedHoldable.slideGrip();
     if (reachedTargetDestination) entity.combatMoveExecutionState = CombatMoveExecutionState.READYING;
   }
 }

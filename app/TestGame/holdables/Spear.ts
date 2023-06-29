@@ -11,12 +11,12 @@ export class Spear extends Holdable {
     forwardStrike: new HoldableGripConstraintCreationData({ x: 8, y: -40 }, Math.PI / 2, this.distBetweenGripPairMembers, 20, 10),
   };
 
-  constructor(position: Vector) {
+  constructor(id: number, position: Vector) {
     const length = 110;
     const width = 3;
     const body = Matter.Bodies.rectangle(position.x, position.y, width, length, {
       isSensor: true,
     });
-    super(1, body, HoldableType.SPEAR, true, length);
+    super(id, body, HoldableType.SPEAR, true, length);
   }
 }

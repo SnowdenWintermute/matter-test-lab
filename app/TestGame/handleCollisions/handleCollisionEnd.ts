@@ -17,6 +17,9 @@ export default function handleCollisionEnd(event: Matter.IEventCollision<Matter.
     }
     if (otherEntityCategory === EntityCategory.PLAYER_CONTROLLED) {
       heldBy.turningSpeed.current = heldBy.turningSpeed.base;
+      const entityStruck = game.entities.playerControlled[otherEntityId];
+      delete entityStruck.developingTraumas[holdable.id];
+      delete game.entities.experiencingTrauma[entityStruck.id];
     }
   }
 }
