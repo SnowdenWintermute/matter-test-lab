@@ -43,10 +43,15 @@ export function getPointInArc(center: Vector, angle: number, radius: number): Ve
   return { x, y };
 }
 
-export function getDirectionOfClosestPathToTargetAngle(angle: number, targetAngle: number, diffTolerance: number) {
-  const normalizedAngle = normalizeRadians(angle);
-  const normalizedTarget = normalizeRadians(targetAngle);
+export function getNormalizedAngleDiff(angleA: number, angleB: number){
+  const normalizedAngle = normalizeRadians(angleA);
+  const normalizedTarget = normalizeRadians(angleB);
   const difference = normalizedTarget - normalizedAngle;
+  return difference
+}
+
+export function getDirectionOfClosestPathToTargetAngle(angle: number, targetAngle: number, diffTolerance: number) {
+  const difference = getNormalizedAngleDiff(angle, targetAngle)
   let dir = 0;
   if (Math.abs(difference) < diffTolerance) dir = 0;
   else if (Math.abs(difference) <= Math.PI) dir = Math.sign(difference);
