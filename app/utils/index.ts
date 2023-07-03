@@ -43,20 +43,20 @@ export function getPointInArc(center: Vector, angle: number, radius: number): Ve
   return { x, y };
 }
 
-export function getNormalizedAngleDiff(angleA: number, angleB: number){
+export function getNormalizedAngleDiff(angleA: number, angleB: number) {
   const normalizedAngle = normalizeRadians(angleA);
   const normalizedTarget = normalizeRadians(angleB);
   const difference = normalizedTarget - normalizedAngle;
-  return difference
+  return difference;
 }
 
-export function getDirectionOfClosestPathToTargetAngle(angle: number, targetAngle: number, diffTolerance: number) {
-  const difference = getNormalizedAngleDiff(angle, targetAngle)
-  let dir = 0;
-  if (Math.abs(difference) < diffTolerance) dir = 0;
-  else if (Math.abs(difference) <= Math.PI) dir = Math.sign(difference);
-  else dir = -Math.sign(difference);
-  return dir;
+export function getDirectionAndDiffOfClosestPathToTargetAngle(angle: number, targetAngle: number, diffTolerance: number) {
+  const difference = getNormalizedAngleDiff(angle, targetAngle);
+  let direction = 0;
+  if (Math.abs(difference) < diffTolerance) direction = 0;
+  else if (Math.abs(difference) <= Math.PI) direction = Math.sign(difference);
+  else direction = -Math.sign(difference);
+  return { direction, difference };
 }
 
 export function getSpeedOfApproach(approachingBody: Matter.Body, targetBody: Matter.Body) {
@@ -68,4 +68,11 @@ export function getSpeedOfApproach(approachingBody: Matter.Body, targetBody: Mat
   const rotationalSpeedOfApproach = approachingBody.angularVelocity * perpendicularDistance;
   const totalSpeedOfApproach = linearSpeedOfApproach + rotationalSpeedOfApproach;
   return totalSpeedOfApproach;
+}
+
+export function bucketAngle(angle: number, numSections: number): number {
+  angle = ((angle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+  const sectionSize = (2 * Math.PI) / numSections;
+  const sectionIndex = Math.floor(angle / sectionSize);
+  return sectionIndex;
 }

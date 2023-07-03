@@ -1,25 +1,48 @@
 import { TestGame } from ".";
-import { getNormalizedAngleDiff } from "../utils";
+import { bucketAngle, getNormalizedAngleDiff } from "../utils";
 import closestDistanceToPolygon from "../utils/closestDistanceToPolygon";
 import convexPolygonOverlapArea from "../utils/convexPolygonOverlapArea";
-import { Trauma } from "./entities/Trauma";
+import { Trauma, numberOfAngleBuckets } from "./entities/Trauma";
+import { Holdable } from "./holdables/Holdable";
 
 export default function updateTraumas(game: TestGame) {
   Object.values(game.entities.experiencingTrauma).forEach((entityMeta) => {
     const entity = game.entities.playerControlled[entityMeta.id];
     Object.values(entity.developingTraumas).forEach((trauma) => {
       const source = game.entities.holdable[trauma.sourceId];
-      const newDiffAnglesSourceAndEntity = getNormalizedAngleDiff(source.body.angle, entity.body.angle);
-      const changeInAngle = Math.abs(trauma.currentAngleDiffSourceToEntity - newDiffAnglesSourceAndEntity);
-      trauma.currentDistToCenter = closestDistanceToPolygon(source.body.vertices, entity.body.position);
-      trauma.currentAngleDiffSourceToEntity = newDiffAnglesSourceAndEntity;
-      trauma.currentOverlap = convexPolygonOverlapArea(source.body.vertices, entity.body.vertices);
-      // const angleChangeToUse = changeInAngle < 0.01 ? 0.01 : changeInAngle;
-      const damage = changeInAngle * trauma.currentOverlap;
-      // console.log(trauma.currentDistToCenter.toFixed(2), changeInAngle.toFixed(2), trauma.currentOverlap.toFixed(2));
-      console.log(damage);
-      if (entity.hp.current > 0) entity.hp.current -= damage;
-      // calc damage
+      // get the diff between entity and source angles
+      const angleDiffBetweenEntityAndSource = entity.body.angle - source.body.angle;
+      const angleBucket = bucketAngle(angleDiffBetweenEntityAndSource, numberOfAngleBuckets);
+      const newOverlap = convexPolygonOverlapArea(source.body.vertices, entity.body.vertices);
+      // check if a bucket exists which would include that angle diff
+      // if not, create it and record the highest overlap at that angle diff
+      let increaseInOverlap;
+      if (!trauma.overlapsBucketedByAngleDiffs[angleBucket]) {
+        trauma.overlapsBucketedByAngleDiffs[angleBucket] = newOverlap;
+        increaseInOverlap = newOverlap;
+        // else, check if current overlap is greater than last recorded overlap in the bucket and calculate damage based on difference in overlap
+      } else if (newOverlap > trauma.overlapsBucketedByAngleDiffs[angleBucket]) {
+        increaseInOverlap = newOverlap - trauma.overlapsBucketedByAngleDiffs[angleBucket];
+        trauma.overlapsBucketedByAngleDiffs[angleBucket] = newOverlap;
+      }
+
+      const currentDistToCenter = closestDistanceToPolygon(source.body.vertices, entity.body.position);
+      // adjust speed of entity holding source
+      const { heldBy } = source;
+      if (heldBy) {
+        heldBy.turningSpeed.current = 0.005;
+        heldBy.handSpeed.current = 1;
+      }
+
+      if (entity.hp.current > 0 && increaseInOverlap) {
+        let damage = increaseInOverlap * 0.01;
+        if (currentDistToCenter <= entity.weakpoint.radius) {
+          const damageMultiplier = entity.weakpoint.radius - currentDistToCenter;
+          damage *= Math.max(damageMultiplier / 2, 1);
+        }
+        entity.hp.current -= damage;
+        trauma.totalDamage += damage;
+      }
     });
   });
 }

@@ -1,6 +1,6 @@
 import { Body, Vector } from "matter-js";
 import { TestGame } from ".";
-import { getDirectionOfClosestPathToTargetAngle } from "../utils";
+import { getDirectionAndDiffOfClosestPathToTargetAngle } from "../utils";
 import { MobileEntity } from "./entities/MobileEntity";
 
 export default function rotatePlayerTowardMouse(game: TestGame, entity: MobileEntity) {
@@ -10,16 +10,16 @@ export default function rotatePlayerTowardMouse(game: TestGame, entity: MobileEn
   if (mouseState.position) {
     const targetAngle = Math.atan2(mouseState.position.y - body.position.y, mouseState.position.x - body.position.x);
     game.inputState.targetAngle = entity.targetAngle = targetAngle;
-    const dir = getDirectionOfClosestPathToTargetAngle(angle, targetAngle, entity.turningSpeed.current * 2);
+    const { direction } = getDirectionAndDiffOfClosestPathToTargetAngle(angle, targetAngle, entity.turningSpeed.current * 2);
     // if (dir !== 0) body.isStatic = false;
-    if (dir === -1) {
+    if (direction === -1) {
       Body.applyForce(body, Vector.add(body.position, Vector.create(-20, 0)), Vector.create(0, entity.turningSpeed.current / 2));
       Body.applyForce(body, Vector.add(body.position, Vector.create(20, 0)), Vector.create(0, -entity.turningSpeed.current / 2));
     }
-    if (dir === 1) {
+    if (direction === 1) {
       Body.applyForce(body, Vector.add(body.position, Vector.create(-20, 0)), Vector.create(0, -entity.turningSpeed.current / 2));
       Body.applyForce(body, Vector.add(body.position, Vector.create(20, 0)), Vector.create(0, entity.turningSpeed.current / 2));
     }
-    // if (!dir) Body.setAngle(body, targetAngle);
+    if (!direction) Body.setAngle(body, targetAngle);
   }
 }

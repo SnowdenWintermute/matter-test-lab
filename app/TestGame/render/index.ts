@@ -8,6 +8,8 @@ import drawHP from "./drawHP";
 import drawEntityDebugText from "./drawEntityDebugText";
 import { WidthAndHeight } from "../common-classes";
 import drawDebugText from "./drawDebugText";
+import { Vector } from "matter-js";
+import { angleBetweenPoints, distBetweenTwoPoints, getPointInArc } from "@/app/utils";
 
 export default function render(context: CanvasRenderingContext2D, game: TestGame, canvasSize: WidthAndHeight) {
   context.clearRect(0, 0, canvasSize.width, canvasSize.height);
@@ -20,12 +22,20 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
   });
   Object.values(game.entities.playerControlled).forEach((entity) => {
     const { position, angle } = entity.body;
-    const { targetAngle } = entity;
+    const { targetAngle, weakpoint } = entity;
     drawPoly(context, entity.body.vertices, "#9ba8b8");
     drawAngleLine(context, position, angle, 4, 40, "#a52026");
     drawAngleLine(context, position, targetAngle, 4, 40, "#028a7e");
     drawEntityDebugText(context, entity);
     drawHP(context, entity);
+    const weakpointNonRotatedPosition = Vector.add(position, weakpoint.offset);
+    drawCircle(
+      context,
+      getPointInArc(position, angleBetweenPoints(position, weakpointNonRotatedPosition), distBetweenTwoPoints(position, weakpointNonRotatedPosition)),
+      weakpoint.radius,
+      "grey",
+      true
+    );
   });
   Object.values(game.entities.holdable).forEach((holdable) => {
     const { body } = holdable;

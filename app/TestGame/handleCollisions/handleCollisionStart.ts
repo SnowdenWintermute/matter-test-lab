@@ -27,16 +27,9 @@ export default function handleCollisionStart(event: Matter.IEventCollision<Matte
       const speedOfApproach = getSpeedOfApproach(holdable.body, entityStruck.body);
       // if (Math.abs(speedOfApproach) > 6) {
       pair.isSensor = true;
-      heldBy.turningSpeed.current = 0.02;
       if (entityStruck.hp.current > 0) {
         if (!entityStruck.developingTraumas[holdable.id]) {
-          const newTrauma = new Trauma(
-            { id: entityStruck.id, category: EntityCategory.PLAYER_CONTROLLED },
-            holdable.id,
-            closestDistanceToPolygon(holdable.body.vertices, entityStruck.body.position),
-            getNormalizedAngleDiff(holdable.body.angle, entityStruck.body.angle),
-            convexPolygonOverlapArea(holdable.body.vertices, entityStruck.body.vertices)
-          );
+          const newTrauma = new Trauma({ id: entityStruck.id, category: EntityCategory.PLAYER_CONTROLLED }, holdable.id);
           entityStruck.developingTraumas[holdable.id] = newTrauma;
           game.entities.experiencingTrauma[entityStruck.id] = { id: entityStruck.id, category: EntityCategory.PLAYER_CONTROLLED };
         }

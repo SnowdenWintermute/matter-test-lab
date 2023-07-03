@@ -18,6 +18,7 @@ export default function handleCollisionEnd(event: Matter.IEventCollision<Matter.
     if (otherEntityCategory === EntityCategory.PLAYER_CONTROLLED) {
       heldBy.turningSpeed.current = heldBy.turningSpeed.base;
       const entityStruck = game.entities.playerControlled[otherEntityId];
+      console.log("TRAUMA DAMAGE TOTAL: ", entityStruck.developingTraumas[holdable.id]?.totalDamage);
       delete entityStruck.developingTraumas[holdable.id];
       delete game.entities.experiencingTrauma[entityStruck.id];
     }

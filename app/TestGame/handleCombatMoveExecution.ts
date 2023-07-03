@@ -18,7 +18,7 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
     Object.entries(grips).forEach(([pairKey, gripPair]) => {
       Object.entries(gripPair).forEach(([gripKey, grip]) => {
         // @ts-ignore
-        moveGripTowardPosition(entity, grip, positionOptions.rest[pairKey][gripKey], handSpeed);
+        moveGripTowardPosition(entity, grip, positionOptions.rest[pairKey][gripKey], handSpeed.current);
       });
     });
     equippedHoldable.slideGrip();
@@ -28,7 +28,7 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
     Object.entries(grips).forEach(([pairKey, gripPair]) => {
       Object.entries(gripPair).forEach(([gripKey, grip]) => {
         // @ts-ignore
-        moveGripTowardPosition(entity, grip, positionOptions.ready[pairKey][gripKey], handSpeed);
+        moveGripTowardPosition(entity, grip, positionOptions.ready[pairKey][gripKey], handSpeed.current);
       });
     });
     equippedHoldable.slideGrip();
@@ -39,7 +39,7 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
     Object.entries(grips).forEach(([pairKey, gripPair]) => {
       Object.entries(gripPair).forEach(([gripKey, grip]) => {
         // @ts-ignore
-        reachedTargetDestination = moveGripTowardPosition(entity, grip, positionOptions.forwardStrike[pairKey][gripKey], handSpeed);
+        reachedTargetDestination = moveGripTowardPosition(entity, grip, positionOptions.forwardStrike[pairKey][gripKey], handSpeed.current);
       });
     });
     equippedHoldable.slideGrip();
