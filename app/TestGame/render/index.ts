@@ -16,6 +16,7 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
   // drawGrid(context, canvasSize, 25);
   Object.values(game.entities.static).forEach((entity) => {
     drawPoly(context, entity.body.vertices, "grey");
+    drawCircle(context, entity.body.position, 3, "blue", true);
   });
   Object.values(game.entities.mobile).forEach((entity) => {
     drawPoly(context, entity.body.vertices, "grey");

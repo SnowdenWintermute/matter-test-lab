@@ -3,7 +3,7 @@ import { Entity } from "./Entity";
 import { Holdable } from "../holdables/Holdable";
 import { CombatMoveExecutionState, EntityStance } from "../enums";
 
-const baseHp = 200;
+const baseHp = 10;
 
 export class MobileEntity extends Entity {
   targetAngle = 0;

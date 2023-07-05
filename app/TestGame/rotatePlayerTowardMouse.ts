@@ -20,6 +20,6 @@ export default function rotatePlayerTowardMouse(game: TestGame, entity: MobileEn
       Body.applyForce(body, Vector.add(body.position, Vector.create(-20, 0)), Vector.create(0, -entity.turningSpeed.current / 2));
       Body.applyForce(body, Vector.add(body.position, Vector.create(20, 0)), Vector.create(0, entity.turningSpeed.current / 2));
     }
-    if (!direction) Body.setAngle(body, targetAngle);
+    // if (!direction) Body.setAngle(body, targetAngle);
   }
 }

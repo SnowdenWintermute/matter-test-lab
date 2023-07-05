@@ -14,6 +14,7 @@ import cloneDeep from "lodash.clonedeep";
 import handleCollisionEnd from "./handleCollisions/handleCollisionEnd";
 import handleCollisionActive from "./handleCollisions/handleCollisionActive";
 import updateTraumas from "./updateTraumas";
+import { WidthAndHeight } from "./common-classes";
 
 export class CSEntities {
   lastIdAssigned = -1;
@@ -45,36 +46,31 @@ export class TestGame {
     Matter.Events.on(this.physicsEngine, "collisionEnd", (e) => this.handleCollisionEnd(e, this));
 
     // createRandomlyPlacedCircleEntities(this);
-    const playerEntity = this.createRegisteredPlayerEntity({
-      x: 250,
-      y: 250,
-    });
-    const playerEntity2 = this.createRegisteredPlayerEntity(
-      {
-        x: 70,
-        y: 250,
-      }
-      // { static: true }
-    );
+    const playerEntity = this.createRegisteredPlayerEntity({ x: 200, y: 250 });
+    const playerEntity2 = this.createRegisteredPlayerEntity({ x: 370, y: 250 });
     const spear = this.createRegisteredHoldable(HoldableType.SPEAR, { x: playerEntity.body.position.x, y: playerEntity.body.position.y });
     this.equipHoldableToEntity(this, playerEntity, spear);
     // const spear2 = this.createRegisteredHoldable(HoldableType.SPEAR, playerEntity2.body.position);
     // this.equipHoldableToEntity(this, playerEntity2, spear2);
+    this.createBorderWalls({ width: 800, height: 600 }, { x: 5, y: 5 });
 
-    for (let i = 0; i < 4; i += 1) this.createRegisteredTargetDummy({ y: 100, x: 50 + 100 * i }, { x: 25 + 25 * i, y: 25 + 40 * i }, 10 + 10000 * i);
-
-    this.createRegisteredStaticEntity({ x: 0, y: 0 }, { x: 5, y: 1000 });
-    this.createRegisteredStaticEntity({ x: 0, y: 0 }, { x: 1000, y: 5 });
-    this.createRegisteredStaticEntity({ x: 500, y: 0 }, { x: 5, y: 1000 });
-    this.createRegisteredStaticEntity({ x: 0, y: 500 }, { x: 1000, y: 5 });
-
-    this.createRegisteredStaticEntity({ x: 200, y: 400 }, { x: 100, y: 100 });
+    this.createRegisteredStaticEntity({ x: 200, y: 400 }, { width: 30, height: 30 });
   }
 
-  createRegisteredStaticEntity(position: Vector, size: Vector) {
+  createBorderWalls(size: WidthAndHeight, offset: Vector, thickness: number = 5) {
+    const { width, height } = size;
+    const x = offset.x + width / 2;
+    const y = offset.y + height / 2;
+    this.createRegisteredStaticEntity({ x, y: offset.y }, { width, height: thickness });
+    this.createRegisteredStaticEntity({ x: offset.x, y }, { width: thickness, height });
+    this.createRegisteredStaticEntity({ x, y: offset.y + height }, { width: width, height: thickness });
+    this.createRegisteredStaticEntity({ x: offset.x + width, y }, { width: thickness, height });
+  }
+
+  createRegisteredStaticEntity(position: Vector, size: WidthAndHeight) {
     this.entities.lastIdAssigned += 1;
     const id = this.entities.lastIdAssigned;
-    const body = Matter.Bodies.rectangle(position.x, position.y, size.x, size.y, { isStatic: true });
+    const body = Matter.Bodies.rectangle(position.x, position.y, size.width, size.height, { isStatic: true });
     Matter.Composite.add(this.physicsEngine.world, body);
     this.entities.static[id] = new Entity(id, body, 1, 0, { max: 1, current: 1 });
     return this.entities.mobile[id];
@@ -150,6 +146,11 @@ export class TestGame {
       handlePlayerInputs(this);
       Matter.Engine.update(this.physicsEngine, this.renderRate);
       updateTraumas(this);
+      if (Object.keys(this.entities.playerControlled).length < 2) {
+        const x = Math.floor(Math.random() * 500);
+        const y = Math.floor(Math.random() * 500);
+        this.createRegisteredPlayerEntity({ x, y });
+      }
       render(context, this, canvasSize);
       this.stepGame(context, canvasSize);
     }, this.renderRate);

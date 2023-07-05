@@ -1,3 +1,4 @@
+import Matter from "matter-js";
 import { TestGame } from ".";
 import { bucketAngle, getNormalizedAngleDiff } from "../utils";
 import closestDistanceToPolygon from "../utils/closestDistanceToPolygon";
@@ -14,6 +15,7 @@ export default function updateTraumas(game: TestGame) {
       const angleDiffBetweenEntityAndSource = entity.body.angle - source.body.angle;
       const angleBucket = bucketAngle(angleDiffBetweenEntityAndSource, numberOfAngleBuckets);
       const newOverlap = convexPolygonOverlapArea(source.body.vertices, entity.body.vertices);
+      trauma.currentOverlap = newOverlap;
       // check if a bucket exists which would include that angle diff
       // if not, create it and record the highest overlap at that angle diff
       let increaseInOverlap;
@@ -27,20 +29,27 @@ export default function updateTraumas(game: TestGame) {
       }
 
       const currentDistToCenter = closestDistanceToPolygon(source.body.vertices, entity.body.position);
+      trauma.currentDistToCenter = currentDistToCenter;
       // adjust speed of entity holding source
       const { heldBy } = source;
       if (heldBy) {
-        heldBy.turningSpeed.current = 0.005;
-        heldBy.handSpeed.current = 1;
+        const MAX_OVERLAP = 222;
+        const percentOfMaxOverlap = trauma.currentOverlap / MAX_OVERLAP;
+        const resistance = Math.max(1 - percentOfMaxOverlap, 0.1);
+
+        heldBy.turningSpeed.current = heldBy.turningSpeed.base * resistance;
+        heldBy.handSpeed.current = heldBy.handSpeed.base * resistance;
+        heldBy.acceleration.current = heldBy.acceleration.base * resistance;
       }
 
       if (entity.hp.current > 0 && increaseInOverlap) {
         let damage = increaseInOverlap * 0.01;
         if (currentDistToCenter <= entity.weakpoint.radius) {
           const damageMultiplier = entity.weakpoint.radius - currentDistToCenter;
-          damage *= Math.max(damageMultiplier / 2, 1);
+          damage *= Math.max(damageMultiplier / 5, 1);
         }
         entity.hp.current -= damage;
+        if (entity.hp.current < 0) entity.hp.current = 0;
         trauma.totalDamage += damage;
       }
     });

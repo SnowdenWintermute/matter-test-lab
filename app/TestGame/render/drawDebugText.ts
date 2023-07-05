@@ -10,8 +10,7 @@ export default function drawDebugText(context: CanvasRenderingContext2D, canvasS
   if (entityExperiencingTrauma?.developingTraumas) {
     const trauma = Object.values(entityExperiencingTrauma?.developingTraumas)[0];
     if (trauma) {
-      const { originalSourceAngle, maxNegativeAngleChange, maxPositiveAngleChange } = trauma;
-      traumaText = `OGANGLE: ${originalSourceAngle} MAXPOSANGLE: ${maxPositiveAngleChange}, MAXNEGANGLE: ${maxNegativeAngleChange}`;
+      traumaText = `OVERLAP: ${trauma.currentOverlap}`;
     }
   }
 
