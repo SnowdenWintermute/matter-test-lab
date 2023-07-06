@@ -23,7 +23,7 @@ export default function handleCollisionEnd(event: Matter.IEventCollision<Matter.
 
       const entityStruck = game.entities.playerControlled[otherEntityId];
       if (entityStruck) {
-        console.log("TRAUMA DAMAGE TOTAL: ", entityStruck.developingTraumas[holdable.id]?.totalDamage);
+        // console.log("TRAUMA DAMAGE TOTAL: ", entityStruck.developingTraumas[holdable.id]?.totalDamage);
         delete entityStruck.developingTraumas[holdable.id];
         delete game.entities.experiencingTrauma[entityStruck.id];
         if (entityStruck.hp.current <= 0) {

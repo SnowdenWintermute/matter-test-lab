@@ -10,8 +10,10 @@ export default function determineHoldableCollisionPairEntities(pair: Matter.Pair
 
   const holdableEntityMeta = { id: bodyAEntityId, category: bodyACategory };
   const otherEntityMeta = { id: bodyBEntityId, category: bodyBCategory };
+  let otherBody = bodyB;
 
   if (bodyBCategory === EntityCategory.HOLDABLE) {
+    otherBody = bodyA;
     holdableEntityMeta.id = bodyBEntityId;
     holdableEntityMeta.category = bodyBCategory;
     otherEntityMeta.id = bodyAEntityId;
@@ -22,7 +24,7 @@ export default function determineHoldableCollisionPairEntities(pair: Matter.Pair
   const { heldBy } = holdable;
 
   if (!heldBy) return console.log("a holdable collision ended while no entity was holding it");
-  if (heldBy.id === otherEntityMeta.id) return; // don't collide with the entity holding this item
 
-  return { holdable, heldBy, otherEntityId: otherEntityMeta.id, otherEntityCategory: otherEntityMeta.category };
+  if (heldBy.id === otherEntityMeta.id) return; // don't collide with the entity holding this item
+  return { holdable, heldBy, otherEntityId: otherEntityMeta.id, otherEntityCategory: otherEntityMeta.category, otherBody };
 }

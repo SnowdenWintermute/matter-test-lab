@@ -7,6 +7,7 @@ import slideGrip from "./slideGrip";
 
 export enum HoldableType {
   SPEAR,
+  ONE_HANDED_SWORD,
 }
 
 export type HoldableGripPairOffsets = {
@@ -21,7 +22,7 @@ export class HoldableGripConstraintCreationData {
     public lowestGripPoint: Vector,
     public angle: number,
     public distBetweenPairMembers: number,
-    public distBetweenGripPairs?: number,
+    public distBetweenGripPairs: number | null = null,
     public lowestPointYOffsetFromHoldableBottom?: number,
     public stiffnesses = { main: { lower: 1, upper: 0.8 }, support: { lower: 0.7, upper: 0.5 } }
   ) {
@@ -29,7 +30,7 @@ export class HoldableGripConstraintCreationData {
       lower: lowestGripPoint,
       upper: getPointInArc(lowestGripPoint, angle, -distBetweenPairMembers),
     };
-    if (distBetweenGripPairs)
+    if (typeof distBetweenGripPairs === "number")
       this.support = {
         lower: getPointInArc(lowestGripPoint, angle, -distBetweenGripPairs - distBetweenPairMembers),
         upper: getPointInArc(lowestGripPoint, angle, -distBetweenGripPairs - distBetweenPairMembers * 2),

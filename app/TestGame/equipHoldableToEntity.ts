@@ -2,8 +2,10 @@ import { TestGame } from ".";
 import { distBetweenTwoPoints } from "../utils";
 import { MobileEntity } from "./entities/MobileEntity";
 import { Holdable } from "./holdables/Holdable";
+import { OneHandedSword } from "./holdables/OneHandedSword";
+import { Spear } from "./holdables/Spear";
 
-export default function equipHoldableToEntity(game: TestGame, entity: MobileEntity, holdable: Holdable) {
+export default function equipHoldableToEntity(game: TestGame, entity: MobileEntity, holdable: Holdable | Spear | OneHandedSword) {
   if (holdable.requiresTwoHands) {
     entity.equippedHoldables.rightHand = holdable;
     entity.equippedHoldables.leftHand = holdable;

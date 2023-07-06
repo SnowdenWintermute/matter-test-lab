@@ -38,6 +38,7 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
       true
     );
   });
+
   Object.values(game.entities.holdable).forEach((holdable) => {
     const { body } = holdable;
     const { x, y } = body.position;
@@ -46,8 +47,8 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
     context.fillRect(x - 1, y - 1, 3, 3);
     // drawCircle(context, holdable.body.vertices[0], 2, "red", true);
     // drawCircle(context, holdable.body.position, 1, "black", true);
-    // if (!holdable.heldBy) return;
-    // drawGrips(context, holdable, holdable.heldBy);
+    if (!holdable.heldBy) return;
+    drawGrips(context, holdable, holdable.heldBy);
     // drawHoldablePositions(context, holdable, holdable.heldBy.body);
   });
   drawDebugText(context, canvasSize, game);

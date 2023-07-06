@@ -6,6 +6,7 @@ import loosenGrips from "./loosenGrips";
 import { Trauma } from "../entities/Trauma";
 import closestDistanceToPolygon from "@/app/utils/closestDistanceToPolygon";
 import convexPolygonOverlapArea from "@/app/utils/convexPolygonOverlapArea";
+import { Body, Vector } from "matter-js";
 
 export default function handleCollisionStart(event: Matter.IEventCollision<Matter.Engine>, game: TestGame) {
   var pairs = event.pairs;
@@ -13,7 +14,7 @@ export default function handleCollisionStart(event: Matter.IEventCollision<Matte
     const pair = pairs[i];
     const collisionEntities = determineHoldableCollisionPairEntities(pair, game);
     if (!collisionEntities) return;
-    const { holdable, heldBy, otherEntityId, otherEntityCategory } = collisionEntities;
+    const { holdable, heldBy, otherEntityId, otherEntityCategory, otherBody } = collisionEntities;
     holdable.isColliding = true;
     if (otherEntityCategory !== EntityCategory.PLAYER_CONTROLLED) {
       // later calc durability loss, weapon breaks
@@ -22,10 +23,7 @@ export default function handleCollisionStart(event: Matter.IEventCollision<Matte
       return;
     }
     if (otherEntityCategory === EntityCategory.PLAYER_CONTROLLED) {
-      // pair.isSensor = false;
       const entityStruck = game.entities.playerControlled[otherEntityId];
-      const speedOfApproach = getSpeedOfApproach(holdable.body, entityStruck.body);
-      // if (Math.abs(speedOfApproach) > 6) {
       pair.isSensor = true;
       if (entityStruck.hp.current > 0) {
         if (!entityStruck.developingTraumas[holdable.id]) {
@@ -33,10 +31,8 @@ export default function handleCollisionStart(event: Matter.IEventCollision<Matte
           entityStruck.developingTraumas[holdable.id] = newTrauma;
           game.entities.experiencingTrauma[entityStruck.id] = { id: entityStruck.id, category: EntityCategory.PLAYER_CONTROLLED };
         }
-        // }
         return;
       }
     }
-    // pair.isSensor = false;
   }
 }

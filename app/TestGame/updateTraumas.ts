@@ -1,4 +1,4 @@
-import Matter from "matter-js";
+import Matter, { Vector } from "matter-js";
 import { TestGame } from ".";
 import { bucketAngle, getNormalizedAngleDiff } from "../utils";
 import closestDistanceToPolygon from "../utils/closestDistanceToPolygon";
@@ -36,9 +36,8 @@ export default function updateTraumas(game: TestGame) {
         const MAX_OVERLAP = 222;
         const percentOfMaxOverlap = trauma.currentOverlap / MAX_OVERLAP;
         const resistance = Math.max(1 - percentOfMaxOverlap, 0.1);
-
         heldBy.turningSpeed.current = heldBy.turningSpeed.base * resistance;
-        heldBy.handSpeed.current = heldBy.handSpeed.base * resistance;
+        heldBy.handSpeed.current = heldBy.handSpeed.base * (Math.max(resistance * 2), 1);
         heldBy.acceleration.current = heldBy.acceleration.base * resistance;
       }
 
@@ -51,6 +50,8 @@ export default function updateTraumas(game: TestGame) {
         entity.hp.current -= damage;
         if (entity.hp.current < 0) entity.hp.current = 0;
         trauma.totalDamage += damage;
+        const { velocity } = source.body;
+        Matter.Body.applyForce(entity.body, entity.body.position, Vector.mult(velocity, 0.0005));
       }
     });
   });

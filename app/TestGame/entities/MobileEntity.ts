@@ -3,21 +3,24 @@ import { Entity } from "./Entity";
 import { Holdable } from "../holdables/Holdable";
 import { CombatMoveExecutionState, EntityStance } from "../enums";
 
-const baseHp = 10;
+const baseHp = 20;
+const baseTurningSpeed = 0.08;
+const baseHandSpeed = 8;
+const baseAcceleration = 0.01;
 
 export class MobileEntity extends Entity {
   targetAngle = 0;
   acceleration = {
-    current: 0.01,
-    base: 0.01,
+    current: baseAcceleration,
+    base: baseAcceleration,
     getSideways: () => this.acceleration.current * 0.6,
     getReverse: () => this.acceleration.current * 0.4,
   };
   topSpeed: number = 10;
-  turningSpeed = { current: 0.08, base: 0.08 };
+  turningSpeed = { current: baseTurningSpeed, base: baseTurningSpeed };
   jumpHeight = 20;
   jumpStrength = 1;
-  handSpeed = { current: 8, base: 8 };
+  handSpeed = { current: baseHandSpeed, base: baseHandSpeed };
   jumping = false;
   mainHand: "Left" | "Right" = "Right";
   equippedHoldables: { rightHand: Holdable | null; leftHand: Holdable | null } = { rightHand: null, leftHand: null };

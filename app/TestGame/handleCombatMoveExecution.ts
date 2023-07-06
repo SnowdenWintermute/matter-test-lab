@@ -28,7 +28,7 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
     Object.entries(grips).forEach(([pairKey, gripPair]) => {
       Object.entries(gripPair).forEach(([gripKey, grip]) => {
         // @ts-ignore
-        moveGripTowardPosition(entity, grip, positionOptions.ready[pairKey][gripKey], handSpeed.current);
+        moveGripTowardPosition(entity, grip, positionOptions.ready[pairKey][gripKey], handSpeed.current * 1);
       });
     });
     equippedHoldable.slideGrip();
