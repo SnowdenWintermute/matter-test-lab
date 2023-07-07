@@ -1,5 +1,5 @@
 import { Vector } from "matter-js";
-import { TestGame } from "../TestGame";
+import { TestGame } from "../../TestGame";
 import { CSPlayerInputState } from "./CSInputState";
 
 function handleMouseMove(e: MouseEvent, game: TestGame) {
@@ -10,7 +10,10 @@ function handleMouseMove(e: MouseEvent, game: TestGame) {
 
 function handleMouseDown(e: MouseEvent, game: TestGame) {
   e.preventDefault();
-  if (e.button === 0) game.inputState.mouseLeft = true;
+  if (e.button === 0) {
+    game.inputState.mouseLeft = true;
+    game.inputState.mouseLeftPressedTimestamp = +Date.now();
+  }
 }
 
 function handleMouseUp(e: MouseEvent, game: TestGame) {

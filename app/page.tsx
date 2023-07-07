@@ -3,8 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
 import { TestGame } from "./TestGame";
 import useWindowDimensions from "./Hooks/useWindowDimensions";
-import { addCanvasInputListeners, removeCanvasInputListeners } from "./TestGame/canvasInputListeners";
-import Matter from "matter-js";
+import { addCanvasInputListeners, removeCanvasInputListeners } from "./TestGame/input-state/canvasInputListeners";
 
 export type WidthAndHeight = { width: number; height: number };
 

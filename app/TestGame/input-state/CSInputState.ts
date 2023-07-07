@@ -6,6 +6,7 @@ export class CSPlayerInputState {
   public turnRight?: boolean;
   public turnLeft?: boolean;
   public mouseLeft?: boolean;
+  public mouseLeftPressedTimestamp?: number | null;
   public mouseRight?: boolean;
   public space?: boolean;
   public targetAngle?: number;

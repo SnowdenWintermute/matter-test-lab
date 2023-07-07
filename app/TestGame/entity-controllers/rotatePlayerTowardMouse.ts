@@ -1,7 +1,7 @@
 import { Body, Vector } from "matter-js";
-import { TestGame } from ".";
-import { getDirectionAndDiffOfClosestPathToTargetAngle } from "../utils";
-import { MobileEntity } from "./entities/MobileEntity";
+import { TestGame } from "..";
+import { getDirectionAndDiffOfClosestPathToTargetAngle } from "../../utils";
+import { MobileEntity } from "../entities/MobileEntity";
 
 export default function rotatePlayerTowardMouse(game: TestGame, entity: MobileEntity) {
   const { mouseState } = game;

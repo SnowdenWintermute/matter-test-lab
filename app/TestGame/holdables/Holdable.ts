@@ -39,11 +39,20 @@ export class HoldableGripConstraintCreationData {
 }
 
 export class AttackInstructions {
-  constructor(public steps: { position: HoldableGripConstraintCreationData; onPositionReached: () => void | null }[], public baseTimeout: number) {}
+  constructor(
+    public steps: {
+      position: HoldableGripConstraintCreationData;
+      onReached?: () => void;
+      onStart?: () => void;
+    }[],
+    public baseTimeout: number,
+    public cooldown: number
+  ) {}
 }
 
 export class Attack {
   timeStarted = +Date.now();
+  shouldContinueAttackChain: boolean = false;
   nextAttack: AttackInstructions | null = null;
   currentPositionIndex: number = 0;
   constructor(public instructionSet: AttackInstructions) {}
@@ -52,16 +61,11 @@ export class Attack {
   // if guard input received, finish the current attack then enter guard position
 }
 
-export type HoldablePositionOptions = {
-  rest?: HoldableGripConstraintCreationData;
-  ready?: HoldableGripConstraintCreationData;
-  forwardStrike?: HoldableGripConstraintCreationData;
-  leftStrike?: HoldableGripConstraintCreationData;
-  rightStrike?: HoldableGripConstraintCreationData;
-  leftGuard?: HoldableGripConstraintCreationData;
-  rightGuard?: HoldableGripConstraintCreationData;
-  centerGuard?: HoldableGripConstraintCreationData;
-};
+export enum AttackDirections {
+  LEFT,
+  RIGHT,
+  FORWARD,
+}
 
 export abstract class Holdable extends Entity {
   heldBy: MobileEntity | null = null;
@@ -75,13 +79,25 @@ export abstract class Holdable extends Entity {
       lower: Matter.Constraint;
     };
   } | null = null;
-  positionOptions: HoldablePositionOptions = {};
+  attacks: {
+    light?: {
+      [AttackDirections.LEFT]?: AttackInstructions;
+      [AttackDirections.RIGHT]?: AttackInstructions;
+      [AttackDirections.FORWARD]?: AttackInstructions;
+    };
+    heavy?: AttackInstructions;
+  } = {};
   isColliding = false;
-  constructor(id: number, body: Body, public type: HoldableType, public requiresTwoHands: boolean, public length: number) {
+  constructor(
+    id: number,
+    body: Body,
+    public type: HoldableType,
+    public requiresTwoHands: boolean,
+    public length: number,
+    public restPosition: HoldableGripConstraintCreationData,
+    public guardPosition?: HoldableGripConstraintCreationData
+  ) {
     super(id, body, 1, 0, { max: 10, current: 10 });
   }
   slideGrip = () => slideGrip(this);
-  //getFarthestTopVertex() {
-  //  //
-  //}
 }

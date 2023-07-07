@@ -1,7 +1,7 @@
 import { Constraint, Vector } from "matter-js";
-import { distBetweenTwoPoints, movePointTowards } from "../utils";
-import { MobileEntity } from "./entities/MobileEntity";
-import { PointRelativeToBody } from "./holdables/PointRelativeToBody";
+import { distBetweenTwoPoints, movePointTowards } from "../../utils";
+import { MobileEntity } from "../entities/MobileEntity";
+import { PointRelativeToBody } from "../holdables/PointRelativeToBody";
 
 export default function moveGripTowardPosition(entity: MobileEntity, grip: Constraint, targetPositionCreationData: Vector, speed: number) {
   const { body } = entity;

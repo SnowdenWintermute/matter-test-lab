@@ -1,21 +1,21 @@
 import Matter, { Body, Vector } from "matter-js";
 import { MobileEntity } from "./entities/MobileEntity";
 import { Entity } from "./entities/Entity";
-import { CSPlayerInputState } from "./CSInputState";
-import handlePlayerInputs from "./handlePlayerInputs";
 import render from "./render";
-import { MouseState } from "./MouseState";
 import { Holdable, HoldableType } from "./holdables/Holdable";
 import { Spear } from "./holdables/Spear";
 import handleCollisionStart from "./handleCollisions/handleCollisionStart";
 import { EntityCategory } from "./enums";
-import equipHoldableToEntity from "./equipHoldableToEntity";
+import equipHoldableToEntity from "./entity-controllers/equipHoldableToEntity";
 import cloneDeep from "lodash.clonedeep";
 import handleCollisionEnd from "./handleCollisions/handleCollisionEnd";
 import handleCollisionActive from "./handleCollisions/handleCollisionActive";
 import updateTraumas from "./updateTraumas";
 import { WidthAndHeight } from "./common-classes";
 import { OneHandedSword } from "./holdables/OneHandedSword";
+import { MouseState } from "./input-state/MouseData";
+import { CSPlayerInputState } from "./input-state/CSInputState";
+import handlePlayerInputs from "./entity-controllers/handlePlayerInputs";
 
 export class CSEntities {
   lastIdAssigned = -1;
@@ -53,8 +53,8 @@ export class TestGame {
     // const weapon = this.createRegisteredHoldable(HoldableType.SPEAR, { x: playerEntity.body.position.x, y: playerEntity.body.position.y });
 
     if (weapon) this.equipHoldableToEntity(this, playerEntity, weapon);
-    const spear2 = this.createRegisteredHoldable(HoldableType.SPEAR, playerEntity2.body.position);
-    if (spear2) this.equipHoldableToEntity(this, playerEntity2, spear2);
+    // const spear2 = this.createRegisteredHoldable(HoldableType.SPEAR, playerEntity2.body.position);
+    // if (spear2) this.equipHoldableToEntity(this, playerEntity2, spear2);
     this.createBorderWalls({ width: 800, height: 600 }, { x: 5, y: 5 });
 
     this.createRegisteredStaticEntity({ x: 200, y: 400 }, { width: 50, height: 50 });

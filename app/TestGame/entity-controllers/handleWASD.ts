@@ -1,7 +1,8 @@
 import { Vector } from "matter-js";
-import { TestGame } from ".";
+import { TestGame } from "..";
 import Matter from "matter-js";
-import { distBetweenTwoPoints } from "../utils";
+import { distBetweenTwoPoints } from "../../utils";
+import { MobileEntity } from "../entities/MobileEntity";
 
 enum DIRECTION {
   UP,
@@ -18,11 +19,11 @@ function calculateDirectionalForce(angle: number, direction: DIRECTION, magnitud
   return Vector.create(0, 0);
 }
 
-export default function handleWASD(game: TestGame) {
-  const { inputState, entities, mouseState } = game;
-  const playerEntity = entities.playerControlled[0];
+export default function handleWASD(game: TestGame, playerEntity: MobileEntity) {
+  const { inputState, mouseState } = game;
   if (!playerEntity) return console.log("no player entity found");
-  if (mouseState.position && distBetweenTwoPoints(mouseState.position, playerEntity.body.position) < 10) return;
+  const minimumDistanceMouseToEntity = 10;
+  if (mouseState.position && distBetweenTwoPoints(mouseState.position, playerEntity.body.position) < minimumDistanceMouseToEntity) return;
   const { body, acceleration } = playerEntity;
   const { angle } = body;
   const { up, down, left, right } = inputState;
