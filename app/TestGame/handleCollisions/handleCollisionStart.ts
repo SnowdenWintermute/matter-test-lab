@@ -1,12 +1,8 @@
-import { getNormalizedAngleDiff, getSpeedOfApproach } from "@/app/utils";
 import { TestGame } from "../";
 import { EntityCategory } from "../enums";
 import determineHoldableCollisionPairEntities from "./determineHoldableCollisionPairEntities";
 import loosenGrips from "./loosenGrips";
 import { Trauma } from "../entities/Trauma";
-import closestDistanceToPolygon from "@/app/utils/closestDistanceToPolygon";
-import convexPolygonOverlapArea from "@/app/utils/convexPolygonOverlapArea";
-import { Body, Vector } from "matter-js";
 
 export default function handleCollisionStart(event: Matter.IEventCollision<Matter.Engine>, game: TestGame) {
   var pairs = event.pairs;

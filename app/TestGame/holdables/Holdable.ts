@@ -38,6 +38,20 @@ export class HoldableGripConstraintCreationData {
   }
 }
 
+export class AttackInstructions {
+  constructor(public steps: { position: HoldableGripConstraintCreationData; onPositionReached: () => void | null }[], public baseTimeout: number) {}
+}
+
+export class Attack {
+  timeStarted = +Date.now();
+  nextAttack: AttackInstructions | null = null;
+  currentPositionIndex: number = 0;
+  constructor(public instructionSet: AttackInstructions) {}
+  // if baseTimeout modified by handSpeed is reached, go to rest position and end attack
+  // if attack input is received before execution of the last position, start the next attack instead of executing the last position
+  // if guard input received, finish the current attack then enter guard position
+}
+
 export type HoldablePositionOptions = {
   rest?: HoldableGripConstraintCreationData;
   ready?: HoldableGripConstraintCreationData;

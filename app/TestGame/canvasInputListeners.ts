@@ -20,6 +20,7 @@ function handleMouseUp(e: MouseEvent, game: TestGame) {
 
 export function setInputs(e: KeyboardEvent, inputs: CSPlayerInputState, active: boolean) {
   const { code } = e;
+  e.preventDefault();
   if (code === "KeyW") inputs.up = active;
   if (code === "KeyS") inputs.down = active;
   if (code === "KeyA") inputs.left = active;

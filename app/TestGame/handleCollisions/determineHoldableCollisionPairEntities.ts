@@ -6,7 +6,7 @@ export default function determineHoldableCollisionPairEntities(pair: Matter.Pair
   const [bodyACategory, bodyAEntityId] = bodyA.label.split("-").map((value) => Number(value));
   const [bodyBCategory, bodyBEntityId] = bodyB.label.split("-").map((value) => Number(value));
   if (bodyACategory !== EntityCategory.HOLDABLE && bodyBCategory !== EntityCategory.HOLDABLE) return;
-  if (bodyACategory === EntityCategory.HOLDABLE && bodyBCategory === EntityCategory.HOLDABLE) return;
+  // if (bodyACategory === EntityCategory.HOLDABLE && bodyBCategory === EntityCategory.HOLDABLE) return;
 
   const holdableEntityMeta = { id: bodyAEntityId, category: bodyACategory };
   const otherEntityMeta = { id: bodyBEntityId, category: bodyBCategory };

@@ -8,8 +8,8 @@ export class OneHandedSword extends Holdable {
   distBetweenGripPairMembers = 10;
   positionOptions = {
     rest: new HoldableGripConstraintCreationData({ x: 25, y: -5 }, Math.PI / 2, this.distBetweenGripPairMembers, 2, 10),
-    ready: new HoldableGripConstraintCreationData({ x: 25, y: -10 }, Math.PI / 3, this.distBetweenGripPairMembers, 2, 10),
-    // forwardStrike: new HoldableGripConstraintCreationData({ x: 8, y: -40 }, Math.PI / 2, this.distBetweenGripPairMembers, 20, 10),
+    ready: new HoldableGripConstraintCreationData({ x: 25, y: -10 }, Math.PI / 3, this.distBetweenGripPairMembers, 10, 10),
+    forwardStrike: new HoldableGripConstraintCreationData({ x: 25, y: -20 }, Math.PI / 2, this.distBetweenGripPairMembers, 10, 10),
   };
 
   constructor(id: number, position: Vector) {

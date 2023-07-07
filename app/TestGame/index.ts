@@ -1,4 +1,4 @@
-import Matter, { Body, Constraint, Vector } from "matter-js";
+import Matter, { Body, Vector } from "matter-js";
 import { MobileEntity } from "./entities/MobileEntity";
 import { Entity } from "./entities/Entity";
 import { CSPlayerInputState } from "./CSInputState";
@@ -53,8 +53,8 @@ export class TestGame {
     // const weapon = this.createRegisteredHoldable(HoldableType.SPEAR, { x: playerEntity.body.position.x, y: playerEntity.body.position.y });
 
     if (weapon) this.equipHoldableToEntity(this, playerEntity, weapon);
-    // const spear2 = this.createRegisteredHoldable(HoldableType.SPEAR, playerEntity2.body.position);
-    // this.equipHoldableToEntity(this, playerEntity2, spear2);
+    const spear2 = this.createRegisteredHoldable(HoldableType.SPEAR, playerEntity2.body.position);
+    if (spear2) this.equipHoldableToEntity(this, playerEntity2, spear2);
     this.createBorderWalls({ width: 800, height: 600 }, { x: 5, y: 5 });
 
     this.createRegisteredStaticEntity({ x: 200, y: 400 }, { width: 50, height: 50 });
