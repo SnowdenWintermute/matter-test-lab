@@ -27,9 +27,9 @@ export class AttackInstructions {
 }
 
 export class Attack {
-  timeStarted = +Date.now();
+  timeCurrentStepStarted = +Date.now();
   nextAttack: AttackInstructions | null = null;
-  currentPositionIndex: number = 0;
+  currentStepIndex: number = 0;
   constructor(public instructionSet: AttackInstructions, public damageModifier: number) {}
   // if baseTimeout modified by handSpeed is reached, go to rest position and end attack
   // if attack input is received before execution of the last position, start the next attack instead of executing the last position

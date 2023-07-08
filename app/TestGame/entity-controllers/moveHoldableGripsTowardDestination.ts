@@ -11,11 +11,13 @@ export default function moveHoldableGripsTowardDestination(
   if (!holdable) return;
   const { grips } = holdable;
   if (!grips) return;
+  let reachedTargetDestination = false;
   Object.entries(grips).forEach(([pairKey, gripPair]) => {
     Object.entries(gripPair).forEach(([gripKey, grip]) => {
       // @ts-ignore
-      moveGripTowardPosition(entity, grip, desiredPosition[pairKey][gripKey], speed);
+      reachedTargetDestination = moveGripTowardPosition(entity, grip, desiredPosition[pairKey][gripKey], speed);
     });
   });
   holdable.slideGrip();
+  return reachedTargetDestination;
 }

@@ -11,13 +11,20 @@ export class OneHandedSword extends Holdable {
     light: {
       [AttackDirections.LEFT]: new AttackInstructions(
         [
-          { position: new HoldableGripConstraintCreationData({ x: 25, y: 0 }, -Math.PI / 5, distBetweenGripPairMembers, 10, 10), damageType: DamageType.NONE },
           {
-            position: new HoldableGripConstraintCreationData({ x: -10, y: -10 }, Math.PI / 2, distBetweenGripPairMembers, 10, 10),
+            position: new HoldableGripConstraintCreationData({ x: 25, y: -10 }, Math.PI / 1.25, distBetweenGripPairMembers, 10, 10),
+            damageType: DamageType.NONE,
+          },
+          {
+            position: new HoldableGripConstraintCreationData({ x: 7, y: -40 }, Math.PI / 2, distBetweenGripPairMembers, 10, 10),
+            damageType: DamageType.SLASHING,
+          },
+          {
+            position: new HoldableGripConstraintCreationData({ x: -25, y: -30 }, Math.PI / 4, distBetweenGripPairMembers, 10, 10),
             damageType: DamageType.SLASHING,
           },
         ],
-        1000,
+        3000,
         0
       ),
       [AttackDirections.RIGHT]: new AttackInstructions(
@@ -31,7 +38,7 @@ export class OneHandedSword extends Holdable {
             damageType: DamageType.SLASHING,
           },
         ],
-        1000,
+        3000,
         0
       ),
     },
@@ -47,7 +54,7 @@ export class OneHandedSword extends Holdable {
       HoldableType.ONE_HANDED_SWORD,
       false,
       length,
-      new HoldableGripConstraintCreationData({ x: 25, y: -5 }, Math.PI / 2, distBetweenGripPairMembers, 2, 10)
+      new HoldableGripConstraintCreationData({ x: 25, y: -5 }, Math.PI / 2, distBetweenGripPairMembers, 10, 10)
     );
   }
 }

@@ -5,7 +5,7 @@ import { Attack, AttackDirections } from "./Attack";
 
 const baseHp = 20;
 const baseTurningSpeed = 0.08;
-const baseHandSpeed = 8;
+const baseHandSpeed = 4;
 const baseAcceleration = 0.01;
 
 export class MobileEntity extends Entity {
