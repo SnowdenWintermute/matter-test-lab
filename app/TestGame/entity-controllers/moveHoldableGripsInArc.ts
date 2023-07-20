@@ -9,25 +9,23 @@ const angularSpeedInRadians = 0.1;
 
 function moveGripInArc(entity: MobileEntity, grip: Matter.Constraint, step: AttackStep, targetRadius: number) {
   const { position, angle } = entity.body;
-  const { arcCenterOffsetFromBody } = step;
-  if (!arcCenterOffsetFromBody) return;
+  const { arcCenterOffsetFromBody, arcDirection } = step;
+  if (!arcCenterOffsetFromBody || typeof arcDirection !== "number") return;
   const arcCenterWorldLocation = Vector.add(Vector.rotateAbout(arcCenterOffsetFromBody, angle, { x: 0, y: 0 }), position); // blue
   const gripAWorldLocation = Vector.add(position, grip.pointA); // white
   const gripDestination = getPointInArc(arcCenterWorldLocation, step.position.angle + angle, targetRadius); // red
-  const currentAngle = angleBetweenPoints(gripAWorldLocation, gripDestination);
-  const targetAngle = step.position.angle;
-  if (currentAngle === targetAngle || arcCenterOffsetFromBody || typeof targetRadius !== "number") return;
 
-  const { direction } = getDirectionAndDiffOfClosestPathToTargetAngle(currentAngle, targetAngle, angularSpeedInRadians);
-  if (direction === 0) return;
+  const currentAngle = angleBetweenPoints(arcCenterWorldLocation, gripDestination);
+  const targetAngle = step.position.angle + angle;
 
-  const newAngle = currentAngle + direction * angularSpeedInRadians;
+  const newPosition = Vector.rotateAbout(gripAWorldLocation, angularSpeedInRadians * arcDirection, arcCenterWorldLocation);
+
+  if (currentAngle === targetAngle || !arcCenterOffsetFromBody || typeof targetRadius !== "number") return;
   let newRadius = distBetweenTwoPoints(gripAWorldLocation, arcCenterWorldLocation);
   if (newRadius !== targetRadius) newRadius = moveNumberTowards(newRadius, targetRadius, entity.handSpeed.current / 100);
 
-  const newPosition = getPointInArc(arcCenterWorldLocation, newAngle, newRadius);
-  grip.pointA.x = newPosition.x - entity.body.position.x;
-  grip.pointA.y = newPosition.y - entity.body.position.y;
+  grip.pointA.x = newPosition.x - position.x;
+  grip.pointA.y = newPosition.y - position.y;
 }
 
 export default function moveHoldableGripsInArc(entity: MobileEntity, holdable: Holdable, step: AttackStep) {
@@ -38,6 +36,6 @@ export default function moveHoldableGripsInArc(entity: MobileEntity, holdable: H
   moveGripInArc(entity, main.lower, step, arcEndingRadius);
   moveGripInArc(entity, main.upper, step, arcEndingRadius + distBetweenPairMembers);
   if (typeof distBetweenGripPairs !== "number") return;
-  if (support?.lower) moveGripInArc(entity, support.lower, step, arcEndingRadius + distBetweenGripPairs);
-  if (support?.upper) moveGripInArc(entity, support.upper, step, arcEndingRadius + distBetweenPairMembers + distBetweenGripPairs);
+  if (support?.lower) moveGripInArc(entity, support.lower, step, arcEndingRadius + distBetweenGripPairs + distBetweenPairMembers);
+  if (support?.upper) moveGripInArc(entity, support.upper, step, arcEndingRadius + distBetweenPairMembers * 2 + distBetweenGripPairs);
 }

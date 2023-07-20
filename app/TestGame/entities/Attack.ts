@@ -25,6 +25,7 @@ export type AttackStep = {
   damageType: DamageType;
   arcCenterOffsetFromBody?: Vector;
   arcEndingRadius?: number;
+  arcDirection?: 1 | -1;
   onReached?: () => void;
   onStart?: () => void;
   timeout?: number;

@@ -11,12 +11,13 @@ export default function moveHoldableGripsTowardDestination(
   if (!holdable) return;
   const { grips } = holdable;
   if (!grips) return;
-  let reachedTargetDestination = false;
-  Object.entries(grips).forEach(([pairKey, gripPair]) => {
-    Object.entries(gripPair).forEach(([gripKey, grip]) => {
-      // @ts-ignore
-      reachedTargetDestination = moveGripTowardPosition(entity, grip, desiredPosition[pairKey][gripKey], speed);
-    });
-  });
-  return reachedTargetDestination;
+  const mainLowerReachedDestination = moveGripTowardPosition(entity, grips.main.lower, desiredPosition.main.lower, speed);
+  const mainUpperReachedDestination = moveGripTowardPosition(entity, grips.main.upper, desiredPosition.main.upper, speed);
+  if (mainLowerReachedDestination && mainUpperReachedDestination && !grips.support) return true;
+  else if (!grips.support || !desiredPosition.support) return false;
+  const supportLowerReachedDestination = moveGripTowardPosition(entity, grips.support.lower, desiredPosition.support.lower, speed);
+  const supportUpperReachedDestination = moveGripTowardPosition(entity, grips.support.upper, desiredPosition.support.upper, speed);
+  if (grips.support && mainLowerReachedDestination && mainUpperReachedDestination && supportLowerReachedDestination && supportUpperReachedDestination)
+    return true;
+  else return false;
 }

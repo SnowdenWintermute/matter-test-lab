@@ -19,19 +19,16 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
   const { baseTimeout, cooldown, steps } = instructionSet;
   const step = steps[currentStepIndex];
   const { movementType, arcCenterOffsetFromBody, damageType, onStart, onReached } = step;
-
   const desiredPosition = step.position;
-  const desiredAngle = desiredPosition.angle;
-  const currentAngle = equippedHoldable.body.angle;
-  const { direction, difference } = getDirectionAndDiffOfClosestPathToTargetAngle(currentAngle, desiredAngle, 0.01);
 
-  if (movementType === MovementType.LINEAR) moveHoldableGripsTowardDestination(entity, equippedHoldable, desiredPosition, handSpeed.current);
+  let reachedDestination;
+  if (movementType === MovementType.LINEAR)
+    reachedDestination = moveHoldableGripsTowardDestination(entity, equippedHoldable, desiredPosition, handSpeed.current);
   else if (movementType === MovementType.ARC) moveHoldableGripsInArc(entity, equippedHoldable, step);
 
-  // const reachedDestination = moveHoldableGripsTowardDestination(entity, equippedHoldable, position, handSpeed.current);
   const timeout = step.timeout || baseTimeout;
   const exceededTimeout = +Date.now() - timeCurrentStepStarted > timeout;
-  if (/*!reachedDestination &&*/ !exceededTimeout) return;
+  if (!reachedDestination && !exceededTimeout) return;
   currentAttackExecuting.currentStepIndex += 1;
   const completedAllSteps = currentAttackExecuting.currentStepIndex >= steps.length;
   if (!completedAllSteps) return;

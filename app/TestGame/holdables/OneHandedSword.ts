@@ -13,16 +13,17 @@ export class OneHandedSword extends Holdable {
       [AttackDirections.LEFT]: new AttackInstructions(
         [
           {
-            position: new HoldableGripConstraintCreationData({ x: 10, y: 35 }, Math.PI / 1.25, distBetweenGripPairMembers, 10, 10),
+            position: new HoldableGripConstraintCreationData({ x: 10, y: 35 }, Math.PI / 4, distBetweenGripPairMembers, 10, 10),
             movementType: MovementType.LINEAR,
             damageType: DamageType.NONE,
-            timeout: 700,
+            timeout: 1000,
           },
           {
             position: new HoldableGripConstraintCreationData({ x: 30, y: 0 }, Math.PI / 2, distBetweenGripPairMembers, 10, 10),
             movementType: MovementType.ARC,
-            arcEndingRadius: 40,
+            arcEndingRadius: 70,
             arcCenterOffsetFromBody: { x: 10, y: 10 },
+            arcDirection: -1,
             damageType: DamageType.SLASHING,
           },
           {
@@ -30,6 +31,7 @@ export class OneHandedSword extends Holdable {
             movementType: MovementType.ARC,
             arcEndingRadius: 35,
             arcCenterOffsetFromBody: { x: 10, y: 10 },
+            arcDirection: 1,
             damageType: DamageType.SLASHING,
           },
         ],
