@@ -1,7 +1,11 @@
+import { getDirectionAndDiffOfClosestPathToTargetAngle, movePointTowards } from "@/app/utils";
 import { TestGame } from "..";
-import { Attack } from "../entities/Attack";
+import { Attack, MovementType } from "../entities/Attack";
 import { MobileEntity } from "../entities/MobileEntity";
+import { HoldableGripConstraintCreationData } from "../holdables/Holdable";
+import moveGripTowardPosition from "./moveGripTowardPosition";
 import moveHoldableGripsTowardDestination from "./moveHoldableGripsTowardDestination";
+import moveHoldableGripsInArc from "./moveHoldableGripsInArc";
 
 export default function handleCombatMoveExecution(game: TestGame, entity: MobileEntity) {
   // if baseTimeout modified by handSpeed is reached, go to rest position and end attack
@@ -14,10 +18,20 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
   const { timeCurrentStepStarted, currentStepIndex, nextAttack, instructionSet, damageModifier } = currentAttackExecuting;
   const { baseTimeout, cooldown, steps } = instructionSet;
   const step = steps[currentStepIndex];
-  const { position, damageType, onStart, onReached } = step;
-  const reachedDestination = moveHoldableGripsTowardDestination(entity, equippedHoldable, position, handSpeed.current);
-  const exceededTimeout = +Date.now() - timeCurrentStepStarted > baseTimeout;
-  if (!reachedDestination && !exceededTimeout) return;
+  const { movementType, arcCenterOffsetFromBody, damageType, onStart, onReached } = step;
+
+  const desiredPosition = step.position;
+  const desiredAngle = desiredPosition.angle;
+  const currentAngle = equippedHoldable.body.angle;
+  const { direction, difference } = getDirectionAndDiffOfClosestPathToTargetAngle(currentAngle, desiredAngle, 0.01);
+
+  if (movementType === MovementType.LINEAR) moveHoldableGripsTowardDestination(entity, equippedHoldable, desiredPosition, handSpeed.current);
+  else if (movementType === MovementType.ARC) moveHoldableGripsInArc(entity, equippedHoldable, step);
+
+  // const reachedDestination = moveHoldableGripsTowardDestination(entity, equippedHoldable, position, handSpeed.current);
+  const timeout = step.timeout || baseTimeout;
+  const exceededTimeout = +Date.now() - timeCurrentStepStarted > timeout;
+  if (/*!reachedDestination &&*/ !exceededTimeout) return;
   currentAttackExecuting.currentStepIndex += 1;
   const completedAllSteps = currentAttackExecuting.currentStepIndex >= steps.length;
   if (!completedAllSteps) return;

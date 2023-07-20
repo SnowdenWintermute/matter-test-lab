@@ -94,8 +94,6 @@ export class TestGame {
     const id = this.entities.lastIdAssigned;
     const body = Matter.Bodies.polygon(position.x, position.y, 8, 40);
     body.frictionAir = 0.3;
-    const startingAngle = -Math.PI / 2;
-    Matter.Body.setAngle(body, startingAngle);
     body.label = `${EntityCategory.PLAYER_CONTROLLED}-${id}`;
     if (options?.static) body.isStatic = true;
     Matter.Composite.add(this.physicsEngine.world, body);

@@ -5,9 +5,8 @@ export function roundedStringifiedVector(vec: Vector, precision = 1) {
 }
 
 export function normalizeRadians(radians: number): number {
-  while (radians <= -Math.PI) radians += 2 * Math.PI;
-  while (radians > Math.PI) radians -= 2 * Math.PI;
-  return radians;
+  const PI_2 = 2 * Math.PI;
+  return radians - PI_2 * Math.floor(radians / PI_2) - Math.PI;
 }
 
 export function distBetweenTwoPoints(pointA: Vector, pointB: Vector): number {
@@ -21,6 +20,17 @@ export function angleBetweenPoints(pointA: Vector, pointB: Vector): number {
   const dy = pointB.y - pointA.y;
 
   return Math.atan2(dx, dy);
+}
+
+export function moveNumberTowards(number: number, targetNumber: number, distance: number) {
+  let direction = 0;
+  if (number > targetNumber) direction = -1;
+  else if (number < targetNumber) direction = 1;
+  number += distance * direction;
+  if (direction === 0) return number;
+  if (direction === -1 && number < targetNumber) return targetNumber;
+  if (direction === 1 && number > targetNumber) return targetNumber;
+  return number;
 }
 
 export function movePointTowards(point: Vector, targetPoint: Vector, distance: number): Vector {

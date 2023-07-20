@@ -4,6 +4,7 @@ import { MobileEntity } from "../entities/MobileEntity";
 import Matter from "matter-js";
 import { getPointInArc } from "@/app/utils";
 import slideGrip from "./slideGrip";
+import { AttackDirections, AttackInstructions } from "../entities/Attack";
 
 export enum HoldableType {
   SPEAR,
@@ -28,43 +29,14 @@ export class HoldableGripConstraintCreationData {
   ) {
     this.main = {
       lower: lowestGripPoint,
-      upper: getPointInArc(lowestGripPoint, angle, -distBetweenPairMembers),
+      upper: getPointInArc(lowestGripPoint, angle, distBetweenPairMembers),
     };
     if (typeof distBetweenGripPairs === "number")
       this.support = {
-        lower: getPointInArc(lowestGripPoint, angle, -distBetweenGripPairs - distBetweenPairMembers),
-        upper: getPointInArc(lowestGripPoint, angle, -distBetweenGripPairs - distBetweenPairMembers * 2),
+        lower: getPointInArc(lowestGripPoint, angle, distBetweenGripPairs + distBetweenPairMembers),
+        upper: getPointInArc(lowestGripPoint, angle, distBetweenGripPairs + distBetweenPairMembers * 2),
       };
   }
-}
-
-export class AttackInstructions {
-  constructor(
-    public steps: {
-      position: HoldableGripConstraintCreationData;
-      onReached?: () => void;
-      onStart?: () => void;
-    }[],
-    public baseTimeout: number,
-    public cooldown: number
-  ) {}
-}
-
-export class Attack {
-  timeStarted = +Date.now();
-  shouldContinueAttackChain: boolean = false;
-  nextAttack: AttackInstructions | null = null;
-  currentPositionIndex: number = 0;
-  constructor(public instructionSet: AttackInstructions) {}
-  // if baseTimeout modified by handSpeed is reached, go to rest position and end attack
-  // if attack input is received before execution of the last position, start the next attack instead of executing the last position
-  // if guard input received, finish the current attack then enter guard position
-}
-
-export enum AttackDirections {
-  LEFT,
-  RIGHT,
-  FORWARD,
 }
 
 export abstract class Holdable extends Entity {

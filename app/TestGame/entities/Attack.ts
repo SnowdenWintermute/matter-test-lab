@@ -1,3 +1,4 @@
+import { Vector } from "matter-js";
 import { HoldableGripConstraintCreationData } from "../holdables/Holdable";
 
 export enum AttackDirections {
@@ -13,17 +14,24 @@ export enum DamageType {
   NONE,
 }
 
+export enum MovementType {
+  LINEAR,
+  ARC,
+}
+
+export type AttackStep = {
+  position: HoldableGripConstraintCreationData;
+  movementType: MovementType;
+  damageType: DamageType;
+  arcCenterOffsetFromBody?: Vector;
+  arcEndingRadius?: number;
+  onReached?: () => void;
+  onStart?: () => void;
+  timeout?: number;
+};
+
 export class AttackInstructions {
-  constructor(
-    public steps: {
-      position: HoldableGripConstraintCreationData;
-      damageType: DamageType;
-      onReached?: () => void;
-      onStart?: () => void;
-    }[],
-    public baseTimeout: number,
-    public cooldown: number
-  ) {}
+  constructor(public steps: AttackStep[], public baseTimeout: number, public cooldown: number) {}
 }
 
 export class Attack {

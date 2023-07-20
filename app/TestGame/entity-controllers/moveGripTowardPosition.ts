@@ -5,18 +5,16 @@ import { PointRelativeToBody } from "../holdables/PointRelativeToBody";
 
 export default function moveGripTowardPosition(entity: MobileEntity, grip: Constraint, targetPositionCreationData: Vector, speed: number) {
   const { body } = entity;
-  const { position } = body;
-  const mirroredY = { x: targetPositionCreationData.x, y: targetPositionCreationData.y * -1 };
-  const targetPosition = new PointRelativeToBody(mirroredY, body);
-  const currentWorldPosition = Vector.add(position, grip.pointA);
-  const distanceToDestination = distBetweenTwoPoints(currentWorldPosition, targetPosition.worldPosition);
+  const { angle } = body;
+  const targetPositionRotatedWithBody = Vector.rotateAbout(targetPositionCreationData, angle, { x: 0, y: 0 });
+  const distanceToDestination = distBetweenTwoPoints(grip.pointA, targetPositionRotatedWithBody);
   if (distanceToDestination < speed) {
-    grip.pointA.x = targetPosition.worldPosition.x - position.x;
-    grip.pointA.y = targetPosition.worldPosition.y - position.y;
+    grip.pointA.x = targetPositionRotatedWithBody.x;
+    grip.pointA.y = targetPositionRotatedWithBody.y;
     return true;
   } else {
-    const { x, y } = movePointTowards(currentWorldPosition, targetPosition.worldPosition, speed);
-    grip.pointA.x = x - position.x;
-    grip.pointA.y = y - position.y;
+    const { x, y } = movePointTowards(grip.pointA, targetPositionRotatedWithBody, speed);
+    grip.pointA.x = x;
+    grip.pointA.y = y;
   }
 }

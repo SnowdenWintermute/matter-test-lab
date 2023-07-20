@@ -18,6 +18,5 @@ export default function moveHoldableGripsTowardDestination(
       reachedTargetDestination = moveGripTowardPosition(entity, grip, desiredPosition[pairKey][gripKey], speed);
     });
   });
-  holdable.slideGrip();
   return reachedTargetDestination;
 }
