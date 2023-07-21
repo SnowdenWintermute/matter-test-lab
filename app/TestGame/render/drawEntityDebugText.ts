@@ -1,4 +1,12 @@
-import { angleBetweenPoints, distBetweenTwoPoints, getPointInArc, movePointTowards, normalizeRadians, roundedStringifiedVector } from "@/app/utils";
+import {
+  angleBetweenPoints,
+  distBetweenTwoPoints,
+  getAngleFromCenter,
+  getPointInArc,
+  movePointTowards,
+  normalizeRadians,
+  roundedStringifiedVector,
+} from "@/app/utils";
 import { MobileEntity } from "../entities/MobileEntity";
 import { Vector } from "matter-js";
 import { PointRelativeToBody } from "../holdables/PointRelativeToBody";
@@ -27,34 +35,26 @@ export default function drawEntityDebugText(context: CanvasRenderingContext2D, e
 
   const arcCenterWorldLocation = Vector.add(Vector.rotateAbout(arcCenterOffsetFromBody, angle, { x: 0, y: 0 }), position);
   drawCircle(context, arcCenterWorldLocation, 4, "blue", false);
-
-  const gripPointARelativeInfo = new PointRelativeToBody(grips!.main.lower.pointA, entity.body);
-
   const gripAWorldLocation = Vector.add(position, main.lower.pointA);
-  drawCircle(context, gripAWorldLocation, 4, "white", true);
-
+  drawCircle(context, gripAWorldLocation, 7, "white", true);
   const gripDestination = getPointInArc(arcCenterWorldLocation, step.position.angle + angle, step.arcEndingRadius);
   drawCircle(context, gripDestination, 3, "red", false);
 
-  const destinationLineVector = Vector.sub(arcCenterWorldLocation, gripDestination)
-  const currentLineVector = Vector.sub(arcCenterWorldLocation, gripAWorldLocation)
-  // const currentAngle = Vector.angle(destinationLineVector, currentLineVector);
-  const currentAngle = angleBetweenPoints(arcCenterWorldLocation, gripDestination)
-  const targetAngle = step.position.angle + angle
+  const gripDestinationAngle = normalizeRadians(getAngleFromCenter(arcCenterWorldLocation, gripDestination));
+  const currentAngle = getAngleFromCenter(arcCenterWorldLocation, gripAWorldLocation);
+  // const currentAngle =
+  //   Vector.dot(Vector.sub(arcCenterWorldLocation, gripDestination), Vector.sub(arcCenterWorldLocation, gripAWorldLocation)) * (Math.PI / 180.0) * -1;
+  const newAngle = currentAngle;
 
-  const newAngle = currentAngle + .2 * 1;
-  // const newLocation = getPointInArc(arcCenterWorldLocation, newAngle, distBetweenTwoPoints(arcCenterWorldLocation, gripAWorldLocation))
-  const newLocation = Vector.rotateAbout(gripAWorldLocation, -1.2, arcCenterWorldLocation)
-  drawCircle(context, newLocation, 4,"orange", false)
+  const currDist = distBetweenTwoPoints(arcCenterWorldLocation, gripAWorldLocation);
+  const newLocation = getPointInArc(arcCenterWorldLocation, newAngle, currDist);
+  drawCircle(context, newLocation, 4, "orange", false);
 
-  let holdableGripText = "";
-  if (holdable.grips?.main.lower.pointA) holdableGripText = roundedStringifiedVector(holdable.grips?.main.lower.pointA);
   const text = [
-    // `GRIP POINT A: ${holdableGripText}`,
-    // `GRIP POINT A ANGLE: ${normalizeRadians(gripPointARelativeInfo.angleFromBody + angle).toFixed(1)}`,
-    `CURR ANGLE: ${currentAngle.toFixed(1)}`,
-    `TARGET ANGLE: ${targetAngle.toFixed(1)}`,
-    `NEW ANGLE: ${newAngle.toFixed(1)}`,
+    `CREATION: ${normalizeRadians(step.position.angle + angle).toFixed(1)}`,
+    `CURR: ${currentAngle.toFixed(1)}`,
+    `GRIP DEST: ${gripDestinationAngle.toFixed(1)}`,
+    `NEW: ${newAngle.toFixed(1)}`,
   ];
   const margin = 18;
   context.fillStyle = "pink";

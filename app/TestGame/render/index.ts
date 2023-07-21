@@ -42,14 +42,14 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
   Object.values(game.entities.holdable).forEach((holdable) => {
     const { body } = holdable;
     const { x, y } = body.position;
-    drawPoly(context, holdable.body.vertices, holdable.isColliding ? "black" : "white");
-    context.fillStyle = "black";
-    context.fillRect(x - 1, y - 1, 3, 3);
+    // drawPoly(context, holdable.body.vertices, holdable.isColliding ? "black" : "white");
+    // context.fillStyle = "black";
+    // context.fillRect(x - 1, y - 1, 3, 3);
     // drawCircle(context, holdable.body.vertices[0], 2, "red", true);
     // drawCircle(context, holdable.body.position, 1, "black", true);
     if (!holdable.heldBy) return;
-    drawGrips(context, holdable, holdable.heldBy);
-    drawHoldablePositions(context, holdable, holdable.heldBy.body);
+    // drawGrips(context, holdable, holdable.heldBy);
+    // drawHoldablePositions(context, holdable, holdable.heldBy.body);
   });
   drawDebugText(context, canvasSize, game);
 }

@@ -5,7 +5,7 @@ import { Holdable } from "../holdables/Holdable";
 import { PointRelativeToBody } from "../holdables/PointRelativeToBody";
 import { Vector } from "matter-js";
 
-const angularSpeedInRadians = 0.1;
+const angularSpeedInRadians = 0.02;
 
 function moveGripInArc(entity: MobileEntity, grip: Matter.Constraint, step: AttackStep, targetRadius: number) {
   const { position, angle } = entity.body;
@@ -14,13 +14,10 @@ function moveGripInArc(entity: MobileEntity, grip: Matter.Constraint, step: Atta
   const arcCenterWorldLocation = Vector.add(Vector.rotateAbout(arcCenterOffsetFromBody, angle, { x: 0, y: 0 }), position); // blue
   const gripAWorldLocation = Vector.add(position, grip.pointA); // white
   const gripDestination = getPointInArc(arcCenterWorldLocation, step.position.angle + angle, targetRadius); // red
-
-  const currentAngle = angleBetweenPoints(arcCenterWorldLocation, gripDestination);
-  const targetAngle = step.position.angle + angle;
-
+  const targetAngle = angleBetweenPoints(arcCenterWorldLocation, gripDestination);
   const newPosition = Vector.rotateAbout(gripAWorldLocation, angularSpeedInRadians * arcDirection, arcCenterWorldLocation);
 
-  if (currentAngle === targetAngle || !arcCenterOffsetFromBody || typeof targetRadius !== "number") return;
+  if (!arcCenterOffsetFromBody || typeof targetRadius !== "number") return;
   let newRadius = distBetweenTwoPoints(gripAWorldLocation, arcCenterWorldLocation);
   if (newRadius !== targetRadius) newRadius = moveNumberTowards(newRadius, targetRadius, entity.handSpeed.current / 100);
 

@@ -18,7 +18,6 @@ export function distBetweenTwoPoints(pointA: Vector, pointB: Vector): number {
 export function angleBetweenPoints(pointA: Vector, pointB: Vector): number {
   const dx = pointB.x - pointA.x;
   const dy = pointB.y - pointA.y;
-
   return Math.atan2(dx, dy);
 }
 
@@ -51,6 +50,12 @@ export function getPointInArc(center: Vector, angle: number, radius: number): Ve
   const x = center.x + Math.cos(angle) * radius;
   const y = center.y + Math.sin(angle) * radius;
   return { x, y };
+}
+
+export function getAngleFromCenter(center: Vector, point: Vector): number {
+  const deltaX = point.x - center.x;
+  const deltaY = point.y - center.y;
+  return Math.atan2(deltaY, deltaX);
 }
 
 export function getNormalizedAngleDiff(angleA: number, angleB: number) {
