@@ -31,22 +31,25 @@ export default function drawEntityDebugText(context: CanvasRenderingContext2D, e
   const { main, support } = holdable.grips;
 
   const arcCenterWorldLocation = Vector.add(Vector.rotateAbout(arcCenterOffsetFromBody, angle, { x: 0, y: 0 }), position);
-  drawCircle(context, arcCenterWorldLocation, 4, "blue", false);
+  // // drawCircle(context, arcCenterWorldLocation, 4, "blue", false);
   const gripAWorldLocation = Vector.add(position, main.upper.pointA);
-  drawCircle(context, gripAWorldLocation, 7, "white", true);
-  const gripDestination = getPointInArc(arcCenterWorldLocation, step.position.angle + angle, step.arcEndingRadius!);
-  drawCircle(context, gripDestination, 3, "cyan", false);
+  // // drawCircle(context, gripAWorldLocation, 7, "white", true);
+  // const gripDestination = getPointInArc(arcCenterWorldLocation, step.position.angle + angle, step.arcEndingRadius!);
+  // // drawCircle(context, gripDestination, 3, "cyan", false);
 
-  const currentAngle = getAngleFromCenter(arcCenterWorldLocation, gripAWorldLocation);
+  // const currentAngle = getAngleFromCenter(arcCenterWorldLocation, gripAWorldLocation);
 
   const currDist = distBetweenTwoPoints(arcCenterWorldLocation, gripAWorldLocation);
-  // drawCircle(context, newLocation, 4, "orange", false);
-  // const destinationAngle = normalizeRadians(step.position.angle + angle);
-  const destinationAngle = getAngleFromCenter(arcCenterWorldLocation, gripDestination);
+  // // drawCircle(context, newLocation, 4, "orange", false);
+  // // const destinationAngle = normalizeRadians(step.position.angle + angle);
+  // const destinationAngle = getAngleFromCenter(arcCenterWorldLocation, gripDestination);
   const text = [
-    `CREATION: ${destinationAngle.toFixed(1)}`,
-    `CURR: ${currentAngle.toFixed(1)}`,
-    `DIFF: ${getClosestAngleDifference(currentAngle, destinationAngle).toFixed(1)}`,
+    `STEP: ${currentStepIndex}`,
+    `DIST: ${currDist}`,
+    `DESIRED: ${step.arcEndingRadius}`,
+    // `CREATION: ${destinationAngle.toFixed(1)}`,
+    // `CURR: ${currentAngle.toFixed(1)}`,
+    // `DIFF: ${getClosestAngleDifference(currentAngle, destinationAngle).toFixed(1)}`,
   ];
   const margin = 18;
   context.fillStyle = "pink";
