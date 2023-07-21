@@ -24,7 +24,7 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
   let reachedDestination;
   if (movementType === MovementType.LINEAR)
     reachedDestination = moveHoldableGripsTowardDestination(entity, equippedHoldable, desiredPosition, handSpeed.current);
-  else if (movementType === MovementType.ARC) moveHoldableGripsInArc(entity, equippedHoldable, step);
+  else if (movementType === MovementType.ARC) reachedDestination = moveHoldableGripsInArc(entity, equippedHoldable, step);
 
   const timeout = step.timeout || baseTimeout;
   const exceededTimeout = +Date.now() - timeCurrentStepStarted > timeout;

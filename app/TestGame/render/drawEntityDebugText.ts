@@ -2,6 +2,8 @@ import {
   angleBetweenPoints,
   distBetweenTwoPoints,
   getAngleFromCenter,
+  getClosestAngleDifference,
+  getNormalizedAngleDiff,
   getPointInArc,
   movePointTowards,
   normalizeRadians,
@@ -20,41 +22,31 @@ export default function drawEntityDebugText(context: CanvasRenderingContext2D, e
   const holdable = entity.equippedHoldables.rightHand;
   if (!holdable) return;
 
-  const { grips } = holdable;
-  const distBetweenGripPairMembers = 10;
-  const step = {
-    position: new HoldableGripConstraintCreationData({ x: 7, y: -40 }, 0, distBetweenGripPairMembers, 10, 10),
-    movementType: MovementType.ARC,
-    arcEndingRadius: 20,
-    arcCenterOffsetFromBody: { x: 10, y: 10 },
-    damageType: DamageType.SLASHING,
-  };
+  if (!entity.currentAttackExecuting) return;
+  const { currentStepIndex } = entity.currentAttackExecuting;
+  const step = entity.currentAttackExecuting!.instructionSet.steps[currentStepIndex];
+  // console.log(entity.currentAttackExecuting.currentStepIndex, step.position.angle);
   const { arcCenterOffsetFromBody, arcEndingRadius } = step;
   if (!holdable.grips || !arcCenterOffsetFromBody || !arcEndingRadius) return;
   const { main, support } = holdable.grips;
 
   const arcCenterWorldLocation = Vector.add(Vector.rotateAbout(arcCenterOffsetFromBody, angle, { x: 0, y: 0 }), position);
   drawCircle(context, arcCenterWorldLocation, 4, "blue", false);
-  const gripAWorldLocation = Vector.add(position, main.lower.pointA);
+  const gripAWorldLocation = Vector.add(position, main.upper.pointA);
   drawCircle(context, gripAWorldLocation, 7, "white", true);
-  const gripDestination = getPointInArc(arcCenterWorldLocation, step.position.angle + angle, step.arcEndingRadius);
-  drawCircle(context, gripDestination, 3, "red", false);
+  const gripDestination = getPointInArc(arcCenterWorldLocation, step.position.angle + angle, step.arcEndingRadius!);
+  drawCircle(context, gripDestination, 3, "cyan", false);
 
-  const gripDestinationAngle = normalizeRadians(getAngleFromCenter(arcCenterWorldLocation, gripDestination));
   const currentAngle = getAngleFromCenter(arcCenterWorldLocation, gripAWorldLocation);
-  // const currentAngle =
-  //   Vector.dot(Vector.sub(arcCenterWorldLocation, gripDestination), Vector.sub(arcCenterWorldLocation, gripAWorldLocation)) * (Math.PI / 180.0) * -1;
-  const newAngle = currentAngle;
 
   const currDist = distBetweenTwoPoints(arcCenterWorldLocation, gripAWorldLocation);
-  const newLocation = getPointInArc(arcCenterWorldLocation, newAngle, currDist);
-  drawCircle(context, newLocation, 4, "orange", false);
-
+  // drawCircle(context, newLocation, 4, "orange", false);
+  // const destinationAngle = normalizeRadians(step.position.angle + angle);
+  const destinationAngle = getAngleFromCenter(arcCenterWorldLocation, gripDestination);
   const text = [
-    `CREATION: ${normalizeRadians(step.position.angle + angle).toFixed(1)}`,
+    `CREATION: ${destinationAngle.toFixed(1)}`,
     `CURR: ${currentAngle.toFixed(1)}`,
-    `GRIP DEST: ${gripDestinationAngle.toFixed(1)}`,
-    `NEW: ${newAngle.toFixed(1)}`,
+    `DIFF: ${getClosestAngleDifference(currentAngle, destinationAngle).toFixed(1)}`,
   ];
   const margin = 18;
   context.fillStyle = "pink";

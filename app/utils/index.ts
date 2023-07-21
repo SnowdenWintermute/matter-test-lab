@@ -21,15 +21,13 @@ export function angleBetweenPoints(pointA: Vector, pointB: Vector): number {
   return Math.atan2(dx, dy);
 }
 
-export function moveNumberTowards(number: number, targetNumber: number, distance: number) {
-  let direction = 0;
-  if (number > targetNumber) direction = -1;
-  else if (number < targetNumber) direction = 1;
-  number += distance * direction;
-  if (direction === 0) return number;
-  if (direction === -1 && number < targetNumber) return targetNumber;
-  if (direction === 1 && number > targetNumber) return targetNumber;
-  return number;
+export function moveNumberTowards(number: number, targetNumber: number, speed: number) {
+  const difference = targetNumber - number;
+  if (Math.abs(difference) <= speed) return targetNumber;
+  const sign = Math.sign(difference);
+  const newNumber = number + speed * sign;
+  if ((targetNumber - newNumber) * sign < 0) return targetNumber;
+  return newNumber;
 }
 
 export function movePointTowards(point: Vector, targetPoint: Vector, distance: number): Vector {
@@ -63,6 +61,13 @@ export function getNormalizedAngleDiff(angleA: number, angleB: number) {
   const normalizedTarget = normalizeRadians(angleB);
   const difference = normalizedTarget - normalizedAngle;
   return difference;
+}
+
+export function getClosestAngleDifference(angle1: number, angle2: number): number {
+  const fullCircle = 2 * Math.PI;
+  const difference = Math.abs(angle1 - angle2);
+  if (difference <= Math.PI) return difference;
+  else return fullCircle - difference;
 }
 
 export function getDirectionAndDiffOfClosestPathToTargetAngle(angle: number, targetAngle: number, diffTolerance: number) {
