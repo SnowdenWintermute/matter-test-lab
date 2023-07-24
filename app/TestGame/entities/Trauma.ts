@@ -1,6 +1,6 @@
 import { EntityCategory } from "../enums";
 
-export const numberOfAngleBuckets = 100;
+export const numberOfAngleBuckets = 10;
 
 export class Trauma {
   totalDamage: number = 0;

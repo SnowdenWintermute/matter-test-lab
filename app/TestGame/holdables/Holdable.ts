@@ -4,7 +4,7 @@ import { MobileEntity } from "../entities/MobileEntity";
 import Matter from "matter-js";
 import { getPointInArc } from "@/app/utils";
 import slideGrip from "./slideGrip";
-import { AttackDirections, AttackInstructions } from "../entities/Attack";
+import { AttackDirections, AttackInstructions, MovementType } from "../entities/Attack";
 
 export enum HoldableType {
   SPEAR,
@@ -60,6 +60,7 @@ export abstract class Holdable extends Entity {
     heavy?: AttackInstructions;
   } = {};
   isColliding = false;
+  previousAttackStepArcCenter?: Vector;
   constructor(
     id: number,
     body: Body,

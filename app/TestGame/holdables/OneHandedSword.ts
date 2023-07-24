@@ -6,6 +6,7 @@ const length = 60;
 const width = 3;
 const distBetweenGripPairMembers = 10;
 const baseStepTimeout = 5000;
+
 export class OneHandedSword extends Holdable {
   width = width;
   attacks = {
@@ -44,7 +45,6 @@ export class OneHandedSword extends Holdable {
             position: new HoldableGripConstraintCreationData({ x: 20, y: -25 }, -Math.PI / 3, distBetweenGripPairMembers, 10, 10),
             movementType: MovementType.LINEAR,
             damageType: DamageType.NONE,
-            timeout: 1000,
           },
           {
             position: new HoldableGripConstraintCreationData({ x: 10, y: -40 }, -Math.PI / 2, distBetweenGripPairMembers, 10, 10),
