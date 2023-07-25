@@ -84,12 +84,12 @@ export class OneHandedSword extends Holdable {
       [AttackDirections.FORWARD]: new AttackInstructions(
         [
           {
-            position: new HoldableGripConstraintCreationData({ x: 10, y: 5 }, 0, distBetweenGripPairMembers, 10, 10),
+            position: new HoldableGripConstraintCreationData({ x: 5, y: 25 }, 0, distBetweenGripPairMembers, 10, 10),
             movementType: MovementType.LINEAR,
             damageType: DamageType.NONE,
           },
           {
-            position: new HoldableGripConstraintCreationData({ x: 50, y: 5 }, 0, distBetweenGripPairMembers, 10, 10),
+            position: new HoldableGripConstraintCreationData({ x: 50, y: 25 }, 0, distBetweenGripPairMembers, 10, 10),
             movementType: MovementType.LINEAR,
             damageType: DamageType.PIERCING,
           },

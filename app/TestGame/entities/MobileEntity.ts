@@ -21,6 +21,7 @@ export class MobileEntity extends Entity {
   mainHand: "Left" | "Right" = "Right";
   equippedHoldables: { rightHand: Holdable | null; leftHand: Holdable | null } = { rightHand: null, leftHand: null };
   currentAttackExecuting: Attack | null = null;
+  // attackOrderPreference: AttackDirections[] = [AttackDirections.LEFT, AttackDirections.RIGHT, AttackDirections.FORWARD];
   attackOrderPreference: AttackDirections[] = [AttackDirections.LEFT, AttackDirections.RIGHT, AttackDirections.FORWARD];
   currentAttackOrderIndex: number | null = null;
   weakpoint: { offset: Vector; radius: number } = { offset: { x: 0, y: 0 }, radius: 10 };

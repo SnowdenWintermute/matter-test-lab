@@ -20,8 +20,10 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
     entity.currentAttackExecuting = new Attack(equippedHoldable.attacks.light[firstAttackInPreferenceOrder], 1);
     entity.currentAttackOrderIndex = 0;
     clicksQueued.left -= 1;
+    return;
   }
   if (!currentAttackExecuting) return moveHoldableGripsTowardDestination(entity, equippedHoldable, equippedHoldable.restPosition, handSpeed.current);
+  entity.body.isStatic = true;
   const { timeCurrentStepStarted, currentStepIndex, instructionSet } = currentAttackExecuting;
   const { baseTimeout, cooldown, steps } = instructionSet;
   const step = steps[currentStepIndex];
@@ -37,22 +39,29 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
   const timeout = step.timeout || baseTimeout;
   const exceededTimeout = +Date.now() - timeCurrentStepStarted > timeout;
   if (!reachedDestination && !exceededTimeout) return;
-  currentAttackExecuting.currentStepIndex += 1;
+
+  currentAttackExecuting.currentStepIndex += 1; // steps in current attack
   const completedAllSteps = currentAttackExecuting.currentStepIndex >= steps.length;
   if (!completedAllSteps) return;
   if (entity.currentAttackOrderIndex === null) return;
-  entity.currentAttackOrderIndex += 1;
+  entity.currentAttackOrderIndex += 1; // attack in chain of queued light attacks
   const nextAttackDirectionInPreferenceOrder = entity.attackOrderPreference[entity.currentAttackOrderIndex];
-  if (typeof nextAttackDirectionInPreferenceOrder !== "number") return;
+  if (typeof nextAttackDirectionInPreferenceOrder !== "number") {
+    clicksQueued.left = 0;
+    entity.currentAttackExecuting = null;
+    entity.currentAttackOrderIndex = null;
+    entity.body.isStatic = false;
+    return;
+  }
   // @ts-ignore
   const nextAttack = equippedHoldable.attacks.light[nextAttackDirectionInPreferenceOrder];
-  console.log("nextAttack: ", nextAttack);
-  if (!nextAttack) {
-    entity.currentAttackExecuting = null;
-    clicksQueued.left = 0;
-  } else if (clicksQueued.left) {
+  if (nextAttack && clicksQueued.left) {
     entity.currentAttackExecuting = new Attack(nextAttack, 1);
     clicksQueued.left -= 1;
-    console.log("assigning new attack at line 48: ", entity.currentAttackExecuting);
-  } else entity.currentAttackExecuting = null;
+  } else {
+    clicksQueued.left = 0;
+    entity.currentAttackExecuting = null;
+    entity.currentAttackOrderIndex = null;
+    entity.body.isStatic = false;
+  }
 }
