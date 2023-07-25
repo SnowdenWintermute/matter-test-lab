@@ -31,7 +31,7 @@ function moveGripInArc(
   const distArcCenterToCurrentGripLocation = distBetweenTwoPoints(arcCenterWorldLocation, gripPointAWorldLocation);
   let newRadius = distArcCenterToCurrentGripLocation;
   if (distArcCenterToCurrentGripLocation !== targetRadius)
-    newRadius = moveNumberTowards(distArcCenterToCurrentGripLocation, targetRadius, entity.handSpeed.current / 3);
+    newRadius = moveNumberTowards(distArcCenterToCurrentGripLocation, targetRadius, entity.handSpeed.current / 2);
 
   const newGripPosition = getPointInArc(arcCenterWorldLocation, newAngle, newRadius);
 
@@ -58,15 +58,18 @@ export default function moveHoldableGripsInArc(entity: MobileEntity, holdable: H
   // line up the points first so it doesn't look like the tip of the weapon teleports
   const gripMainUpperWorldLocation = Vector.add(position, main.lower.pointA);
   const gripMainUpperAngle = getAngleFromCenter(arcCenterWorldLocation, gripMainUpperWorldLocation);
-  if (holdable.previousAttackStepArcCenter !== arcCenterOffsetFromBody) {
+  let previousStepHadSameArcCenter = false;
+  if (holdable.previousAttackStepArcCenter?.x === arcCenterOffsetFromBody.x && holdable.previousAttackStepArcCenter?.y === arcCenterOffsetFromBody.y) {
+    previousStepHadSameArcCenter = true;
+  }
+  if (!previousStepHadSameArcCenter) {
     const destinationData = new HoldableGripConstraintCreationData(
-      arcCenterOffsetFromBody,
+      getPointInArc(arcCenterOffsetFromBody, step.position.angle, arcEndingRadius),
       step.position.angle,
       distBetweenPairMembers,
       distBetweenGripPairs,
       lowestPointYOffsetFromHoldableBottom
     );
-    console.log("moving holdable grips instead of arc");
     moveHoldableGripsTowardDestination(entity, holdable, destinationData, entity.handSpeed.current, step);
     return;
   }

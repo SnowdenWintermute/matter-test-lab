@@ -37,7 +37,7 @@ export class TestGame {
   inputState = new CSPlayerInputState();
   prevInputState = new CSPlayerInputState();
   mouseState = new MouseState();
-  renderRate = 33;
+  renderRate = 15;
   constructor() {
     this.physicsEngine.gravity.y = 0;
     this.physicsEngine.gravity.x = 0;
@@ -142,7 +142,6 @@ export class TestGame {
 
   cleanup() {
     clearTimeout(this.intervals.physics);
-    // Matter.Composite.clear(this.physicsEngine.world, false, true);
     this.intervals.physics = undefined;
   }
 
@@ -155,14 +154,11 @@ export class TestGame {
       handlePlayerInputs(this);
       Matter.Engine.update(this.physicsEngine, this.renderRate);
       const playerEntitiesArray = Object.values(this.entities.playerControlled);
-      // playerEntitiesArray.forEach((playerEntity) => {
-      // });
 
       updateTraumas(this);
       if (playerEntitiesArray.length < 4) {
         const x = Math.floor(Math.random() * 500);
         const y = Math.floor(Math.random() * 500);
-        // this.createRegisteredPlayerEntity({ x: x + 80, y });
         this.createRegisteredPlayerEntity({ x, y });
       }
       render(context, this, canvasSize);

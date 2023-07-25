@@ -9,7 +9,7 @@ export default function handlePlayerInputs(game: TestGame) {
   const { entities } = game;
   const playerEntity = Object.values(entities.playerControlled)[0];
   if (!playerEntity) return console.log("no player entity");
-  handleLeftClick(game, playerEntity);
+  // handleLeftClick(game, playerEntity);
   handleWASD(game, playerEntity);
   rotatePlayerTowardMouse(game, playerEntity);
   handleCombatMoveExecution(game, playerEntity);

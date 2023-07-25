@@ -18,7 +18,22 @@ function handleMouseDown(e: MouseEvent, game: TestGame) {
 
 function handleMouseUp(e: MouseEvent, game: TestGame) {
   e.preventDefault();
-  if (e.button === 0) game.inputState.mouseLeft = false;
+  if (e.button !== 0) return;
+  const playerEntity = Object.values(game.entities.playerControlled)[0];
+  game.inputState.mouseLeft = false;
+  const { inputState, mouseState } = game;
+  const equippedHoldable = playerEntity.equippedHoldables.rightHand;
+  if (!equippedHoldable) return;
+
+  const durationHeld = +Date.now() - (inputState.mouseLeftPressedTimestamp || 0);
+  const heavyAttackHoldDurationThreshold = 500;
+  const mouseLeftReleased = game.prevInputState.mouseLeft && !inputState.mouseLeft && durationHeld;
+
+  if (durationHeld >= heavyAttackHoldDurationThreshold) {
+    console.log("heavy attack input received");
+  } else mouseState.clicksQueued.left += 1;
+
+  if (mouseLeftReleased || durationHeld >= heavyAttackHoldDurationThreshold) inputState.mouseLeftPressedTimestamp = null;
 }
 
 export function setInputs(e: KeyboardEvent, inputs: CSPlayerInputState, active: boolean) {

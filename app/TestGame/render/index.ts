@@ -27,7 +27,7 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
     drawPoly(context, entity.body.vertices, "#9ba8b8");
     drawAngleLine(context, position, angle, 4, 40, "#a52026");
     drawAngleLine(context, position, targetAngle, 4, 40, "#028a7e");
-    drawEntityDebugText(context, entity);
+    drawEntityDebugText(context, entity, game);
     drawHP(context, entity);
     const weakpointNonRotatedPosition = Vector.add(position, weakpoint.offset);
     drawCircle(
@@ -48,7 +48,7 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
     drawCircle(context, holdable.body.vertices[0], 2, "red", true);
     drawCircle(context, holdable.body.position, 1, "black", true);
     if (!holdable.heldBy) return;
-    drawGrips(context, holdable, holdable.heldBy);
+    // drawGrips(context, holdable, holdable.heldBy);
     // drawHoldablePositions(context, holdable, holdable.heldBy.body);
   });
   drawDebugText(context, canvasSize, game);
