@@ -1,5 +1,5 @@
 import { getAngleFromCenter, getClosestAngleDifference, getPointInArc } from "@/app/utils";
-import { AttackStep } from "../entities/Attack";
+import { AttackStep, MovementType } from "../entities/Attack";
 import { MobileEntity } from "../entities/MobileEntity";
 import { Holdable } from "../holdables/Holdable";
 import { Vector } from "matter-js";
@@ -28,11 +28,13 @@ export default function moveHoldableGripsInArc(entity: MobileEntity, holdable: H
   if (holdable.previousAttackStep.arcCenter?.x === arcCenterOffsetFromBody.x && holdable.previousAttackStep.arcCenter?.y === arcCenterOffsetFromBody.y)
     previousStepHadSameArcCenter = true;
   const previousStepHadSameMovementType = holdable.previousAttackStep.movementType === step.movementType;
-  console.log(previousStepHadSameMovementType);
+
   if (!previousStepHadSameArcCenter || !previousStepHadSameMovementType) {
+    const gripsAngle = perpendicularGrips ? step.position.angle - Math.PI / 2 : step.position.angle;
+
     const destinationData = new HoldableGripConstraintCreationData(
       getPointInArc(arcCenterOffsetFromBody, step.position.angle, arcEndingRadius),
-      step.position.angle,
+      gripsAngle,
       distBetweenPairMembers,
       distBetweenGripPairs,
       lowestPointYOffsetFromHoldableBottom
