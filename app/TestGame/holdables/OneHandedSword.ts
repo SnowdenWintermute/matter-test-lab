@@ -1,9 +1,10 @@
 import Matter, { Vector } from "matter-js";
-import { Holdable, HoldableGripConstraintCreationData, HoldableType } from "./Holdable";
+import { Holdable, HoldableType } from "./Holdable";
 import { AttackDirections, AttackInstructions, DamageType, MovementType } from "../entities/Attack";
+import { HoldableGripConstraintCreationData } from "./HoldableGripConstraintCreationData";
 
 const length = 60;
-const width = 3;
+const width = 5;
 const distBetweenGripPairMembers = 10;
 const baseStepTimeout = 5000;
 
@@ -19,7 +20,7 @@ export class OneHandedSword extends Holdable {
             damageType: DamageType.NONE,
           },
           {
-            position: new HoldableGripConstraintCreationData({ x: 30, y: 0 }, Math.PI / 4, distBetweenGripPairMembers, 10, 10),
+            position: new HoldableGripConstraintCreationData(null, Math.PI / 4, distBetweenGripPairMembers, 10, 10),
             movementType: MovementType.ARC,
             arcEndingRadius: 20,
             arcCenterOffsetFromBody: { x: 10, y: 10 },
@@ -27,7 +28,7 @@ export class OneHandedSword extends Holdable {
             damageType: DamageType.SLASHING,
           },
           {
-            position: new HoldableGripConstraintCreationData({ x: 30, y: 0 }, 0, distBetweenGripPairMembers, 10, 10),
+            position: new HoldableGripConstraintCreationData(null, 0, distBetweenGripPairMembers, 10, 10),
             movementType: MovementType.ARC,
             arcEndingRadius: 40,
             arcCenterOffsetFromBody: { x: 10, y: 10 },
@@ -35,7 +36,7 @@ export class OneHandedSword extends Holdable {
             damageType: DamageType.SLASHING,
           },
           {
-            position: new HoldableGripConstraintCreationData({ x: 10, y: -40 }, -Math.PI / 3, distBetweenGripPairMembers, 10, 10),
+            position: new HoldableGripConstraintCreationData(null, -Math.PI / 3, distBetweenGripPairMembers, 10, 10),
             movementType: MovementType.ARC,
             arcEndingRadius: 50,
             arcCenterOffsetFromBody: { x: 10, y: 10 },
@@ -54,7 +55,7 @@ export class OneHandedSword extends Holdable {
             damageType: DamageType.NONE,
           },
           {
-            position: new HoldableGripConstraintCreationData({ x: 10, y: -40 }, -Math.PI / 2, distBetweenGripPairMembers, 10, 10),
+            position: new HoldableGripConstraintCreationData(null, -Math.PI / 2, distBetweenGripPairMembers, 10, 10),
             movementType: MovementType.ARC,
             arcEndingRadius: 20,
             arcCenterOffsetFromBody: { x: 10, y: 10 },
@@ -62,7 +63,7 @@ export class OneHandedSword extends Holdable {
             damageType: DamageType.SLASHING,
           },
           {
-            position: new HoldableGripConstraintCreationData({ x: 30, y: 0 }, -Math.PI / 6, distBetweenGripPairMembers, 10, 10),
+            position: new HoldableGripConstraintCreationData(null, -Math.PI / 6, distBetweenGripPairMembers, 10, 10),
             movementType: MovementType.ARC,
             arcEndingRadius: 40,
             arcCenterOffsetFromBody: { x: 10, y: 10 },
@@ -70,7 +71,7 @@ export class OneHandedSword extends Holdable {
             damageType: DamageType.SLASHING,
           },
           {
-            position: new HoldableGripConstraintCreationData({ x: 30, y: 0 }, 1.2, distBetweenGripPairMembers, 10, 10),
+            position: new HoldableGripConstraintCreationData(null, 1.2, distBetweenGripPairMembers, 10, 10),
             movementType: MovementType.ARC,
             arcEndingRadius: 10,
             arcCenterOffsetFromBody: { x: 10, y: 10 },

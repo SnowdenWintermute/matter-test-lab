@@ -10,6 +10,7 @@ import { WidthAndHeight } from "../common-classes";
 import drawDebugText from "./drawDebugText";
 import { Vector } from "matter-js";
 import { angleBetweenPoints, distBetweenTwoPoints, getPointInArc } from "@/app/utils";
+import cloneDeep from "lodash.clonedeep";
 
 export default function render(context: CanvasRenderingContext2D, game: TestGame, canvasSize: WidthAndHeight) {
   context.clearRect(0, 0, canvasSize.width, canvasSize.height);
@@ -48,7 +49,7 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
     drawCircle(context, holdable.body.vertices[0], 2, "red", true);
     drawCircle(context, holdable.body.position, 1, "black", true);
     if (!holdable.heldBy) return;
-    // drawGrips(context, holdable, holdable.heldBy);
+    drawGrips(context, holdable, holdable.heldBy);
     // drawHoldablePositions(context, holdable, holdable.heldBy.body);
   });
   drawDebugText(context, canvasSize, game);

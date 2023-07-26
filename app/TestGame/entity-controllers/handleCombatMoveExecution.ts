@@ -1,8 +1,16 @@
 import { TestGame } from "..";
-import { Attack, AttackDirections, MovementType } from "../entities/Attack";
+import { Attack, MovementType } from "../entities/Attack";
 import { MobileEntity } from "../entities/MobileEntity";
 import moveHoldableGripsTowardDestination from "./moveHoldableGripsTowardDestination";
 import moveHoldableGripsInArc from "./moveHoldableGripsInArc";
+import moveHoldableGripsInPerpendicularArc from "./moveHoldableGripsInPerpendicularArc";
+
+function clearCurrentAttack(entity: MobileEntity, clicksQueued: { left: number; right: number }) {
+  clicksQueued.left = 0;
+  entity.currentAttackExecuting = null;
+  entity.currentAttackOrderIndex = null;
+  entity.body.isStatic = false;
+}
 
 export default function handleCombatMoveExecution(game: TestGame, entity: MobileEntity) {
   // if baseTimeout modified by handSpeed is reached, go to rest position and end attack
@@ -12,6 +20,7 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
   const { clicksQueued } = game.mouseState;
   const equippedHoldable = entity.equippedHoldables.rightHand;
   if (!equippedHoldable) return;
+
   if (clicksQueued.left && !currentAttackExecuting) {
     entity.currentAttackOrderIndex = 0;
     const firstAttackInPreferenceOrder = entity.attackOrderPreference[entity.currentAttackOrderIndex];
@@ -23,6 +32,7 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
     return;
   }
   if (!currentAttackExecuting) return moveHoldableGripsTowardDestination(entity, equippedHoldable, equippedHoldable.restPosition, handSpeed.current);
+
   entity.body.isStatic = true;
   const { timeCurrentStepStarted, currentStepIndex, instructionSet } = currentAttackExecuting;
   const { baseTimeout, cooldown, steps } = instructionSet;
@@ -34,7 +44,7 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
   let reachedDestination;
   if (movementType === MovementType.LINEAR)
     reachedDestination = moveHoldableGripsTowardDestination(entity, equippedHoldable, desiredPosition, handSpeed.current, step);
-  else if (movementType === MovementType.ARC) reachedDestination = moveHoldableGripsInArc(entity, equippedHoldable, step);
+  else if (movementType === MovementType.ARC) reachedDestination = moveHoldableGripsInArc(entity, equippedHoldable, step, true);
 
   const timeout = step.timeout || baseTimeout;
   const exceededTimeout = +Date.now() - timeCurrentStepStarted > timeout;
@@ -46,22 +56,12 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
   if (entity.currentAttackOrderIndex === null) return;
   entity.currentAttackOrderIndex += 1; // attack in chain of queued light attacks
   const nextAttackDirectionInPreferenceOrder = entity.attackOrderPreference[entity.currentAttackOrderIndex];
-  if (typeof nextAttackDirectionInPreferenceOrder !== "number") {
-    clicksQueued.left = 0;
-    entity.currentAttackExecuting = null;
-    entity.currentAttackOrderIndex = null;
-    entity.body.isStatic = false;
-    return;
-  }
+  if (typeof nextAttackDirectionInPreferenceOrder !== "number") clearCurrentAttack(entity, clicksQueued);
   // @ts-ignore
   const nextAttack = equippedHoldable.attacks.light[nextAttackDirectionInPreferenceOrder];
   if (nextAttack && clicksQueued.left) {
     entity.currentAttackExecuting = new Attack(nextAttack, 1);
     clicksQueued.left -= 1;
-  } else {
-    clicksQueued.left = 0;
-    entity.currentAttackExecuting = null;
-    entity.currentAttackOrderIndex = null;
-    entity.body.isStatic = false;
-  }
+  } else clearCurrentAttack(entity, clicksQueued);
+  // store previous vertices for a trailing effect
 }

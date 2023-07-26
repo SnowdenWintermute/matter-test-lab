@@ -5,6 +5,7 @@ import closestDistanceToPolygon from "../utils/closestDistanceToPolygon";
 import convexPolygonOverlapArea from "../utils/convexPolygonOverlapArea";
 import { Trauma, numberOfAngleBuckets } from "./entities/Trauma";
 import { Holdable } from "./holdables/Holdable";
+import { DamageType } from "./entities/Attack";
 
 export default function updateTraumas(game: TestGame) {
   Object.values(game.entities.experiencingTrauma).forEach((entityMeta) => {
@@ -40,6 +41,9 @@ export default function updateTraumas(game: TestGame) {
         heldBy.handSpeed.current = heldBy.handSpeed.base * (Math.max(resistance * 2), 1);
         heldBy.acceleration.current = heldBy.acceleration.base * resistance;
       }
+
+      // @ts-ignore
+      // if (heldBy.currentAttackExecuting?.instructionSet[heldBy.currentAttackExecuting.currentStepIndex].damageType === DamageType.NONE) return;
 
       if (entity.hp.current > 0 && increaseInOverlap) {
         let damage = increaseInOverlap * 0.01;

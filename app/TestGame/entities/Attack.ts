@@ -1,5 +1,5 @@
 import { Vector } from "matter-js";
-import { HoldableGripConstraintCreationData } from "../holdables/Holdable";
+import { HoldableGripConstraintCreationData } from "../holdables/HoldableGripConstraintCreationData";
 
 export enum AttackDirections {
   LEFT,
@@ -17,6 +17,7 @@ export enum DamageType {
 export enum MovementType {
   LINEAR,
   ARC,
+  PERPENDICULAR_ARC,
 }
 
 export type AttackStep = {

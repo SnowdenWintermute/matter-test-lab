@@ -96,3 +96,24 @@ export function bucketAngle(angle: number, numSections: number): number {
   const sectionIndex = Math.floor(angle / sectionSize);
   return sectionIndex;
 }
+
+export function getPointOnArcAtDistanceFromAnother(center: Vector, firstPointAngle: number, distance: number, radius: number): Vector {
+  // Calculate the x and y coordinates of the first point using polar coordinates
+  const firstPointX = center.x + Math.cos(firstPointAngle) * radius;
+  const firstPointY = center.y + Math.sin(firstPointAngle) * radius;
+
+  // Calculate the vector from the center to the first point
+  const vectorToFirstPoint: Vector = { x: firstPointX - center.x, y: firstPointY - center.y };
+
+  // Calculate the length of the vector
+  const vectorLength = Math.sqrt(vectorToFirstPoint.x ** 2 + vectorToFirstPoint.y ** 2);
+
+  // Calculate the scaling factor to achieve the desired distance from the first point
+  const scalingFactor = (radius + distance) / vectorLength;
+
+  // Calculate the x and y coordinates of the second point
+  const secondPointX = center.x + vectorToFirstPoint.x * scalingFactor;
+  const secondPointY = center.y + vectorToFirstPoint.y * scalingFactor;
+
+  return { x: secondPointX, y: secondPointY };
+}

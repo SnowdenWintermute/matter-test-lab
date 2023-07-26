@@ -4,6 +4,7 @@ import { getDirectionAndDiffOfClosestPathToTargetAngle } from "../../utils";
 import { MobileEntity } from "../entities/MobileEntity";
 
 export default function rotatePlayerTowardMouse(game: TestGame, entity: MobileEntity) {
+  if (entity.currentAttackExecuting) return;
   const { mouseState } = game;
   const { body } = entity;
   const { angle } = body;

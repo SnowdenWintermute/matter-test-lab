@@ -17,7 +17,9 @@ export default function equipHoldableToEntity(game: TestGame, entity: MobileEnti
   const { body } = entity;
 
   const { main, support, distBetweenGripPairs, lowestPointYOffsetFromHoldableBottom, stiffnesses } = restPosition;
+  if(!main) return
   const gripsOffsetFromHoldableBottom = lowestPointYOffsetFromHoldableBottom || 0;
+
   const distMainLowerToUpper = distBetweenTwoPoints(main.lower, main.upper);
   holdable.grips = {
     main: {

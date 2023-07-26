@@ -1,45 +1,13 @@
-import {
-  angleBetweenPoints,
-  distBetweenTwoPoints,
-  getAngleFromCenter,
-  getClosestAngleDifference,
-  getDirectionAndDiffOfClosestPathToTargetAngle,
-  getPointInArc,
-  moveNumberTowards,
-  normalizeRadians,
-} from "@/app/utils";
+import { getAngleFromCenter, getClosestAngleDifference, getPointInArc } from "@/app/utils";
 import { AttackStep } from "../entities/Attack";
 import { MobileEntity } from "../entities/MobileEntity";
-import { Holdable, HoldableGripConstraintCreationData } from "../holdables/Holdable";
-import { PointRelativeToBody } from "../holdables/PointRelativeToBody";
+import { Holdable } from "../holdables/Holdable";
 import { Vector } from "matter-js";
 import moveHoldableGripsTowardDestination from "./moveHoldableGripsTowardDestination";
+import { moveGripInArc } from "./moveGripInArc";
+import { HoldableGripConstraintCreationData } from "../holdables/HoldableGripConstraintCreationData";
 
-function moveGripInArc(
-  entity: MobileEntity,
-  grip: Matter.Constraint,
-  step: AttackStep,
-  arcCenterWorldLocation: Vector,
-  newAngle: number,
-  targetRadius: number
-) {
-  const { position } = entity.body;
-  const { arcCenterOffsetFromBody, arcDirection, arcEndingRadius } = step;
-  if (!arcCenterOffsetFromBody || typeof arcDirection !== "number" || !arcEndingRadius) return;
-  const gripPointAWorldLocation = Vector.add(position, grip.pointA);
-
-  const distArcCenterToCurrentGripLocation = distBetweenTwoPoints(arcCenterWorldLocation, gripPointAWorldLocation);
-  let newRadius = distArcCenterToCurrentGripLocation;
-  if (distArcCenterToCurrentGripLocation !== targetRadius)
-    newRadius = moveNumberTowards(distArcCenterToCurrentGripLocation, targetRadius, entity.handSpeed.current / 2);
-
-  const newGripPosition = getPointInArc(arcCenterWorldLocation, newAngle, newRadius);
-
-  grip.pointA.x = newGripPosition.x - position.x;
-  grip.pointA.y = newGripPosition.y - position.y;
-}
-
-export default function moveHoldableGripsInArc(entity: MobileEntity, holdable: Holdable, step: AttackStep) {
+export default function moveHoldableGripsInArc(entity: MobileEntity, holdable: Holdable, step: AttackStep, perpendicularGrips?: boolean) {
   const { arcCenterOffsetFromBody, arcDirection, arcEndingRadius } = step;
   const { distBetweenPairMembers, distBetweenGripPairs, lowestPointYOffsetFromHoldableBottom } = step.position;
   if (!holdable.grips || !arcCenterOffsetFromBody || !arcEndingRadius) return;
@@ -56,13 +24,12 @@ export default function moveHoldableGripsInArc(entity: MobileEntity, holdable: H
   const angleDiffToDestination = getClosestAngleDifference(gripMainLowerCurrentAngle, destinationAngle);
 
   // line up the points first so it doesn't look like the tip of the weapon teleports
-  const gripMainUpperWorldLocation = Vector.add(position, main.lower.pointA);
-  const gripMainUpperAngle = getAngleFromCenter(arcCenterWorldLocation, gripMainUpperWorldLocation);
   let previousStepHadSameArcCenter = false;
-  if (holdable.previousAttackStepArcCenter?.x === arcCenterOffsetFromBody.x && holdable.previousAttackStepArcCenter?.y === arcCenterOffsetFromBody.y) {
+  if (holdable.previousAttackStep.arcCenter?.x === arcCenterOffsetFromBody.x && holdable.previousAttackStep.arcCenter?.y === arcCenterOffsetFromBody.y)
     previousStepHadSameArcCenter = true;
-  }
-  if (!previousStepHadSameArcCenter) {
+  const previousStepHadSameMovementType = holdable.previousAttackStep.movementType === step.movementType;
+  console.log(previousStepHadSameMovementType);
+  if (!previousStepHadSameArcCenter || !previousStepHadSameMovementType) {
     const destinationData = new HoldableGripConstraintCreationData(
       getPointInArc(arcCenterOffsetFromBody, step.position.angle, arcEndingRadius),
       step.position.angle,
@@ -70,7 +37,13 @@ export default function moveHoldableGripsInArc(entity: MobileEntity, holdable: H
       distBetweenGripPairs,
       lowestPointYOffsetFromHoldableBottom
     );
-    moveHoldableGripsTowardDestination(entity, holdable, destinationData, entity.handSpeed.current, step);
+    const reachedDestination = moveHoldableGripsTowardDestination(entity, holdable, destinationData, entity.handSpeed.current, step);
+    if (reachedDestination) {
+      // used to determine if next step needs to translate into place or can directly move in an arc
+      // otherwise it may look like the holdable teleports from one step to another
+      holdable.previousAttackStep.arcCenter = step?.arcCenterOffsetFromBody;
+      holdable.previousAttackStep.movementType = step?.movementType;
+    }
     return;
   }
 
@@ -82,18 +55,64 @@ export default function moveHoldableGripsInArc(entity: MobileEntity, holdable: H
   } else if (arcDirection === 1) newAngle += angularSpeedInRadians;
   else if (arcDirection === -1) newAngle -= angularSpeedInRadians;
 
-  moveGripInArc(entity, main.lower, step, arcCenterWorldLocation, newAngle, arcEndingRadius);
-  moveGripInArc(entity, main.upper, step, arcCenterWorldLocation, newAngle, arcEndingRadius + distBetweenPairMembers);
-  if (typeof distBetweenGripPairs !== "number") return;
-  if (support?.lower)
-    moveGripInArc(entity, support.lower, step, arcCenterWorldLocation, newAngle, arcEndingRadius + distBetweenGripPairs + distBetweenPairMembers);
-  if (support?.upper)
-    moveGripInArc(entity, support.upper, step, arcCenterWorldLocation, newAngle, arcEndingRadius + distBetweenPairMembers * 2 + distBetweenGripPairs);
-
   if (targetAngleReached) {
+    console.log("target angle reached");
     // used to determine if next step needs to translate into place or can directly move in an arc
     // otherwise it may look like the holdable teleports from one step to another
-    holdable.previousAttackStepArcCenter = arcCenterOffsetFromBody;
+    holdable.previousAttackStep.arcCenter = arcCenterOffsetFromBody;
+    holdable.previousAttackStep.movementType = step.movementType;
     return true;
+  }
+
+  const speedToApproachTargetRadius = entity.handSpeed.current / 2;
+  moveGripInArc(entity, main.lower, step, arcCenterWorldLocation, newAngle, arcEndingRadius, speedToApproachTargetRadius);
+  if (!perpendicularGrips) {
+    moveGripInArc(entity, main.upper, step, arcCenterWorldLocation, newAngle, arcEndingRadius + distBetweenPairMembers, speedToApproachTargetRadius);
+    if (typeof distBetweenGripPairs !== "number") return;
+    if (support?.lower)
+      moveGripInArc(
+        entity,
+        support.lower,
+        step,
+        arcCenterWorldLocation,
+        newAngle,
+        arcEndingRadius + distBetweenGripPairs + distBetweenPairMembers,
+        speedToApproachTargetRadius
+      );
+    if (support?.upper)
+      moveGripInArc(
+        entity,
+        support.upper,
+        step,
+        arcCenterWorldLocation,
+        newAngle,
+        arcEndingRadius + distBetweenPairMembers * 2 + distBetweenGripPairs,
+        speedToApproachTargetRadius
+      );
+  } else {
+    const instantSpeed = 99;
+    const perpendicularAngle = newAngle - Math.PI / 2;
+    moveGripInArc(entity, main.upper, step, Vector.add(main.lower.pointA, position), perpendicularAngle, distBetweenPairMembers, instantSpeed);
+    if (typeof distBetweenGripPairs !== "number") return;
+    if (support?.lower)
+      moveGripInArc(
+        entity,
+        support.lower,
+        step,
+        Vector.add(main.lower.pointA, position),
+        perpendicularAngle,
+        distBetweenPairMembers + distBetweenGripPairs,
+        instantSpeed
+      );
+    if (support?.upper)
+      moveGripInArc(
+        entity,
+        support.upper,
+        step,
+        Vector.add(main.lower.pointA, position),
+        perpendicularAngle,
+        distBetweenGripPairs * 2 + distBetweenPairMembers,
+        instantSpeed
+      );
   }
 }
