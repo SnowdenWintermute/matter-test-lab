@@ -1,21 +1,21 @@
 import { Vector } from "matter-js";
 import { TestGame } from "..";
 import { distBetweenTwoPoints } from "../../utils";
-import { MobileEntity } from "../entities/MobileEntity";
+import { HandSide, MobileEntity } from "../entities/MobileEntity";
 import { Holdable } from "../holdables/Holdable";
 import { OneHandedSword } from "../holdables/OneHandedSword";
 import { Spear } from "../holdables/Spear";
 
 export default function equipHoldableToEntity(game: TestGame, entity: MobileEntity, holdable: Holdable | Spear | OneHandedSword) {
   if (holdable.requiresTwoHands) {
-    entity.equippedHoldables.rightHand = holdable;
-    entity.equippedHoldables.leftHand = holdable;
-  } else if (entity.mainHand === "Left") {
-    if (!holdable.isOffHand) entity.equippedHoldables.leftHand = holdable;
-    else entity.equippedHoldables.rightHand = holdable;
-  } else if (entity.mainHand === "Right") {
-    if (!holdable.isOffHand) entity.equippedHoldables.rightHand = holdable;
-    else entity.equippedHoldables.leftHand = holdable;
+    entity.equippedHoldables[HandSide.RIGHT] = holdable;
+    entity.equippedHoldables[HandSide.LEFT] = holdable;
+  } else if (entity.mainHand === HandSide.LEFT) {
+    if (!holdable.isOffHand) entity.equippedHoldables[HandSide.LEFT] = holdable;
+    else entity.equippedHoldables[HandSide.RIGHT] = holdable;
+  } else if (entity.mainHand === HandSide.RIGHT) {
+    if (!holdable.isOffHand) entity.equippedHoldables[HandSide.RIGHT] = holdable;
+    else entity.equippedHoldables[HandSide.LEFT] = holdable;
   }
 
   holdable.heldBy = entity;

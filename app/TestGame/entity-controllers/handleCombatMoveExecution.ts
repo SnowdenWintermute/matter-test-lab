@@ -18,12 +18,15 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
   // if guard input received, finish the current attack then enter guard position
   const { currentAttackExecuting, handSpeed } = entity;
   const { clicksQueued } = game.mouseState;
+  // console.log(clicksQueued);
   // const equippedHoldable = entity.equippedHoldables.rightHand;
-  Object.values(entity.equippedHoldables).forEach((equippedHoldable) => {
+  Object.entries(entity.equippedHoldables).forEach(([hand, equippedHoldable]) => {
     if (!equippedHoldable) return;
-    // if (equippedHoldable?.type === HoldableType.SHIELD) return;
+    const isMainHand = entity.mainHand === Number(hand);
+    // if (equippedHoldable.type === HoldableType.SHIELD) return;
+    // console.log(Number(hand), entity.mainHand, isMainHand);
 
-    if (clicksQueued.left && !currentAttackExecuting) {
+    if (clicksQueued.left && !currentAttackExecuting && isMainHand) {
       entity.currentAttackOrderIndex = 0;
       const firstAttackInPreferenceOrder = entity.attackOrderPreference[entity.currentAttackOrderIndex];
       if (!equippedHoldable.attacks.light || !equippedHoldable.attacks.light[firstAttackInPreferenceOrder]) return;
@@ -60,12 +63,12 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
     if (entity.currentAttackOrderIndex === null) return;
     entity.currentAttackOrderIndex += 1; // attack in chain of queued light attacks
     const nextAttackDirectionInPreferenceOrder = entity.attackOrderPreference[entity.currentAttackOrderIndex];
-    if (typeof nextAttackDirectionInPreferenceOrder !== "number") clearCurrentAttack(entity, clicksQueued);
+    if (typeof nextAttackDirectionInPreferenceOrder !== "number" && isMainHand) clearCurrentAttack(entity, clicksQueued);
     // @ts-ignore
     const nextAttack = equippedHoldable.attacks.light[nextAttackDirectionInPreferenceOrder];
-    if (nextAttack && clicksQueued.left) {
+    if (nextAttack && clicksQueued.left && isMainHand) {
       entity.currentAttackExecuting = new Attack(nextAttack, 1);
       clicksQueued.left -= 1;
-    } else clearCurrentAttack(entity, clicksQueued);
+    } else if (isMainHand) clearCurrentAttack(entity, clicksQueued);
   });
 }

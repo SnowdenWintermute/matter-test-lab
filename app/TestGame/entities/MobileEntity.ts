@@ -8,6 +8,11 @@ const baseTurningSpeed = 0.08;
 const baseHandSpeed = 5;
 const baseAcceleration = 0.01;
 
+export enum HandSide {
+  LEFT,
+  RIGHT,
+}
+
 export class MobileEntity extends Entity {
   targetAngle = 0;
   acceleration = {
@@ -18,8 +23,8 @@ export class MobileEntity extends Entity {
   };
   turningSpeed = { current: baseTurningSpeed, base: baseTurningSpeed };
   handSpeed = { current: baseHandSpeed, base: baseHandSpeed };
-  mainHand: "Left" | "Right" = "Right";
-  equippedHoldables: { rightHand: Holdable | null; leftHand: Holdable | null } = { rightHand: null, leftHand: null };
+  mainHand: HandSide = HandSide.RIGHT;
+  equippedHoldables: { [HandSide.RIGHT]: Holdable | null; [HandSide.LEFT]: Holdable | null } = { [HandSide.RIGHT]: null, [HandSide.LEFT]: null };
   currentAttackExecuting: Attack | null = null;
   // attackOrderPreference: AttackDirections[] = [AttackDirections.LEFT, AttackDirections.RIGHT, AttackDirections.FORWARD];
   attackOrderPreference: AttackDirections[] = [AttackDirections.LEFT, AttackDirections.RIGHT, AttackDirections.FORWARD];

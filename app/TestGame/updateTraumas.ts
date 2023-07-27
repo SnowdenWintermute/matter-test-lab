@@ -42,9 +42,6 @@ export default function updateTraumas(game: TestGame) {
         heldBy.acceleration.current = heldBy.acceleration.base * resistance;
       }
 
-      // @ts-ignore
-      // if (heldBy.currentAttackExecuting?.instructionSet[heldBy.currentAttackExecuting.currentStepIndex].damageType === DamageType.NONE) return;
-
       if (entity.hp.current > 0 && increaseInOverlap) {
         let damage = increaseInOverlap * 0.01;
         if (currentDistToCenter <= entity.weakpoint.radius) {
