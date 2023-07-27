@@ -9,6 +9,7 @@ import { HoldableGripConstraintCreationData } from "./HoldableGripConstraintCrea
 export enum HoldableType {
   SPEAR,
   ONE_HANDED_SWORD,
+  SHIELD,
 }
 
 export abstract class Holdable extends Entity {
@@ -41,6 +42,7 @@ export abstract class Holdable extends Entity {
     body: Body,
     public type: HoldableType,
     public requiresTwoHands: boolean,
+    public isOffHand: boolean,
     public length: number,
     public restPosition: HoldableGripConstraintCreationData,
     public guardPosition?: HoldableGripConstraintCreationData

@@ -3,12 +3,14 @@ import { Holdable, HoldableType } from "./Holdable";
 import { ArcMovementParameters, AttackDirections, AttackInstructions, AttackStep, DamageType, MovementType } from "../entities/Attack";
 import { HoldableGripConstraintCreationData } from "./HoldableGripConstraintCreationData";
 
-const length = 60;
-const width = 5;
-const distBetweenGripPairMembers = 10;
+const length = 35;
+const width = 10;
+const distBetweenGripPairMembers = length / 2;
+const distBetweenGripPairs = 0;
+const lowestGripOffsetFromBottom = length / 2;
 const baseStepTimeout = 5000;
 
-export class OneHandedSword extends Holdable {
+export class Shield extends Holdable {
   width = width;
   attacks = {
     light: {
@@ -88,11 +90,11 @@ export class OneHandedSword extends Holdable {
     super(
       id,
       body,
-      HoldableType.ONE_HANDED_SWORD,
+      HoldableType.SHIELD,
       false,
-      false,
+      true,
       length,
-      new HoldableGripConstraintCreationData({ x: 5, y: 25 }, 0, distBetweenGripPairMembers, 10, 10)
+      new HoldableGripConstraintCreationData({ x: 5, y: -25 }, 0, distBetweenGripPairMembers, null, lowestGripOffsetFromBottom)
     );
   }
 }

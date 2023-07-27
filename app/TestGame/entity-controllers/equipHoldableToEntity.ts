@@ -10,14 +10,20 @@ export default function equipHoldableToEntity(game: TestGame, entity: MobileEnti
   if (holdable.requiresTwoHands) {
     entity.equippedHoldables.rightHand = holdable;
     entity.equippedHoldables.leftHand = holdable;
-  } else if (entity.mainHand === "Left") entity.equippedHoldables.leftHand = holdable;
-  else entity.equippedHoldables.rightHand = holdable;
+  } else if (entity.mainHand === "Left") {
+    if (!holdable.isOffHand) entity.equippedHoldables.leftHand = holdable;
+    else entity.equippedHoldables.rightHand = holdable;
+  } else if (entity.mainHand === "Right") {
+    if (!holdable.isOffHand) entity.equippedHoldables.rightHand = holdable;
+    else entity.equippedHoldables.leftHand = holdable;
+  }
+
   holdable.heldBy = entity;
   const { restPosition, length } = holdable;
   const { body } = entity;
 
   const { main, support, distBetweenGripPairs, lowestPointYOffsetFromHoldableBottom, stiffnesses } = restPosition;
-  if(!main) return
+  if (!main) return;
   const gripsOffsetFromHoldableBottom = lowestPointYOffsetFromHoldableBottom || 0;
 
   const distMainLowerToUpper = distBetweenTwoPoints(main.lower, main.upper);

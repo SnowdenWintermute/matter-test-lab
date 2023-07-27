@@ -3,7 +3,7 @@ import { Attack, MovementType } from "../entities/Attack";
 import { MobileEntity } from "../entities/MobileEntity";
 import moveHoldableGripsTowardDestination from "./moveHoldableGripsTowardDestination";
 import moveHoldableGripsInArc from "./moveHoldableGripsInArc";
-import moveHoldableGripsInPerpendicularArc from "./moveHoldableGripsInPerpendicularArc";
+import { HoldableType } from "../holdables/Holdable";
 
 function clearCurrentAttack(entity: MobileEntity, clicksQueued: { left: number; right: number }) {
   clicksQueued.left = 0;
@@ -18,50 +18,54 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
   // if guard input received, finish the current attack then enter guard position
   const { currentAttackExecuting, handSpeed } = entity;
   const { clicksQueued } = game.mouseState;
-  const equippedHoldable = entity.equippedHoldables.rightHand;
-  if (!equippedHoldable) return;
+  // const equippedHoldable = entity.equippedHoldables.rightHand;
+  Object.values(entity.equippedHoldables).forEach((equippedHoldable) => {
+    if (!equippedHoldable) return;
+    // if (equippedHoldable?.type === HoldableType.SHIELD) return;
 
-  if (clicksQueued.left && !currentAttackExecuting) {
-    entity.currentAttackOrderIndex = 0;
-    const firstAttackInPreferenceOrder = entity.attackOrderPreference[entity.currentAttackOrderIndex];
-    if (!equippedHoldable.attacks.light || !equippedHoldable.attacks.light[firstAttackInPreferenceOrder]) return;
-    //@ts-ignore
-    entity.currentAttackExecuting = new Attack(equippedHoldable.attacks.light[firstAttackInPreferenceOrder], 1);
-    entity.currentAttackOrderIndex = 0;
-    clicksQueued.left -= 1;
-    return;
-  }
-  if (!currentAttackExecuting) return moveHoldableGripsTowardDestination(entity, equippedHoldable, equippedHoldable.restPosition, handSpeed.current);
+    if (clicksQueued.left && !currentAttackExecuting) {
+      entity.currentAttackOrderIndex = 0;
+      const firstAttackInPreferenceOrder = entity.attackOrderPreference[entity.currentAttackOrderIndex];
+      if (!equippedHoldable.attacks.light || !equippedHoldable.attacks.light[firstAttackInPreferenceOrder]) return;
+      //@ts-ignore
+      entity.currentAttackExecuting = new Attack(equippedHoldable.attacks.light[firstAttackInPreferenceOrder], 1);
+      entity.currentAttackOrderIndex = 0;
+      clicksQueued.left -= 1;
+      return;
+    }
+    if (!currentAttackExecuting) return moveHoldableGripsTowardDestination(entity, equippedHoldable, equippedHoldable.restPosition, handSpeed.current);
 
-  entity.body.isStatic = true;
-  const { timeCurrentStepStarted, currentStepIndex, instructionSet } = currentAttackExecuting;
-  const { baseTimeout, cooldown, steps } = instructionSet;
-  const step = steps[currentStepIndex];
-  if (!step) return;
-  const { movementType } = step;
-  const desiredPosition = step.position;
+    entity.body.isStatic = true;
+    const { timeCurrentStepStarted, currentStepIndex, instructionSet } = currentAttackExecuting;
+    const { baseTimeout, cooldown, steps } = instructionSet;
+    const step = steps[currentStepIndex];
+    if (!step) return;
+    const { movementType } = step;
+    const desiredPosition = step.position;
 
-  let reachedDestination;
-  if (movementType === MovementType.LINEAR)
-    reachedDestination = moveHoldableGripsTowardDestination(entity, equippedHoldable, desiredPosition, handSpeed.current, step);
-  else if (movementType === MovementType.ARC) reachedDestination = moveHoldableGripsInArc(entity, equippedHoldable, step, true);
+    let reachedDestination;
+    if (movementType === MovementType.LINEAR)
+      reachedDestination = moveHoldableGripsTowardDestination(entity, equippedHoldable, desiredPosition, handSpeed.current);
+    else if (movementType === MovementType.ARC) reachedDestination = moveHoldableGripsInArc(entity, equippedHoldable, step);
+    else if (movementType === MovementType.PERPENDICULAR_ARC)
+      reachedDestination = moveHoldableGripsInArc(entity, equippedHoldable, step, { perpendicularGrips: true });
 
-  const timeout = step.timeout || baseTimeout;
-  const exceededTimeout = +Date.now() - timeCurrentStepStarted > timeout;
-  if (!reachedDestination && !exceededTimeout) return;
+    const timeout = step.timeout || baseTimeout;
+    const exceededTimeout = +Date.now() - timeCurrentStepStarted > timeout;
+    if (!reachedDestination && !exceededTimeout) return;
 
-  currentAttackExecuting.currentStepIndex += 1; // steps in current attack
-  const completedAllSteps = currentAttackExecuting.currentStepIndex >= steps.length;
-  if (!completedAllSteps) return;
-  if (entity.currentAttackOrderIndex === null) return;
-  entity.currentAttackOrderIndex += 1; // attack in chain of queued light attacks
-  const nextAttackDirectionInPreferenceOrder = entity.attackOrderPreference[entity.currentAttackOrderIndex];
-  if (typeof nextAttackDirectionInPreferenceOrder !== "number") clearCurrentAttack(entity, clicksQueued);
-  // @ts-ignore
-  const nextAttack = equippedHoldable.attacks.light[nextAttackDirectionInPreferenceOrder];
-  if (nextAttack && clicksQueued.left) {
-    entity.currentAttackExecuting = new Attack(nextAttack, 1);
-    clicksQueued.left -= 1;
-  } else clearCurrentAttack(entity, clicksQueued);
-  // store previous vertices for a trailing effect
+    currentAttackExecuting.currentStepIndex += 1; // steps in current attack
+    const completedAllSteps = currentAttackExecuting.currentStepIndex >= steps.length;
+    if (!completedAllSteps) return;
+    if (entity.currentAttackOrderIndex === null) return;
+    entity.currentAttackOrderIndex += 1; // attack in chain of queued light attacks
+    const nextAttackDirectionInPreferenceOrder = entity.attackOrderPreference[entity.currentAttackOrderIndex];
+    if (typeof nextAttackDirectionInPreferenceOrder !== "number") clearCurrentAttack(entity, clicksQueued);
+    // @ts-ignore
+    const nextAttack = equippedHoldable.attacks.light[nextAttackDirectionInPreferenceOrder];
+    if (nextAttack && clicksQueued.left) {
+      entity.currentAttackExecuting = new Attack(nextAttack, 1);
+      clicksQueued.left -= 1;
+    } else clearCurrentAttack(entity, clicksQueued);
+  });
 }

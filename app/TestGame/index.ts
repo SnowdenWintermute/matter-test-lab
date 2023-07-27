@@ -16,6 +16,7 @@ import { OneHandedSword } from "./holdables/OneHandedSword";
 import { MouseState } from "./input-state/MouseData";
 import { CSPlayerInputState } from "./input-state/CSInputState";
 import handlePlayerInputs from "./entity-controllers/handlePlayerInputs";
+import { Shield } from "./holdables/Shield";
 
 export class CSEntities {
   lastIdAssigned = -1;
@@ -37,7 +38,7 @@ export class TestGame {
   inputState = new CSPlayerInputState();
   prevInputState = new CSPlayerInputState();
   mouseState = new MouseState();
-  renderRate = 15;
+  renderRate = 20;
   constructor() {
     this.physicsEngine.gravity.y = 0;
     this.physicsEngine.gravity.x = 0;
@@ -50,9 +51,11 @@ export class TestGame {
     const playerEntity = this.createRegisteredPlayerEntity({ x: 200, y: 250 });
     const playerEntity2 = this.createRegisteredPlayerEntity({ x: 370, y: 250 });
     const weapon = this.createRegisteredHoldable(HoldableType.ONE_HANDED_SWORD, { x: playerEntity.body.position.x, y: playerEntity.body.position.y });
+    const sheild = this.createRegisteredHoldable(HoldableType.SHIELD, { x: playerEntity.body.position.x, y: playerEntity.body.position.y });
     // const weapon = this.createRegisteredHoldable(HoldableType.SPEAR, { x: playerEntity.body.position.x, y: playerEntity.body.position.y });
 
     if (weapon) this.equipHoldableToEntity(this, playerEntity, weapon);
+    if (sheild) this.equipHoldableToEntity(this, playerEntity, sheild);
     // const spear2 = this.createRegisteredHoldable(HoldableType.SPEAR, playerEntity2.body.position);
     // if (spear2) this.equipHoldableToEntity(this, playerEntity2, spear2);
     this.createBorderWalls({ width: 800, height: 600 }, { x: 5, y: 5 });
@@ -109,8 +112,9 @@ export class TestGame {
     this.entities.lastIdAssigned += 1;
     const id = this.entities.lastIdAssigned;
     let holdable;
-    if (type === HoldableType.SPEAR) holdable = new Spear(id, position);
+    // if (type === HoldableType.SPEAR) holdable = new Spear(id, position);
     if (type === HoldableType.ONE_HANDED_SWORD) holdable = new OneHandedSword(id, position);
+    if (type === HoldableType.SHIELD) holdable = new Shield(id, position);
 
     if (!holdable) return;
     holdable.body.label = `${EntityCategory.HOLDABLE}-${id}`;

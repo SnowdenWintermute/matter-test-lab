@@ -20,17 +20,21 @@ export enum MovementType {
   PERPENDICULAR_ARC,
 }
 
-export type AttackStep = {
-  position: HoldableGripConstraintCreationData;
-  movementType: MovementType;
-  damageType: DamageType;
-  arcCenterOffsetFromBody?: Vector;
-  arcEndingRadius?: number;
-  arcDirection?: 1 | -1;
-  onReached?: () => void;
-  onStart?: () => void;
-  timeout?: number;
-};
+export class ArcMovementParameters {
+  constructor(public arcCenterOffsetFromBody: Vector, public arcEndingRadius: number, public arcDirection: 1 | -1) {}
+}
+
+export class AttackStep {
+  constructor(
+    public position: HoldableGripConstraintCreationData,
+    public movementType: MovementType,
+    public damageType: DamageType,
+    public arcMovementParameters?: ArcMovementParameters,
+    public onReached?: () => void,
+    public onStart?: () => void,
+    public timeout?: number
+  ) {}
+}
 
 export class AttackInstructions {
   constructor(public steps: AttackStep[], public baseTimeout: number, public cooldown: number) {}

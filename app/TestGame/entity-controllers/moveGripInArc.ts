@@ -12,8 +12,9 @@ export function moveGripInArc(
   targetRadius: number,
   speedToApproachTargetRadius: number
 ) {
+  if (!step.arcMovementParameters) return;
   const { position } = entity.body;
-  const { arcCenterOffsetFromBody, arcDirection, arcEndingRadius } = step;
+  const { arcCenterOffsetFromBody, arcDirection, arcEndingRadius } = step.arcMovementParameters;
   if (!arcCenterOffsetFromBody || typeof arcDirection !== "number" || !arcEndingRadius) return;
   const gripPointAWorldLocation = Vector.add(position, grip.pointA);
 

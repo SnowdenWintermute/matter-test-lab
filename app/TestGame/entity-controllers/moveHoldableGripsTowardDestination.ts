@@ -1,15 +1,13 @@
 import { MobileEntity } from "../entities/MobileEntity";
 import { Holdable } from "../holdables/Holdable";
 import moveGripTowardPosition from "./moveGripTowardPosition";
-import { AttackStep } from "../entities/Attack";
 import { HoldableGripConstraintCreationData } from "../holdables/HoldableGripConstraintCreationData";
 
 export default function moveHoldableGripsTowardDestination(
   entity: MobileEntity,
   holdable: Holdable,
   desiredPosition: HoldableGripConstraintCreationData,
-  speed: number,
-  step?: AttackStep
+  speed: number
 ) {
   if (!holdable) return;
   const { grips } = holdable;
@@ -21,9 +19,6 @@ export default function moveHoldableGripsTowardDestination(
   const supportLowerReachedDestination = moveGripTowardPosition(entity, grips.support.lower, desiredPosition.support.lower, speed);
   const supportUpperReachedDestination = moveGripTowardPosition(entity, grips.support.upper, desiredPosition.support.upper, speed);
   if (grips.support && mainLowerReachedDestination && mainUpperReachedDestination && supportLowerReachedDestination && supportUpperReachedDestination) {
-    // used to determine if next step needs to translate into place or can directly move in an arc
-    // otherwise it may look like the holdable teleports from one step to another
-    holdable.previousAttackStep.arcCenter = step?.arcCenterOffsetFromBody;
     return true;
   } else return false;
 }
