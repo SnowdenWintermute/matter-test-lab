@@ -1,9 +1,9 @@
-import { HandSide, MobileEntity } from "../entities/MobileEntity";
+import { Hand, MobileEntity } from "../entities/MobileEntity";
 import { TestGame } from "..";
 
 export default function drawEntityDebugText(context: CanvasRenderingContext2D, entity: MobileEntity, game: TestGame) {
   const { position, angle } = entity.body;
-  const holdable = entity.equippedHoldables[HandSide.RIGHT];
+  const holdable = entity.equippedHoldables[Hand.RIGHT];
   if (!holdable) return;
 
   const text = [`CLICKS QUEUED: ${game.mouseState.clicksQueued.left}`];

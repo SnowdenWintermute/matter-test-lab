@@ -1,7 +1,7 @@
 import { Vector } from "matter-js";
 import { TestGame } from "../../TestGame";
 import { CSPlayerInputState } from "./CSInputState";
-import { HandSide } from "../entities/MobileEntity";
+import { Hand } from "../entities/MobileEntity";
 
 function handleMouseMove(e: MouseEvent, game: TestGame) {
   if (!game.mouseState.position) game.mouseState.position = Vector.create(0, 0);
@@ -23,7 +23,7 @@ function handleMouseUp(e: MouseEvent, game: TestGame) {
   const playerEntity = Object.values(game.entities.playerControlled)[0];
   game.inputState.mouseLeft = false;
   const { inputState, mouseState } = game;
-  const equippedHoldable = playerEntity.equippedHoldables[HandSide.RIGHT];
+  const equippedHoldable = playerEntity.equippedHoldables[Hand.RIGHT];
   if (!equippedHoldable) return;
 
   const durationHeld = +Date.now() - (inputState.mouseLeftPressedTimestamp || 0);

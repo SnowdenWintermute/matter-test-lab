@@ -16,28 +16,17 @@ export class Shield extends Holdable {
     light: {
       [AttackDirections.LEFT]: new AttackInstructions(
         [
+          // new AttackStep(
+          //   new HoldableGripConstraintCreationData(null, 0, distBetweenGripPairMembers, 10, 10),
+          //   MovementType.PERPENDICULAR_ARC,
+          //   DamageType.SLASHING,
+          //   new ArcMovementParameters({ x: 5, y: -25 }, 20, 1)
+          // ),
           new AttackStep(
-            new HoldableGripConstraintCreationData({ x: 10, y: 35 }, Math.PI / 4, distBetweenGripPairMembers, 10, 10),
-            MovementType.LINEAR,
-            DamageType.NONE
-          ),
-          new AttackStep(
-            new HoldableGripConstraintCreationData(null, Math.PI / 4, distBetweenGripPairMembers, 10, 10),
+            new HoldableGripConstraintCreationData(null, -2, distBetweenGripPairMembers, 10, 10),
             MovementType.ARC,
             DamageType.SLASHING,
-            new ArcMovementParameters({ x: 10, y: 10 }, 20, -1)
-          ),
-          new AttackStep(
-            new HoldableGripConstraintCreationData(null, 0, distBetweenGripPairMembers, 10, 10),
-            MovementType.ARC,
-            DamageType.SLASHING,
-            new ArcMovementParameters({ x: 10, y: 10 }, 40, -1)
-          ),
-          new AttackStep(
-            new HoldableGripConstraintCreationData(null, -Math.PI / 3, distBetweenGripPairMembers, 10, 10),
-            MovementType.ARC,
-            DamageType.SLASHING,
-            new ArcMovementParameters({ x: 10, y: 10 }, 50, -1)
+            new ArcMovementParameters({ x: 5, y: -25 }, 20, 1)
           ),
         ],
         baseStepTimeout,

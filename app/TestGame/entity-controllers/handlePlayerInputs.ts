@@ -1,6 +1,6 @@
 import { TestGame } from "../../TestGame";
-import handleWASD from "./handleWASD";
 import handleCombatMoveExecution from "./handleCombatMoveExecution";
+import handleWASD from "./handleWASD";
 import rotatePlayerTowardMouse from "./rotatePlayerTowardMouse";
 import cloneDeep from "lodash.clonedeep";
 

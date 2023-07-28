@@ -8,10 +8,13 @@ const baseTurningSpeed = 0.08;
 const baseHandSpeed = 5;
 const baseAcceleration = 0.01;
 
-export enum HandSide {
+export enum Hand {
   LEFT,
   RIGHT,
 }
+
+export type AttackInProgress = { attack: Attack | null; chainIndex: number | null };
+export type AttacksExecuting = { [Hand.RIGHT]: AttackInProgress; [Hand.LEFT]: AttackInProgress };
 
 export class MobileEntity extends Entity {
   targetAngle = 0;
@@ -23,12 +26,10 @@ export class MobileEntity extends Entity {
   };
   turningSpeed = { current: baseTurningSpeed, base: baseTurningSpeed };
   handSpeed = { current: baseHandSpeed, base: baseHandSpeed };
-  mainHand: HandSide = HandSide.RIGHT;
-  equippedHoldables: { [HandSide.RIGHT]: Holdable | null; [HandSide.LEFT]: Holdable | null } = { [HandSide.RIGHT]: null, [HandSide.LEFT]: null };
-  currentAttackExecuting: Attack | null = null;
-  // attackOrderPreference: AttackDirections[] = [AttackDirections.LEFT, AttackDirections.RIGHT, AttackDirections.FORWARD];
+  mainHand: Hand = Hand.RIGHT;
+  equippedHoldables: { [Hand.RIGHT]: Holdable | null; [Hand.LEFT]: Holdable | null } = { [Hand.RIGHT]: null, [Hand.LEFT]: null };
   attackOrderPreference: AttackDirections[] = [AttackDirections.LEFT, AttackDirections.RIGHT, AttackDirections.FORWARD];
-  currentAttackOrderIndex: number | null = null;
+  attacksCurrentlyExecuting: AttacksExecuting = { [Hand.RIGHT]: { attack: null, chainIndex: null }, [Hand.LEFT]: { attack: null, chainIndex: null } };
   weakpoint: { offset: Vector; radius: number } = { offset: { x: 0, y: 0 }, radius: 10 };
   constructor(id: number, body: Body, owner: string, acceleration: number = 0.01, turningSpeed?: number, jumpHeight?: number) {
     super(id, body, 1, 1, { max: baseHp, current: baseHp }, owner);
