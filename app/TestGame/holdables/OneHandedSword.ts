@@ -44,18 +44,19 @@ export class OneHandedSword extends Holdable {
       [AttackDirections.RIGHT]: new AttackInstructions(
         [
           new AttackStep(
-            new HoldableGripConstraintCreationData({ x: 20, y: -25 }, -Math.PI / 2, distBetweenGripPairMembers, 10, 10),
-            MovementType.LINEAR,
-            DamageType.NONE
-          ),
-          new AttackStep(
-            new HoldableGripConstraintCreationData(null, -Math.PI / 2, distBetweenGripPairMembers, 10, 10),
-            MovementType.ARC,
+            new HoldableGripConstraintCreationData(null, -0.1, distBetweenGripPairMembers, 10, 10),
+            MovementType.PERPENDICULAR_ARC,
             DamageType.SLASHING,
-            new ArcMovementParameters({ x: 10, y: 10 }, 20, -1)
+            new ArcMovementParameters({ x: 10, y: 10 }, 20, 1)
           ),
           new AttackStep(
-            new HoldableGripConstraintCreationData(null, -Math.PI / 6, distBetweenGripPairMembers, 10, 10),
+            new HoldableGripConstraintCreationData(null, 0.3, distBetweenGripPairMembers, 10, 10),
+            MovementType.PERPENDICULAR_ARC,
+            DamageType.SLASHING,
+            new ArcMovementParameters({ x: 10, y: 10 }, 30, 1)
+          ),
+          new AttackStep(
+            new HoldableGripConstraintCreationData(null, 0.6, distBetweenGripPairMembers, 10, 10),
             MovementType.ARC,
             DamageType.SLASHING,
             new ArcMovementParameters({ x: 10, y: 10 }, 40, 1)
@@ -64,7 +65,13 @@ export class OneHandedSword extends Holdable {
             new HoldableGripConstraintCreationData(null, 1.2, distBetweenGripPairMembers, 10, 10),
             MovementType.ARC,
             DamageType.SLASHING,
-            new ArcMovementParameters({ x: 10, y: 10 }, 10, 1)
+            new ArcMovementParameters({ x: 10, y: 10 }, 30, 1)
+          ),
+          new AttackStep(
+            new HoldableGripConstraintCreationData(null, 1.6, distBetweenGripPairMembers, 10, 10),
+            MovementType.ARC,
+            DamageType.SLASHING,
+            new ArcMovementParameters({ x: 10, y: 10 }, 20, 1)
           ),
         ],
         baseStepTimeout,

@@ -16,23 +16,26 @@ export class Shield extends Holdable {
     light: {
       [AttackDirections.LEFT]: new AttackInstructions(
         [
-          // new AttackStep(
-          //   new HoldableGripConstraintCreationData(null, 0, distBetweenGripPairMembers, 10, 10),
-          //   MovementType.PERPENDICULAR_ARC,
-          //   DamageType.SLASHING,
-          //   new ArcMovementParameters({ x: 5, y: -25 }, 20, 1)
-          // ),
           new AttackStep(
-            new HoldableGripConstraintCreationData({ x: 20, y: -25 }, -Math.PI / 2, distBetweenGripPairMembers, 10, 10),
-            MovementType.LINEAR,
-            DamageType.NONE
-          ),
-          new AttackStep(
-            new HoldableGripConstraintCreationData(null, 1.01, distBetweenGripPairMembers, 10, 10),
+            new HoldableGripConstraintCreationData(null, -0.7, distBetweenGripPairMembers, 10, 10),
             MovementType.PERPENDICULAR_ARC,
             DamageType.SLASHING,
-            // new ArcMovementParameters({ x: 5, y: -25 }, 20, 1)
-            new ArcMovementParameters({ x: -10, y: -10 }, 50, -1)
+            new ArcMovementParameters({ x: 0, y: 0 }, 40, -1, -1),
+            { speedModifier: 0.75 }
+          ),
+          new AttackStep(
+            new HoldableGripConstraintCreationData(null, -1.5, distBetweenGripPairMembers, 10, 10),
+            MovementType.PERPENDICULAR_ARC,
+            DamageType.SLASHING,
+            new ArcMovementParameters({ x: 0, y: 0 }, 40, -1, -1),
+            { speedModifier: 0.75 }
+          ),
+          new AttackStep(
+            new HoldableGripConstraintCreationData(null, -2.3, distBetweenGripPairMembers, 10, 10),
+            MovementType.PERPENDICULAR_ARC,
+            DamageType.SLASHING,
+            new ArcMovementParameters({ x: 0, y: 0 }, 40, -1, -1),
+            { speedModifier: 0.75 }
           ),
         ],
         baseStepTimeout,
@@ -41,27 +44,25 @@ export class Shield extends Holdable {
       [AttackDirections.RIGHT]: new AttackInstructions(
         [
           new AttackStep(
-            new HoldableGripConstraintCreationData({ x: 20, y: -25 }, -Math.PI / 2, distBetweenGripPairMembers, 10, 10),
-            MovementType.LINEAR,
-            DamageType.NONE
-          ),
-          new AttackStep(
             new HoldableGripConstraintCreationData(null, -Math.PI / 2, distBetweenGripPairMembers, 10, 10),
-            MovementType.ARC,
+            MovementType.PERPENDICULAR_ARC,
             DamageType.SLASHING,
-            new ArcMovementParameters({ x: 10, y: 10 }, 20, -1)
+            new ArcMovementParameters({ x: 0, y: -20 }, 15, 1, -1),
+            { speedModifier: 0.9 }
           ),
           new AttackStep(
-            new HoldableGripConstraintCreationData(null, -Math.PI / 6, distBetweenGripPairMembers, 10, 10),
-            MovementType.ARC,
+            new HoldableGripConstraintCreationData(null, -Math.PI / 5, distBetweenGripPairMembers, 10, 10),
+            MovementType.PERPENDICULAR_ARC,
             DamageType.SLASHING,
-            new ArcMovementParameters({ x: 10, y: 10 }, 40, 1)
+            new ArcMovementParameters({ x: 0, y: -20 }, 35, 1, -1),
+            { speedModifier: 0.7 }
           ),
           new AttackStep(
-            new HoldableGripConstraintCreationData(null, 1.2, distBetweenGripPairMembers, 10, 10),
-            MovementType.ARC,
+            new HoldableGripConstraintCreationData(null, 0, distBetweenGripPairMembers, 10, 10),
+            MovementType.PERPENDICULAR_ARC,
             DamageType.SLASHING,
-            new ArcMovementParameters({ x: 10, y: 10 }, 10, 1)
+            new ArcMovementParameters({ x: 0, y: -20 }, 40, 1, -1),
+            { speedModifier: 0.5 }
           ),
         ],
         baseStepTimeout,
@@ -69,8 +70,13 @@ export class Shield extends Holdable {
       ),
       [AttackDirections.FORWARD]: new AttackInstructions(
         [
-          new AttackStep(new HoldableGripConstraintCreationData({ x: 5, y: 25 }, 0, distBetweenGripPairMembers, 10, 10), MovementType.LINEAR, DamageType.NONE),
-          new AttackStep(new HoldableGripConstraintCreationData({ x: 50, y: 25 }, 0, distBetweenGripPairMembers, 10, 10), MovementType.LINEAR, DamageType.NONE),
+          new AttackStep(
+            new HoldableGripConstraintCreationData(null, 0, distBetweenGripPairMembers, 10, 10),
+            MovementType.PERPENDICULAR_ARC,
+            DamageType.SLASHING,
+            new ArcMovementParameters({ x: 0, y: -20 }, 40, 1, -1),
+            { speedModifier: 0.5 }
+          ),
         ],
         baseStepTimeout,
         0
@@ -89,7 +95,7 @@ export class Shield extends Holdable {
       false,
       true,
       length,
-      new HoldableGripConstraintCreationData({ x: 5, y: -25 }, 0, distBetweenGripPairMembers, null, lowestGripOffsetFromBottom)
+      new HoldableGripConstraintCreationData({ x: 25, y: -25 }, 1, distBetweenGripPairMembers, null, lowestGripOffsetFromBottom)
     );
   }
 }

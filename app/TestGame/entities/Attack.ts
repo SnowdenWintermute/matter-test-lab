@@ -21,7 +21,12 @@ export enum MovementType {
 }
 
 export class ArcMovementParameters {
-  constructor(public arcCenterOffsetFromBody: Vector, public arcEndingRadius: number, public arcDirection: 1 | -1) {}
+  constructor(
+    public arcCenterOffsetFromBody: Vector,
+    public arcEndingRadius: number,
+    public arcDirection: 1 | -1,
+    public perpendicularArcGripAngleDirection: 1 | -1 = 1
+  ) {}
 }
 
 export class AttackStep {
@@ -30,9 +35,12 @@ export class AttackStep {
     public movementType: MovementType,
     public damageType: DamageType,
     public arcMovementParameters?: ArcMovementParameters,
-    public onReached?: () => void,
-    public onStart?: () => void,
-    public timeout?: number
+    public options: {
+      onReached?: () => void;
+      onStart?: () => void;
+      timeout?: number;
+      speedModifier: number;
+    } = { speedModifier: 1 }
   ) {}
 }
 

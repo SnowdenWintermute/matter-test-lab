@@ -14,14 +14,13 @@ export function continueAttackExecution(entity: MobileEntity, attackExecuting: A
   const { movementType } = step;
   const desiredPosition = step.position;
 
+  const speed = entity.handSpeed.current * step.options.speedModifier;
   let reachedDestination;
-  if (holdable.type === HoldableType.SHIELD) console.log(movementType);
-  if (movementType === MovementType.LINEAR)
-    reachedDestination = moveHoldableGripsTowardDestination(entity, holdable, desiredPosition, entity.handSpeed.current);
+  if (movementType === MovementType.LINEAR) reachedDestination = moveHoldableGripsTowardDestination(entity, holdable, desiredPosition, speed);
   else if (movementType === MovementType.ARC) reachedDestination = moveHoldableGripsInArc(entity, holdable, step);
   else if (movementType === MovementType.PERPENDICULAR_ARC) reachedDestination = moveHoldableGripsInArc(entity, holdable, step, { perpendicularGrips: true });
 
-  const timeout = step.timeout || baseTimeout;
+  const timeout = step.options?.timeout || baseTimeout;
   const exceededTimeout = +Date.now() - timeCurrentStepStarted > timeout;
   if (exceededTimeout) return clearAttack(entity, attackExecuting, holdable);
   if (!reachedDestination && !exceededTimeout) return;

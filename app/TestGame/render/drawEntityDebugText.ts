@@ -16,7 +16,7 @@ export default function drawEntityDebugText(context: CanvasRenderingContext2D, e
   // if (typeof currentStepIndex === "number" && typeof chainIndex === "number" && offhandAttack.attack)
   //   currentStep = offhandAttack.attack.instructionSet[stepName][currentStepIndex];
 
-  const text = [`CLICKS QUEUED: ${game.mouseState.clicksQueued.left}`, `OFFHAND STEP ANGLE: ${"a"}`];
+  const text = [`CLICKS QUEUED: ${game.mouseState.clicksQueued.left}`];
   const margin = 18;
   context.fillStyle = "pink";
   context.textAlign = "center";

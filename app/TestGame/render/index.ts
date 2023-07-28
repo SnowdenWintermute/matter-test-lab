@@ -11,6 +11,7 @@ import drawDebugText from "./drawDebugText";
 import { Vector } from "matter-js";
 import { angleBetweenPoints, distBetweenTwoPoints, getPointInArc } from "@/app/utils";
 import cloneDeep from "lodash.clonedeep";
+import drawRadianCompass from "./drawRadianCompass";
 
 export default function render(context: CanvasRenderingContext2D, game: TestGame, canvasSize: WidthAndHeight) {
   context.clearRect(0, 0, canvasSize.width, canvasSize.height);
@@ -22,7 +23,7 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
   Object.values(game.entities.mobile).forEach((entity) => {
     drawPoly(context, entity.body.vertices, "grey");
   });
-  Object.values(game.entities.playerControlled).forEach((entity) => {
+  Object.values(game.entities.playerControlled).forEach((entity, i) => {
     const { position, angle } = entity.body;
     const { targetAngle, weakpoint } = entity;
     drawPoly(context, entity.body.vertices, "#9ba8b8");
@@ -38,6 +39,7 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
       "grey",
       true
     );
+    // if (i === 0) drawRadianCompass(context, entity);
   });
 
   Object.values(game.entities.holdable).forEach((holdable) => {
@@ -49,7 +51,7 @@ export default function render(context: CanvasRenderingContext2D, game: TestGame
     drawCircle(context, holdable.body.vertices[0], 2, "red", true);
     drawCircle(context, holdable.body.position, 1, "black", true);
     if (!holdable.heldBy) return;
-    drawGrips(context, holdable, holdable.heldBy);
+    // drawGrips(context, holdable, holdable.heldBy);
     // drawHoldablePositions(context, holdable, holdable.heldBy.body);
   });
   drawDebugText(context, canvasSize, game);

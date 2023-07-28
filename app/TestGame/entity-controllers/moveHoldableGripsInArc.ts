@@ -20,12 +20,12 @@ function setPreviousArcCenterAndMovementType(holdable: Holdable, step: AttackSte
 export default function moveHoldableGripsInArc(entity: MobileEntity, holdable: Holdable, step: AttackStep, options?: { perpendicularGrips?: boolean }) {
   const perpendicularGrips = options?.perpendicularGrips;
   if (!step.arcMovementParameters) return;
-  const { arcCenterOffsetFromBody, arcDirection, arcEndingRadius } = step.arcMovementParameters;
+  const { arcCenterOffsetFromBody, arcDirection, arcEndingRadius, perpendicularArcGripAngleDirection } = step.arcMovementParameters;
   const { distBetweenPairMembers, distBetweenGripPairs, lowestPointYOffsetFromHoldableBottom } = step.position;
   if (!holdable.grips) return;
   const { main, support } = holdable.grips;
   const { angle, position } = entity.body;
-  const angularSpeedInRadians = (entity.handSpeed.current * 2) / 75; // ARC SPEED HERE
+  const angularSpeedInRadians = ((entity.handSpeed.current * 2) / 75) * step.options.speedModifier; // ARC SPEED HERE
   const arcCenterWorldLocation = Vector.add(Vector.rotateAbout(arcCenterOffsetFromBody, angle, { x: 0, y: 0 }), position);
 
   const gripMainLowerWorldLocation = Vector.add(position, main.lower.pointA);
@@ -40,8 +40,7 @@ export default function moveHoldableGripsInArc(entity: MobileEntity, holdable: H
     previousStepHadSameArcCenter = true;
   const previousStepHadSameMovementType = holdable.previousAttackStep.movementType === step.movementType;
 
-  const gripsAngle = perpendicularGrips ? step.position.angle - Math.PI / 2 : step.position.angle;
-  if (holdable.type === HoldableType.SHIELD) console.log(gripsAngle, angleDiffToDestination);
+  const gripsAngle = perpendicularGrips ? step.position.angle - (Math.PI / 2) * perpendicularArcGripAngleDirection : step.position.angle;
 
   if (!previousStepHadSameArcCenter || !previousStepHadSameMovementType) {
     const destinationData = new HoldableGripConstraintCreationData(
@@ -51,7 +50,9 @@ export default function moveHoldableGripsInArc(entity: MobileEntity, holdable: H
       distBetweenGripPairs,
       lowestPointYOffsetFromHoldableBottom
     );
-    const reachedDestination = moveHoldableGripsTowardDestination(entity, holdable, destinationData, entity.handSpeed.current);
+
+    const speed = entity.handSpeed.current * step.options.speedModifier;
+    const reachedDestination = moveHoldableGripsTowardDestination(entity, holdable, destinationData, speed);
     if (reachedDestination) return setPreviousArcCenterAndMovementType(holdable, step);
     return;
   }
@@ -74,7 +75,7 @@ export default function moveHoldableGripsInArc(entity: MobileEntity, holdable: H
   let supportUpperDist = distBetweenPairMembers * 2 + (distBetweenGripPairs || 0) + arcEndingRadius;
   let arcCenter = arcCenterWorldLocation;
   if (perpendicularGrips) {
-    modifiedAngle = newAngle - Math.PI / 2;
+    modifiedAngle = newAngle - (Math.PI / 2) * perpendicularArcGripAngleDirection;
     mainUpperDist -= arcEndingRadius;
     supportLowerDist -= arcEndingRadius;
     supportUpperDist -= arcEndingRadius;

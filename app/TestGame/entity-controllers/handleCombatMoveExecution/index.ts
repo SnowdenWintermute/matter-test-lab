@@ -33,8 +33,8 @@ export default function handleCombatMoveExecution(game: TestGame, entity: Mobile
 
   if (neitherHandIsAttacking || bothAttacksComplete) {
     if (bothAttacksComplete) {
-      clearAttack(entity, mainHandAttack, mainHandHoldable);
-      clearAttack(entity, offHandAttack, offHandHoldable);
+      if (mainHandHoldable) clearAttack(entity, mainHandAttack, mainHandHoldable);
+      if (offHandHoldable) clearAttack(entity, offHandAttack, offHandHoldable);
     }
     if (mainHandHoldable) moveHoldableGripsTowardDestination(entity, mainHandHoldable, mainHandHoldable.restPosition, handSpeed.current);
     if (offHandHoldable) moveHoldableGripsTowardDestination(entity, offHandHoldable, offHandHoldable.restPosition, handSpeed.current);

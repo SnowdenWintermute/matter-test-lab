@@ -49,17 +49,18 @@ export class TestGame {
 
     // createRandomlyPlacedCircleEntities(this);
     const playerEntity = this.createRegisteredPlayerEntity({ x: 200, y: 250 });
-    const playerEntity2 = this.createRegisteredPlayerEntity({ x: 370, y: 250 });
     const weapon = this.createRegisteredHoldable(HoldableType.ONE_HANDED_SWORD, { x: playerEntity.body.position.x, y: playerEntity.body.position.y });
     const sheild = this.createRegisteredHoldable(HoldableType.SHIELD, { x: playerEntity.body.position.x, y: playerEntity.body.position.y });
-    // const weapon = this.createRegisteredHoldable(HoldableType.SPEAR, { x: playerEntity.body.position.x, y: playerEntity.body.position.y });
-
     if (weapon) this.equipHoldableToEntity(this, playerEntity, weapon);
     if (sheild) this.equipHoldableToEntity(this, playerEntity, sheild);
-    // const spear2 = this.createRegisteredHoldable(HoldableType.SPEAR, playerEntity2.body.position);
-    // if (spear2) this.equipHoldableToEntity(this, playerEntity2, spear2);
-    this.createBorderWalls({ width: 800, height: 600 }, { x: 5, y: 5 });
 
+    const playerEntity2 = this.createRegisteredPlayerEntity({ x: 370, y: 250 });
+    // const weapon2 = this.createRegisteredHoldable(HoldableType.ONE_HANDED_SWORD, { x: playerEntity.body.position.x, y: playerEntity.body.position.y });
+    // const shield2 = this.createRegisteredHoldable(HoldableType.SHIELD, { x: playerEntity.body.position.x, y: playerEntity.body.position.y });
+    // if (weapon2) this.equipHoldableToEntity(this, playerEntity2, weapon2);
+    // if (shield2) this.equipHoldableToEntity(this, playerEntity2, shield2);
+
+    this.createBorderWalls({ width: 800, height: 600 }, { x: 5, y: 5 });
     this.createRegisteredStaticEntity({ x: 200, y: 400 }, { width: 50, height: 50 });
   }
 
@@ -97,8 +98,6 @@ export class TestGame {
     const id = this.entities.lastIdAssigned;
     const body = Matter.Bodies.polygon(position.x, position.y, 8, 40);
     body.frictionAir = 0.3;
-    // const startingAngle = -Math.PI / 2;
-    // Matter.Body.setAngle(body, startingAngle);
     body.label = `${EntityCategory.PLAYER_CONTROLLED}-${id}`;
     if (options?.static) body.isStatic = true;
     Matter.Composite.add(this.physicsEngine.world, body);

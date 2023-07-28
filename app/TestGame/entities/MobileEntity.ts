@@ -29,6 +29,7 @@ export class MobileEntity extends Entity {
   mainHand: Hand = Hand.RIGHT;
   equippedHoldables: { [Hand.RIGHT]: Holdable | null; [Hand.LEFT]: Holdable | null } = { [Hand.RIGHT]: null, [Hand.LEFT]: null };
   attackOrderPreference: AttackDirections[] = [AttackDirections.LEFT, AttackDirections.RIGHT, AttackDirections.FORWARD];
+  // attackOrderPreference: AttackDirections[] = [AttackDirections.RIGHT, AttackDirections.LEFT, AttackDirections.FORWARD];
   attacksCurrentlyExecuting: AttacksExecuting = { [Hand.RIGHT]: { attack: null, chainIndex: null }, [Hand.LEFT]: { attack: null, chainIndex: null } };
   weakpoint: { offset: Vector; radius: number } = { offset: { x: 0, y: 0 }, radius: 10 };
   constructor(id: number, body: Body, owner: string, acceleration: number = 0.01, turningSpeed?: number, jumpHeight?: number) {
