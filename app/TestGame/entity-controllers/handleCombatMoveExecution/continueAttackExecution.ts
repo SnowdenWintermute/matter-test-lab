@@ -1,6 +1,6 @@
 import { MovementType } from "../../entities/Attack";
 import { AttackInProgress, MobileEntity } from "../../entities/MobileEntity";
-import { Holdable } from "../../holdables/Holdable";
+import { Holdable, HoldableType } from "../../holdables/Holdable";
 import moveHoldableGripsInArc from "../moveHoldableGripsInArc";
 import moveHoldableGripsTowardDestination from "../moveHoldableGripsTowardDestination";
 import { clearAttack } from "./clearAttack";
@@ -15,6 +15,7 @@ export function continueAttackExecution(entity: MobileEntity, attackExecuting: A
   const desiredPosition = step.position;
 
   let reachedDestination;
+  if (holdable.type === HoldableType.SHIELD) console.log(movementType);
   if (movementType === MovementType.LINEAR)
     reachedDestination = moveHoldableGripsTowardDestination(entity, holdable, desiredPosition, entity.handSpeed.current);
   else if (movementType === MovementType.ARC) reachedDestination = moveHoldableGripsInArc(entity, holdable, step);
@@ -22,7 +23,7 @@ export function continueAttackExecution(entity: MobileEntity, attackExecuting: A
 
   const timeout = step.timeout || baseTimeout;
   const exceededTimeout = +Date.now() - timeCurrentStepStarted > timeout;
-  if (exceededTimeout) return clearAttack(entity, attackExecuting);
+  if (exceededTimeout) return clearAttack(entity, attackExecuting, holdable);
   if (!reachedDestination && !exceededTimeout) return;
   if (attackExecuting.attack.isComplete) return;
 

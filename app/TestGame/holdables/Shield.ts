@@ -23,10 +23,16 @@ export class Shield extends Holdable {
           //   new ArcMovementParameters({ x: 5, y: -25 }, 20, 1)
           // ),
           new AttackStep(
-            new HoldableGripConstraintCreationData(null, -2, distBetweenGripPairMembers, 10, 10),
-            MovementType.ARC,
+            new HoldableGripConstraintCreationData({ x: 20, y: -25 }, -Math.PI / 2, distBetweenGripPairMembers, 10, 10),
+            MovementType.LINEAR,
+            DamageType.NONE
+          ),
+          new AttackStep(
+            new HoldableGripConstraintCreationData(null, 1.01, distBetweenGripPairMembers, 10, 10),
+            MovementType.PERPENDICULAR_ARC,
             DamageType.SLASHING,
-            new ArcMovementParameters({ x: 5, y: -25 }, 20, 1)
+            // new ArcMovementParameters({ x: 5, y: -25 }, 20, 1)
+            new ArcMovementParameters({ x: -10, y: -10 }, 50, -1)
           ),
         ],
         baseStepTimeout,
