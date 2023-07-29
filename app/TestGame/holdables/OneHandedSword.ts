@@ -50,8 +50,14 @@ export class OneHandedSword extends Holdable {
             new ArcMovementParameters({ x: 10, y: 10 }, 20, 1)
           ),
           new AttackStep(
-            new HoldableGripConstraintCreationData(null, 0.3, distBetweenGripPairMembers, 10, 10),
+            new HoldableGripConstraintCreationData(null, 0.1, distBetweenGripPairMembers, 10, 10),
             MovementType.PERPENDICULAR_ARC,
+            DamageType.SLASHING,
+            new ArcMovementParameters({ x: 10, y: 10 }, 20, 1)
+          ),
+          new AttackStep(
+            new HoldableGripConstraintCreationData(null, 0.2, distBetweenGripPairMembers, 10, 10),
+            MovementType.ARC,
             DamageType.SLASHING,
             new ArcMovementParameters({ x: 10, y: 10 }, 30, 1)
           ),
